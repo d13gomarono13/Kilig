@@ -1,10 +1,10 @@
 # Initial Concept
-Kilig è una piattaforma AI per trasformare paper scientifici (PDF/arXiv) in video esplicativi animati. Kilig 2.0 adotta un approccio **Data-Driven puro TypeScript**: l'AI non scrive codice, ma genera strutture dati (JSON) che un motore di rendering React visualizza in tempo reale.
+Kilig è una piattaforma AI per trasformare paper scientifici (PDF/arXiv) in video esplicativi animati. Kilig adotta un approccio **Data-Driven puro TypeScript**: l'AI non scrive codice, ma genera strutture dati (JSON) che un motore di rendering React visualizza in tempo reale.
 
-# Product Guide: Project Kilig 2.0
+# Product Guide: Project Kilig
 
 ## Vision
-Kilig is an AI platform designed to transform scientific papers (PDF/arXiv) into animated explanatory videos. Adopting a "Data-Driven Pure TypeScript" approach, Kilig 2.0 ensures extreme reliability and speed by generating structured data (JSON) that a React-based engine renders in real-time, eliminating the risks and delays of runtime code generation.
+Kilig is an AI platform designed to transform scientific papers (PDF/arXiv) into animated explanatory videos. Adopting a "Data-Driven Pure TypeScript" approach, Kilig ensures extreme reliability and speed by generating structured data (JSON) that a React-based engine renders in real-time, eliminating the risks and delays of runtime code generation.
 
 ## Target Users
 - **Researchers and Academics:** Seeking to visualize findings for high-impact presentations and social media engagement.
@@ -25,4 +25,4 @@ Kilig is an AI platform designed to transform scientific papers (PDF/arXiv) into
 - **Modern and Tech-Focused:** Vibrant colors, smooth transitions, and a high-end aesthetic designed for clarity and engagement.
 
 ## Success Metrics
-The success of Kilig 2.0 is measured by user engagement and the viral potential of generated videos, the significant time saved by researchers in creating visualizations, and the unwavering accuracy of the AI's scientific reasoning.
+The success of Kilig is measured by user engagement and the viral potential of generated videos, the significant time saved by researchers in creating visualizations, and the unwavering accuracy of the AI's scientific reasoning.

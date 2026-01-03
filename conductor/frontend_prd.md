@@ -1,7 +1,7 @@
 # Product Requirement Document (PRD): Kilig Frontend v1.0
 
 ## 1. Product Overview
-**Kilig 2.0** is an AI-powered platform designed to transform scientific papers into engaging, animated explanatory videos. By leveraging autonomous agents and a "Data-Driven Pure TypeScript" approach, Kilig automates the research, scripting, and animation phases, allowing researchers to visualize complex ideas instantly.
+**Kilig** is an AI-powered platform designed to transform scientific papers into engaging, animated explanatory videos. By leveraging autonomous agents and a "Data-Driven Pure TypeScript" approach, Kilig automates the research, scripting, and animation phases, allowing researchers to visualize complex ideas instantly.
 
 ## 2. Target Audience
 *   **Academic Researchers:** Need to visualize findings for conferences and journals.
@@ -39,7 +39,7 @@
 ### 4.1 Landing Page (`/`)
 *   **Goal:** Convert visitors into users by showcasing the platform's power.
 *   **Components:**
-    *   **Hero Section:** High-impact "Kilig 2.0" header with a sub-headline emphasizing speed and automation ("Raw. Bold. Fast.").
+    *   **Hero Section:** High-impact "Kilig" header with a sub-headline emphasizing speed and automation ("Raw. Bold. Fast.").
     *   **Call to Action (CTA):** Prominent "Start Creating" button leading to the Dashboard.
     *   **Feature Cards:** "Agents" (Autonomous workflow) and "Revideo" (Programmatic animation) highlights.
     *   **Auth Entry:** Simple login/signup card.

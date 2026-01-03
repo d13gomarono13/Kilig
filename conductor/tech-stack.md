@@ -1,4 +1,4 @@
-# Technology Stack: Project Kilig 2.0
+# Technology Stack: Project Kilig
 
 ## Core Runtime & Language
 - **Language:** TypeScript 5.8+ (Strict type safety end-to-end)

@@ -1,7 +1,7 @@
 {
   "name": "kilig-orchestrator",
   "version": "1.0.0",
-  "description": "Kilig 2.0 Agent Orchestration",
+  "description": "Kilig Agent Orchestration",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {

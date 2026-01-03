@@ -50,7 +50,7 @@ const synthesizeAnalysisTool = new FunctionTool({
   }),
   execute: async ({ raw_findings }) => {
     // This tool acts as a "formatter" or "thinker" that ensures the output follows
-    // the Kilig 2.0 Scientific Analysis format.
+    // the Kilig Scientific Analysis format.
     console.log(`[Scientist] Synthesizing findings into structured critical analysis...`);
     
     // In ADK, we can either let the model do this in its response, 

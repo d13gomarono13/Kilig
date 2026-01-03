@@ -1,4 +1,4 @@
-# Product Guidelines: Project Kilig 2.0
+# Product Guidelines: Project Kilig
 
 ## Prose Style
 - **Professional and Authoritative:** All user-facing text, including AI-generated scripts and UI labels, must be clear, direct, and academic. The tone should establish the platform as a reliable and sophisticated partner in scientific communication.
