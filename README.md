@@ -1,4 +1,4 @@
-# Kilig 2.0
+# Kilig
 
 AI platform to transform scientific papers into animated videos using a Data-Driven Pure TypeScript approach.
 
