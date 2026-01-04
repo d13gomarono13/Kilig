@@ -70,14 +70,13 @@ All colors MUST be HSL.
     --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', Times, serif;
     --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 
-    --shadow-2xs: 1px 1px 0px 0px hsl(0 0% 9%);
-    --shadow-xs: 2px 2px 0px 0px hsl(0 0% 9%);
-    --shadow-sm: 3px 3px 0px 0px hsl(0 0% 9%);
-    --shadow: 4px 4px 0px 0px hsl(0 0% 9%);
-    --shadow-md: 6px 6px 0px 0px hsl(0 0% 9%);
-    --shadow-lg: 8px 8px 0px 0px hsl(0 0% 9%);
-    --shadow-xl: 12px 12px 0px 0px hsl(0 0% 9%);
-    --shadow-2xl: 16px 16px 0px 0px hsl(0 0% 9%);
+    --shadow-neo-2xs: 1px 1px 0px 0px hsl(0 0% 9%);
+    --shadow-neo-sm: 2px 2px 0px 0px hsl(0 0% 9%);
+    --shadow-neo: 4px 4px 0px 0px hsl(0 0% 9%);
+    --shadow-neo-md: 6px 6px 0px 0px hsl(0 0% 9%);
+    --shadow-neo-lg: 8px 8px 0px 0px hsl(0 0% 9%);
+    --shadow-neo-xl: 12px 12px 0px 0px hsl(0 0% 9%);
+    --shadow-neo-2xl: 16px 16px 0px 0px hsl(0 0% 9%);
 
     --tracking-normal: 0em;
     --spacing: 0.25rem;
@@ -137,14 +136,13 @@ All colors MUST be HSL.
     --sidebar: 0 0% 12%;
     --radius: 0rem;
 
-    --shadow-2xs: 1px 1px 0px 0px hsl(0 0% 100%);
-    --shadow-xs: 2px 2px 0px 0px hsl(0 0% 100%);
-    --shadow-sm: 3px 3px 0px 0px hsl(0 0% 100%);
-    --shadow: 4px 4px 0px 0px hsl(0 0% 100%);
-    --shadow-md: 6px 6px 0px 0px hsl(0 0% 100%);
-    --shadow-lg: 8px 8px 0px 0px hsl(0 0% 100%);
-    --shadow-xl: 12px 12px 0px 0px hsl(0 0% 100%);
-    --shadow-2xl: 16px 16px 0px 0px hsl(0 0% 100%);
+    --shadow-neo-2xs: 1px 1px 0px 0px hsl(0 0% 100%);
+    --shadow-neo-sm: 2px 2px 0px 0px hsl(0 0% 100%);
+    --shadow-neo: 4px 4px 0px 0px hsl(0 0% 100%);
+    --shadow-neo-md: 6px 6px 0px 0px hsl(0 0% 100%);
+    --shadow-neo-lg: 8px 8px 0px 0px hsl(0 0% 100%);
+    --shadow-neo-xl: 12px 12px 0px 0px hsl(0 0% 100%);
+    --shadow-neo-2xl: 16px 16px 0px 0px hsl(0 0% 100%);
   }
 }
 
@@ -168,7 +166,7 @@ All colors MUST be HSL.
 
 ::-webkit-scrollbar-track {
   background: hsl(var(--background));
-  border: 2px solid hsl(var(--foreground));
+  border-left: 2px solid hsl(var(--foreground));
 }
 
 ::-webkit-scrollbar-thumb {
