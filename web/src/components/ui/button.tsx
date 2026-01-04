@@ -63,9 +63,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        <PxBorder width={3} radius="lg" />
-        {children}
-        <FocusRing width={3} />
+        {asChild ? children : (
+          <>
+            <PxBorder width={3} radius="lg" />
+            {children}
+            <FocusRing width={3} />
+          </>
+        )}
       </Comp>
     );
 
