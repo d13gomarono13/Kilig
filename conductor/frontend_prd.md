@@ -73,12 +73,12 @@
     *   **Global Controls:** Inputs to tweak global styles (Accent Color, Font) that instantly update the video.
 
 ## 5. Technical Architecture
-*   **Framework:** React 19 + Vite.
+*   **Framework:** React 18 + Vite.
 *   **Language:** TypeScript.
-*   **Styling:** Tailwind CSS v4.
-*   **UI Library:** shadcn/ui + neobrutalism-components.
+*   **Styling:** Tailwind CSS v3.
+*   **UI Library:** shadcn/ui + Neo-Brutalism components.
 *   **Animation Engine:** @revideo/player-react.
-*   **State Management:** React `useState` + SSE for real-time updates.
+*   **State Management:** React `useState` + React Query + SSE.
 
 ## 6. Integration Points
 *   **Trigger Endpoint:** `POST /api/trigger`
