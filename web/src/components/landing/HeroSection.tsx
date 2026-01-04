@@ -4,23 +4,61 @@ import { Button } from "@/components/retroui";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center px-4 py-20 cube-bg border-b-4 border-black">
-      {/* Decorative floating elements with RetroUI styling */}
-      <div className="absolute top-20 left-10 w-16 h-16 bg-neo-yellow border-2 border-black shadow-sm rotate-12 animate-float" />
-      <div className="absolute top-40 right-20 w-12 h-12 bg-neo-blue border-2 border-black shadow-sm -rotate-6 animate-float" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute bottom-40 left-20 w-10 h-10 bg-neo-pink border-2 border-black shadow-sm rotate-45 animate-float" style={{ animationDelay: '1s' }} />
-      <div className="absolute bottom-20 right-10 w-14 h-14 bg-neo-green border-2 border-black shadow-sm -rotate-12 animate-float" style={{ animationDelay: '1.5s' }} />
+    <section className="relative min-h-[90vh] flex items-center justify-center px-4 py-20 cube-bg border-b-4 border-black overflow-hidden">
+      {/* Decorative comic elements - Digital Comic Theme */}
+      
+      {/* 1. The "Bang" / Explosion */}
+      <svg viewBox="0 0 200 200" className="absolute top-20 left-10 w-32 h-32 animate-float hidden md:block" style={{ animationDelay: '0s' }}>
+        <path d="M100 10 L120 40 L150 30 L130 60 L160 80 L130 90 L140 120 L100 110 L60 120 L70 90 L40 80 L70 60 L50 30 L80 40 Z" 
+              className="fill-neo-yellow stroke-black stroke-[3px] drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" 
+              transform="scale(1.2) translate(-15, -15)"
+        />
+      </svg>
+      
+      {/* 2. The Digital Tablet / Comic Reader */}
+      <svg viewBox="0 0 100 100" className="absolute top-32 right-[15%] w-24 h-32 animate-float hidden md:block" style={{ animationDelay: '0.5s' }}>
+        {/* Tablet Body */}
+        <rect x="15" y="10" width="70" height="80" rx="5" className="fill-white stroke-black stroke-[3px] drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" />
+        {/* Screen/Panels */}
+        <rect x="20" y="15" width="60" height="35" className="fill-neo-blue stroke-black stroke-[2px]" />
+        <rect x="20" y="55" width="28" height="30" className="fill-neo-pink stroke-black stroke-[2px]" />
+        <rect x="52" y="55" width="28" height="30" className="fill-neo-purple stroke-black stroke-[2px]" />
+        {/* Home Button */}
+        <circle cx="50" cy="85" r="2" className="fill-black" />
+      </svg>
+
+      {/* 3. The Speech Bubble */}
+      <svg viewBox="0 0 100 100" className="absolute bottom-40 left-[15%] w-28 h-24 animate-float hidden md:block" style={{ animationDelay: '1s' }}>
+        <path d="M10 10 H90 V65 H60 L40 85 L45 65 H10 V10 Z" 
+              className="fill-white stroke-black stroke-[3px] drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" 
+        />
+        {/* Halftone dots simulation */}
+        <circle cx="25" cy="25" r="2" className="fill-black/20" />
+        <circle cx="35" cy="25" r="2" className="fill-black/20" />
+        <circle cx="45" cy="25" r="2" className="fill-black/20" />
+        <circle cx="25" cy="35" r="2" className="fill-black/20" />
+        <circle cx="35" cy="35" r="2" className="fill-black/20" />
+        <circle cx="45" cy="35" r="2" className="fill-black/20" />
+        
+        <text x="50" y="45" textAnchor="middle" className="font-black text-[10px] fill-black uppercase">WOW!</text>
+      </svg>
+
+      {/* 4. The "Action" Star/Impact */}
+      <svg viewBox="0 0 100 100" className="absolute bottom-20 right-10 w-24 h-24 animate-float hidden md:block" style={{ animationDelay: '1.5s' }}>
+        <path d="M50 5 L61 35 L95 35 L68 55 L79 90 L50 70 L21 90 L32 55 L5 35 L39 35 Z" 
+              className="fill-neo-green stroke-black stroke-[3px] drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]" 
+        />
+      </svg>
 
       <div className="max-w-5xl mx-auto text-center relative z-10">
         {/* Main headline */}
         <h1 className="text-7xl md:text-9xl font-bold tracking-tighter mb-6">
           <span className="block">KILIG</span>
-          <span className="block text-neo-yellow text-outlined uppercase">Video AI</span>
         </h1>
 
         {/* Subheadline */}
-        <p className="text-xl md:text-2xl font-bold uppercase tracking-widest mb-4 bg-black text-white inline-block px-4 py-1">
-          Raw. Bold. Fast.
+        <p className="text-xl md:text-2xl font-bold mb-4 bg-black text-white inline-block px-6 py-2 italic uppercase tracking-tight">
+          "The most personal is the most creative"
         </p>
         <p className="text-lg md:text-xl text-foreground font-medium max-w-2xl mx-auto mb-10">
           Transform scientific papers into engaging, animated explanatory videos 
