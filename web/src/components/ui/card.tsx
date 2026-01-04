@@ -4,18 +4,18 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const cardVariants = cva(
-  "border-2 border-foreground bg-card text-card-foreground transition-all",
+  "border-2 border-foreground bg-card text-card-foreground rounded transition-all",
   {
     variants: {
       variant: {
-        default: "shadow-sm",
-        elevated: "shadow-md hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-lg",
-        neo: "bg-neo-yellow shadow-sm",
-        neoBlue: "bg-neo-blue shadow-sm",
-        neoGreen: "bg-neo-green shadow-sm",
-        neoPurple: "bg-neo-purple shadow-sm",
-        neoPink: "bg-neo-pink shadow-sm",
-        neoRed: "bg-neo-red shadow-sm",
+        default: "shadow-md",
+        elevated: "shadow-md hover:shadow-none",
+        neo: "bg-neo-yellow shadow-md",
+        neoBlue: "bg-neo-blue shadow-md",
+        neoGreen: "bg-neo-green shadow-md",
+        neoPurple: "bg-neo-purple shadow-md",
+        neoPink: "bg-neo-pink shadow-md",
+        neoRed: "bg-neo-red shadow-md",
       },
     },
     defaultVariants: {
