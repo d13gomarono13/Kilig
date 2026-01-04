@@ -1,12 +1,12 @@
 # Frontend Redesign V2 (Tailwind v4 + RetroUI Integration)
 
 ## Objective
-Upgrade the frontend to Tailwind CSS v4, integrate the RetroUI component library, and enhance the Neo-Brutalist design system with features from the "Final result" reference (PxBorder, FocusRing, etc.).
+Upgrade the frontend to Tailwind CSS v4, integrate the RetroUI component library, and enhance the Neo-Brutalist design system (PxBorder, FocusRing, etc.).
 
 ## Context
 - **Current State:** Vite + React + TS, Tailwind v4, RetroUI Components ported.
 - **Goal:** Full page enhancement and final design polish.
-- **References:** `RetroUI` folder (root), `web/Final result` folder.
+- **References:** RetroUI (Core library reference for UI components).
 
 ## Phases
 
@@ -30,7 +30,7 @@ Upgrade the frontend to Tailwind CSS v4, integrate the RetroUI component library
     - [x] `Charts` (Area, Bar, Line, Pie)
     - [x] `Text`
 
-### Phase 3: Final Result Components
+### Phase 3: Component Enhancements
 - [x] **Create Utility Components** in `web/src/components/ui` (or shared):
     - [x] `PxBorder`: Pixel-perfect borders (configurable width, radius).
     - [x] `FocusRing`: Keyboard focus indicator matching border style.

@@ -5,7 +5,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* Design Tokens from Final Result */
+  /* Design Tokens */
   --color-primary: oklch(46.36% 0.1058 251.87deg);
   --color-secondary: oklch(67.75% 0.1381 278.35deg);
   --color-accent: oklch(88.27% 0.1755 104.11deg);
