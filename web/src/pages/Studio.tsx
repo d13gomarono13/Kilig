@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
 import { 
   ArrowLeft, 
@@ -6,7 +6,6 @@ import {
   Brain, 
   Palette, 
   Play, 
-  Pause,
   FileText,
   Code,
   ChevronRight,
@@ -14,12 +13,9 @@ import {
   AlertCircle,
   CheckCircle
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button, Card, Badge, Tabs, TabsPanels, TabsTrigger, TabsContent, TabsTriggerList } from "@/components/retroui";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { runPipeline, AgentType, LogEntry, LogLevel } from "@/lib/pipeline";
+import { runPipeline, AgentType, LogEntry } from "@/lib/pipeline";
 import { Player } from "@revideo/player-react";
 
 const agentConfig: Record<AgentType, { name: string; icon: any; color: string }> = {
@@ -37,8 +33,6 @@ export default function Studio() {
 
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [activeAgent, setActiveAgent] = useState<AgentType | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTab, setCurrentTab] = useState("logs");
   const [progress, setProgress] = useState(0);
   
   const [analysis, setAnalysis] = useState<string>("");
@@ -122,19 +116,19 @@ export default function Studio() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-card border-b-2 border-foreground px-4 py-3">
+      <header className="sticky top-0 z-50 bg-white border-b-4 border-black px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" asChild>
+            <Button size="icon" asChild className="border-2 w-10 h-10">
               <Link to="/dashboard">
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-6 h-6" />
               </Link>
             </Button>
             <div>
-              <h1 className="font-bold">Project Studio</h1>
-              <p className="text-sm text-muted-foreground font-mono">ID: {realProjectId || id}</p>
+              <h1 className="font-black uppercase text-xl tracking-tight">Project Studio</h1>
+              <p className="text-xs text-muted-foreground font-mono font-bold">ID: {realProjectId || id}</p>
             </div>
           </div>
 
@@ -146,11 +140,11 @@ export default function Studio() {
               return (
                 <div
                   key={key}
-                  className={`flex items-center gap-2 px-3 py-2 border-2 border-foreground transition-all ${
-                    isActive ? `${agent.color} shadow-sm` : "bg-muted"
+                  className={`flex items-center gap-2 px-3 py-2 border-2 border-black transition-all ${
+                    isActive ? `${agent.color} shadow-sm translate-y-[-2px]` : "bg-gray-100 opacity-50"
                   }`}
                 >
-                  <AgentIcon className={`w-4 h-4 ${isActive ? "animate-pulse" : ""}`} />
+                  <AgentIcon className={`w-4 h-4 ${isActive ? "animate-bounce" : ""}`} />
                   <span className="text-xs font-bold uppercase hidden sm:inline">
                     {agent.name}
                   </span>
@@ -162,116 +156,117 @@ export default function Studio() {
         </div>
 
         {/* Progress bar */}
-        <div className="mt-3 h-2 bg-muted border-2 border-foreground">
+        <div className="mt-3 h-3 bg-gray-200 border-2 border-black relative overflow-hidden">
           <div
-            className="h-full bg-neo-green transition-all duration-300"
+            className="h-full bg-neo-green transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
+          {/* Striped overlay */}
+          <div className="absolute inset-0 opacity-20 pointer-events-none bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,#000_10px,#000_20px)]" />
         </div>
       </header>
 
       {/* Main Content - Three Pane Layout */}
-      <main className="flex-1 grid lg:grid-cols-3 divide-x-2 divide-foreground">
+      <main className="flex-1 grid lg:grid-cols-3 divide-x-4 divide-black h-[calc(100vh-80px)]">
         {/* Left Panel: Agent Workspace */}
-        <div className="flex flex-col">
-          <Tabs value={currentTab} onValueChange={setCurrentTab} className="flex-1 flex flex-col">
-            <TabsList className="w-full justify-start rounded-none border-b-2 border-foreground bg-muted p-0 h-auto">
+        <div className="flex flex-col bg-white">
+          <Tabs className="flex-1 flex flex-col h-full">
+            <TabsTriggerList className="w-full justify-start border-b-4 border-black bg-gray-50 p-0 space-x-0">
               <TabsTrigger
-                value="logs"
-                className="rounded-none border-r-2 border-foreground px-4 py-3 font-bold uppercase text-xs data-[state=active]:bg-neo-yellow data-[state=active]:shadow-none"
+                className="rounded-none border-r-4 border-b-0 border-transparent border-r-black px-6 py-3 font-black uppercase text-xs data-selected:bg-neo-yellow data-selected:border-black hover:bg-gray-200 transition-colors"
               >
-                <Bot className="w-4 h-4 mr-2" />
-                Agent Logs
+                <Bot className="w-4 h-4 mr-2 inline-block" />
+                Logs
               </TabsTrigger>
               <TabsTrigger
-                value="analysis"
-                className="rounded-none border-r-2 border-foreground px-4 py-3 font-bold uppercase text-xs data-[state=active]:bg-neo-blue data-[state=active]:shadow-none"
+                className="rounded-none border-r-4 border-b-0 border-transparent border-r-black px-6 py-3 font-black uppercase text-xs data-selected:bg-neo-blue data-selected:border-black hover:bg-gray-200 transition-colors"
               >
-                <Brain className="w-4 h-4 mr-2" />
+                <Brain className="w-4 h-4 mr-2 inline-block" />
                 Analysis
               </TabsTrigger>
               <TabsTrigger
-                value="script"
-                className="rounded-none px-4 py-3 font-bold uppercase text-xs data-[state=active]:bg-neo-purple data-[state=active]:shadow-none"
+                className="rounded-none border-b-0 border-transparent px-6 py-3 font-black uppercase text-xs data-selected:bg-neo-purple data-selected:border-black hover:bg-gray-200 transition-colors"
               >
-                <FileText className="w-4 h-4 mr-2" />
+                <FileText className="w-4 h-4 mr-2 inline-block" />
                 Script
               </TabsTrigger>
-            </TabsList>
+            </TabsTriggerList>
 
-            <TabsContent value="logs" className="flex-1 mt-0 p-0">
-              <ScrollArea className="h-[calc(100vh-180px)]">
-                <div className="p-4 space-y-2">
-                  {logs.map((log) => (
-                    <div
-                      key={log.id}
-                      className={`p-3 border-2 border-foreground text-sm ${
-                        log.level === "error"
-                          ? "bg-neo-red"
-                          : log.level === "success"
-                          ? "bg-neo-green"
-                          : log.agent
-                          ? agentConfig[log.agent as AgentType]?.color
-                          : "bg-card"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-mono text-xs text-muted-foreground">
-                          {formatTime(log.timestamp)}
-                        </span>
-                        {log.agent && (
-                          <Badge variant="outline" className="text-xs">
-                            {agentConfig[log.agent as AgentType]?.name}
-                          </Badge>
+            <TabsPanels className="flex-1 overflow-hidden p-0">
+                <TabsContent className="h-full p-0 border-0 mt-0">
+                    <ScrollArea className="h-full">
+                        <div className="p-4 space-y-3">
+                        {logs.map((log) => (
+                            <div
+                            key={log.id}
+                            className={`p-3 border-2 border-black text-sm shadow-sm ${
+                                log.level === "error"
+                                ? "bg-neo-red text-white"
+                                : log.level === "success"
+                                ? "bg-neo-green"
+                                : log.agent
+                                ? agentConfig[log.agent as AgentType]?.color
+                                : "bg-white"
+                            }`}
+                            >
+                            <div className="flex items-center gap-2 mb-1 border-b-2 border-black/10 pb-1">
+                                <span className="font-mono text-xs font-bold opacity-70">
+                                {formatTime(log.timestamp)}
+                                </span>
+                                {log.agent && (
+                                <Badge className="text-[10px] bg-white text-black border border-black h-5">
+                                    {agentConfig[log.agent as AgentType]?.name}
+                                </Badge>
+                                )}
+                                {log.level === "success" && <CheckCircle className="w-4 h-4" />}
+                                {log.level === "error" && <AlertCircle className="w-4 h-4" />}
+                            </div>
+                            <p className="font-medium">{log.message}</p>
+                            </div>
+                        ))}
+                        {logs.length === 0 && (
+                            <div className="text-center py-12 text-muted-foreground flex flex-col items-center">
+                            <Loader2 className="w-10 h-10 mb-4 animate-spin text-black" />
+                            <p className="font-bold uppercase tracking-widest">Initializing pipeline...</p>
+                            </div>
                         )}
-                        {log.level === "success" && <CheckCircle className="w-4 h-4" />}
-                        {log.level === "error" && <AlertCircle className="w-4 h-4" />}
-                      </div>
-                      <p>{log.message}</p>
-                    </div>
-                  ))}
-                  {logs.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin" />
-                      <p>Initializing pipeline...</p>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-            </TabsContent>
+                        </div>
+                    </ScrollArea>
+                </TabsContent>
 
-            <TabsContent value="analysis" className="flex-1 mt-0">
-              <ScrollArea className="h-[calc(100vh-180px)]">
-                <div className="p-4">
-                  <pre className="font-mono text-sm whitespace-pre-wrap bg-card border-2 border-foreground p-4 shadow-xs">
-                    {analysis || "Waiting for scientist to complete analysis..."}
-                  </pre>
-                </div>
-              </ScrollArea>
-            </TabsContent>
+                <TabsContent className="h-full p-0 border-0 mt-0">
+                    <ScrollArea className="h-full">
+                        <div className="p-6">
+                        <pre className="font-mono text-sm whitespace-pre-wrap bg-white border-4 border-black p-6 shadow-md">
+                            {analysis || "Waiting for scientist to complete analysis..."}
+                        </pre>
+                        </div>
+                    </ScrollArea>
+                </TabsContent>
 
-            <TabsContent value="script" className="flex-1 mt-0">
-              <ScrollArea className="h-[calc(100vh-180px)]">
-                <div className="p-4">
-                  <pre className="font-mono text-sm whitespace-pre-wrap bg-card border-2 border-foreground p-4 shadow-xs">
-                    {script || "Waiting for narrative architect to generate script..."}
-                  </pre>
-                </div>
-              </ScrollArea>
-            </TabsContent>
+                <TabsContent className="h-full p-0 border-0 mt-0">
+                    <ScrollArea className="h-full">
+                        <div className="p-6">
+                        <pre className="font-mono text-sm whitespace-pre-wrap bg-white border-4 border-black p-6 shadow-md">
+                            {script || "Waiting for narrative architect to generate script..."}
+                        </pre>
+                        </div>
+                    </ScrollArea>
+                </TabsContent>
+            </TabsPanels>
           </Tabs>
         </div>
 
         {/* Center Panel: Canvas */}
-        <div className="flex flex-col">
-          <div className="p-4 border-b-2 border-foreground bg-muted">
-            <h2 className="font-bold uppercase text-sm flex items-center gap-2">
-              <Play className="w-4 h-4" />
+        <div className="flex flex-col bg-gray-100 diamond-bg">
+          <div className="p-4 border-b-4 border-black bg-white">
+            <h2 className="font-black uppercase text-sm flex items-center gap-2 tracking-widest">
+              <Play className="w-4 h-4 fill-black" />
               Video Preview
             </h2>
           </div>
-          <div className="flex-1 flex items-center justify-center p-4 bg-foreground/5">
-             <Card variant="elevated" className="w-full aspect-video flex items-center justify-center bg-foreground text-background overflow-hidden relative">
+          <div className="flex-1 flex items-center justify-center p-8">
+             <div className="w-full aspect-video flex items-center justify-center bg-black text-white overflow-hidden relative border-8 border-black shadow-xl">
                 {sceneGraph ? (
                    <Player
                      component={() => null} // We'll need to define a real Revideo component later
@@ -284,54 +279,55 @@ export default function Studio() {
                      controls
                    />
                 ) : (
-                  <div className="text-center">
-                    <Loader2 className="w-10 h-10 mx-auto mb-4 animate-spin text-background" />
-                    <p className="text-lg font-bold uppercase">Generating Canvas</p>
-                    <p className="text-sm text-background/70 mt-1">
+                  <div className="text-center p-8">
+                    <div className="w-20 h-20 bg-neo-green border-4 border-white shadow-[8px_8px_0px_white] flex items-center justify-center mx-auto mb-6 animate-pulse">
+                        <Loader2 className="w-10 h-10 animate-spin text-black" />
+                    </div>
+                    <p className="text-2xl font-black uppercase tracking-widest">Generating Canvas</p>
+                    <p className="text-sm text-white/70 mt-2 font-mono">
                       Designer is working on the SceneGraph...
                     </p>
                   </div>
                 )}
-             </Card>
+             </div>
           </div>
         </div>
 
         {/* Right Panel: Inspector */}
-        <div className="flex flex-col">
-          <div className="p-4 border-b-2 border-foreground bg-muted">
-            <h2 className="font-bold uppercase text-sm flex items-center gap-2">
+        <div className="flex flex-col bg-white">
+          <div className="p-4 border-b-4 border-black bg-gray-50">
+            <h2 className="font-black uppercase text-sm flex items-center gap-2 tracking-widest">
               <Code className="w-4 h-4" />
               SceneGraph Inspector
             </h2>
           </div>
-          <ScrollArea className="flex-1 h-[calc(100vh-180px)]">
-            <div className="p-4">
-              <pre className="font-mono text-xs whitespace-pre-wrap bg-card border-2 border-foreground p-4 shadow-xs overflow-x-auto">
-                {sceneGraph ? JSON.stringify(sceneGraph, null, 2) : "Waiting for SceneGraph..."}
-              </pre>
-
+          <ScrollArea className="flex-1">
+            <div className="p-4 space-y-6">
+              <div className="bg-gray-900 text-green-400 p-4 border-4 border-black shadow-md font-mono text-xs overflow-x-auto min-h-[200px]">
+                {sceneGraph ? JSON.stringify(sceneGraph, null, 2) : "// Waiting for SceneGraph JSON..."}
+              </div>
 
               {/* Visualization Hints */}
-              <div className="mt-6 space-y-4">
-                <h3 className="font-bold text-sm uppercase flex items-center gap-2">
+              <div className="space-y-4">
+                <h3 className="font-black text-sm uppercase flex items-center gap-2 border-b-2 border-black pb-2">
                   <ChevronRight className="w-4 h-4" />
                   Design Rationale
                 </h3>
-                <Card variant="neo" className="text-sm">
-                  <CardContent className="p-4">
-                    <p className="font-bold mb-1">Scene 1: Intro</p>
-                    <p className="text-foreground/80">
+                <Card className="text-sm bg-neo-yellow/20 border-2 border-black">
+                  <Card.Content className="p-4">
+                    <p className="font-bold mb-1 uppercase text-xs tracking-wider bg-black text-white w-fit px-2">Scene 1: Intro</p>
+                    <p className="text-foreground/80 mt-2 font-medium">
                       Large typography with fade-in creates immediate impact and establishes the topic.
                     </p>
-                  </CardContent>
+                  </Card.Content>
                 </Card>
-                <Card variant="neoBlue" className="text-sm">
-                  <CardContent className="p-4">
-                    <p className="font-bold mb-1">Scene 2: Superposition</p>
-                    <p className="text-foreground/80">
+                <Card className="text-sm bg-neo-blue/20 border-2 border-black">
+                  <Card.Content className="p-4">
+                    <p className="font-bold mb-1 uppercase text-xs tracking-wider bg-black text-white w-fit px-2">Scene 2: Superposition</p>
+                    <p className="text-foreground/80 mt-2 font-medium">
                       Wave animation visually represents the probabilistic nature of quantum states.
                     </p>
-                  </CardContent>
+                  </Card.Content>
                 </Card>
               </div>
             </div>
