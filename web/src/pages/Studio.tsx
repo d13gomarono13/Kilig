@@ -17,6 +17,7 @@ import { Button, Card, Badge, Tabs, TabsPanels, TabsTrigger, TabsContent, TabsTr
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { runPipeline, AgentType, LogEntry } from "@/lib/pipeline";
 import { Player } from "@revideo/player-react";
+import DynamicScene from "@/components/video/DynamicScene";
 
 const agentConfig: Record<AgentType, { name: string; icon: any; color: string }> = {
   scientist: { name: "Scientist", icon: Brain, color: "bg-neo-blue" },
@@ -267,9 +268,9 @@ export default function Studio() {
           </div>
           <div className="flex-1 flex items-center justify-center p-8">
              <div className="w-full aspect-video flex items-center justify-center bg-black text-white overflow-hidden relative border-8 border-black shadow-xl">
-                {sceneGraph ? (
+                {sceneGraph || true ? (
                    <Player
-                     component={() => null} // We'll need to define a real Revideo component later
+                     component={DynamicScene}
                      durationInFrames={300}
                      compositionWidth={1920}
                      compositionHeight={1080}
