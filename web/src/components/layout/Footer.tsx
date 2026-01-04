@@ -3,76 +3,81 @@ import { Link } from "react-router-dom";
 
 export function Footer() {
   return (
-    <footer className="bg-foreground text-background py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-4 gap-8">
+    <footer className="bg-black text-white py-20 px-4">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 bg-neo-yellow border-2 border-background shadow-xs flex items-center justify-center">
-                <Zap className="w-5 h-5 text-foreground" />
+            <Link to="/" className="flex items-center gap-3 mb-8">
+              <div className="w-14 h-14 bg-neo-yellow border-4 border-white shadow-sm flex items-center justify-center">
+                <Zap className="w-8 h-8 text-black fill-black" />
               </div>
-              <span className="text-xl font-bold tracking-tight">KILIG</span>
+              <span className="text-3xl font-black tracking-tighter uppercase italic">KILIG</span>
             </Link>
-            <p className="text-background/70 max-w-sm">
-              Transform scientific papers into engaging, animated explanatory videos using AI-powered automation.
+            <p className="text-white/80 max-w-sm text-lg font-medium leading-relaxed">
+              Transform scientific papers into engaging, animated explanatory videos using AI-powered automation. Built for the modern researcher.
             </p>
           </div>
 
           {/* Links */}
-          <div>
-            <h4 className="font-bold uppercase tracking-wide mb-4">Product</h4>
-            <ul className="space-y-2">
+          <div className="flex flex-col gap-6">
+            <h4 className="font-black uppercase tracking-[0.2em] text-neo-blue">Product</h4>
+            <ul className="space-y-4">
               <li>
-                <Link to="/dashboard" className="text-background/70 hover:text-background transition-colors">
+                <Link to="/dashboard" className="text-lg font-bold hover:text-neo-yellow transition-colors flex items-center gap-2">
+                  <span className="w-2 h-2 bg-white rotate-45" />
                   Dashboard
                 </Link>
               </li>
               <li>
-                <a href="#features" className="text-background/70 hover:text-background transition-colors">
+                <a href="#features" className="text-lg font-bold hover:text-neo-yellow transition-colors flex items-center gap-2">
+                  <span className="w-2 h-2 bg-white rotate-45" />
                   Features
                 </a>
               </li>
               <li>
-                <span className="text-background/70">Documentation</span>
+                <span className="text-lg font-bold opacity-50 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-white rotate-45 opacity-50" />
+                  Docs
+                </span>
               </li>
             </ul>
           </div>
 
           {/* Social */}
-          <div>
-            <h4 className="font-bold uppercase tracking-wide mb-4">Connect</h4>
-            <div className="flex gap-3">
+          <div className="flex flex-col gap-6">
+            <h4 className="font-black uppercase tracking-[0.2em] text-neo-pink">Connect</h4>
+            <div className="flex gap-4">
               <a 
                 href="#" 
-                className="w-10 h-10 bg-background text-foreground border-2 border-background flex items-center justify-center hover:bg-neo-yellow transition-colors"
+                className="w-14 h-14 bg-white text-black border-4 border-white flex items-center justify-center hover:bg-neo-yellow hover:translate-y-[-4px] transition-all"
               >
-                <Github className="w-5 h-5" />
+                <Github className="w-8 h-8" />
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 bg-background text-foreground border-2 border-background flex items-center justify-center hover:bg-neo-blue transition-colors"
+                className="w-14 h-14 bg-white text-black border-4 border-white flex items-center justify-center hover:bg-neo-blue hover:translate-y-[-4px] transition-all"
               >
-                <Twitter className="w-5 h-5" />
+                <Twitter className="w-8 h-8" />
               </a>
               <a 
                 href="#" 
-                className="w-10 h-10 bg-background text-foreground border-2 border-background flex items-center justify-center hover:bg-neo-pink transition-colors"
+                className="w-14 h-14 bg-white text-black border-4 border-white flex items-center justify-center hover:bg-neo-pink hover:translate-y-[-4px] transition-all"
               >
-                <Mail className="w-5 h-5" />
+                <Mail className="w-8 h-8" />
               </a>
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t-2 border-background/30 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-background/50">
+        <div className="mt-20 pt-10 border-t-4 border-white/20 flex flex-col md:flex-row justify-between items-center gap-8">
+          <p className="text-lg font-black uppercase tracking-widest text-white/40">
             © {new Date().getFullYear()} Kilig. Raw. Bold. Fast.
           </p>
-          <div className="flex gap-6">
-            <span className="text-sm text-background/50">Privacy</span>
-            <span className="text-sm text-background/50">Terms</span>
+          <div className="flex gap-10">
+            <span className="text-lg font-black uppercase tracking-widest text-white/40 cursor-pointer hover:text-white transition-colors">Privacy</span>
+            <span className="text-lg font-black uppercase tracking-widest text-white/40 cursor-pointer hover:text-white transition-colors">Terms</span>
           </div>
         </div>
       </div>
