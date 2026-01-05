@@ -16,8 +16,8 @@ Implement the logical structure of the Kilig platform agents using Google ADK fo
 - [x] Define QC & Validator Agent (Quality Control).
 - [x] Fix cross-agent handoff logic (Sub-agents return to Root).
 - [x] Register sub-agents in Root for Auto Flow.
-- [ ] Implement SceneGraph persistence logic.
-- [ ] Implement final Revideo export tool in Designer.
+- [x] Implement SceneGraph persistence logic.
+- [x] Implement final Revideo export tool in Designer.
 
 ## Architecture Notes
 - **Root Agent**: Acts as the central hub.

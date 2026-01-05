@@ -1,5 +1,7 @@
 import { LlmAgent as Agent, FunctionTool, MCPToolset } from '@google/adk';
 import { z } from 'zod';
+import fs from 'fs/promises';
+import path from 'path';
 
 /**
  * SceneGraph Designer Agent
@@ -45,6 +47,17 @@ const generateSceneGraphTool = new FunctionTool({
   }),
   execute: async (scenegraph) => {
     console.log(`[Designer] Generated SceneGraph with ${scenegraph.scenes.length} scenes.`);
+    
+    // Persistence: Save to local file for frontend usage
+    try {
+      const outputPath = path.join(process.cwd(), 'web/src/data/scenegraph.json');
+      await fs.mkdir(path.dirname(outputPath), { recursive: true });
+      await fs.writeFile(outputPath, JSON.stringify(scenegraph, null, 2));
+      console.log(`[Designer] SceneGraph saved to: ${outputPath}`);
+    } catch (error) {
+      console.error('[Designer] Failed to save SceneGraph to file:', error);
+    }
+
     return JSON.stringify(scenegraph, null, 2);
   },
 });

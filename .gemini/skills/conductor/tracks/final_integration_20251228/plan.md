@@ -35,5 +35,9 @@ To perform a proper test of the entire pipeline and mitigate Gemini API rate lim
 - [x] Implement paragraph-based chunking for ingestion.
 - [x] Implement Root-centric routing logic.
 - [x] Verify Scientist analysis pipeline (end-to-end).
-- [ ] Verify Narrative + Designer pipeline integration.
-- [ ] Verify Validator feedback loop.
+- [/] Verify Narrative + Designer pipeline integration (In Progress - Blocked by 429 Rate Limits).
+- [/] Verify Validator feedback loop (In Progress - Blocked by 429 Rate Limits).
+
+## Verification Notes
+- **Gemini API Quota**: The Flash 2.0 Free Tier is extremely restrictive (15 RPM). Pipeline tests are currently hitting 'limit: 0' errors frequently.
+- **Mitigation**: Using `scripts/test_pipeline.ts` with a 70s retry loop. Testing may require several hours of intermittent runs to complete a full pipeline turn.
