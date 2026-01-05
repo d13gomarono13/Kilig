@@ -37,7 +37,7 @@ interface Project {
 const demoProjects: Project[] = [
   {
     id: "1",
-    title: "Project 1",
+    title: "Paper 1",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
     location: "Kilig Cloud Server A",
     price: 49.00,
@@ -46,7 +46,7 @@ const demoProjects: Project[] = [
   },
   {
     id: "2",
-    title: "Project 2",
+    title: "Paper 2",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
     location: "Kilig Cloud Server B",
     price: 29.00,
@@ -56,7 +56,7 @@ const demoProjects: Project[] = [
   },
   {
     id: "3",
-    title: "Project 3",
+    title: "Paper 3",
     createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48),
     location: "Local Instance",
     price: 99.00,
@@ -163,37 +163,6 @@ const RedesignedProjectCard = ({ project }: { project: Project }) => {
                                 )}
                             </div>
                         </div>
-                        {/* Price Tag (Static visual from provided code) */}
-                        <div className="flex flex-col items-end gap-2 ml-4">
-                            <span
-                                className={`px-4 py-1.5 font-bold rounded-full border-2 border-black shadow-sm ${isPastEvent
-                                    ? "bg-gray-100 text-gray-400"
-                                    : "bg-neo-green text-black"
-                                    }`}
-                            >
-                                ${project.price.toFixed(2)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="mt-6 space-y-3">
-                    <div className="flex items-center text-black/60 font-bold text-sm uppercase tracking-wider">
-                        <MapPin className="w-4 h-4 mr-2" />
-                        <span>{project.location}</span>
-                    </div>
-
-                    <div className="flex items-center text-black/60 font-bold text-sm uppercase tracking-wider">
-                        <CalendarDays className="w-4 h-4 mr-2" />
-                        <span>
-                            {project.createdAt.toLocaleDateString()}{" "}
-                            {isPastEvent && "(ENDED)"}
-                        </span>
-                    </div>
-
-                    <div className="flex items-center text-black/60 font-bold text-sm uppercase tracking-wider">
-                        <Ticket className="w-4 h-4 mr-2" />
-                        <span>Resource Allocation: 100%</span>
                     </div>
                 </div>
 
@@ -240,7 +209,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white border-4 border-black p-6 shadow-md">
             <div>
-              <h1 className="text-4xl font-black uppercase tracking-tight">Your Projects</h1>
+              <h1 className="text-4xl font-black uppercase tracking-tight">Your Papers</h1>
               <p className="text-muted-foreground font-medium mt-1">
                 View your archived generation history
               </p>

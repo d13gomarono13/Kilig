@@ -73,7 +73,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-20 pt-10 border-t-4 border-white/20 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-lg font-black uppercase tracking-widest text-white/40">
-            © {new Date().getFullYear()} Kilig. Raw. Bold. Fast.
+            © {new Date().getFullYear()} KILIG. "the most personal is the most creative"
           </p>
           <div className="flex gap-10">
             <span className="text-lg font-black uppercase tracking-widest text-white/40 cursor-pointer hover:text-white transition-colors">Privacy</span>
