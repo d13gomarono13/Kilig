@@ -1,35 +1,34 @@
-import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 import { AgentMode } from '../types/index.js';
 
 interface GeminiClientConfig {
   apiKey?: string;
-  authMethod?: string;
+  authMethod?: string; // Kept for compatibility but unused
   modelName?: string;
 }
 
 export class GeminiClient {
-  private genAI: GoogleGenerativeAI;
-  private model: GenerativeModel;
+  private client: GoogleGenAI;
+  private modelName: string;
 
   constructor(config: GeminiClientConfig) {
     const apiKey = config.apiKey || process.env.GEMINI_API_KEY;
-    console.log(`[DEBUG] Initializing GeminiClient with key starting with: ${apiKey?.substring(0, 8)}...`);
+    console.log(`[DEBUG] Initializing GeminiClient (v1) with key starting with: ${apiKey?.substring(0, 8)}...`);
     if (!apiKey) {
       throw new Error('GEMINI_API_KEY is required for GeminiClient');
     }
-    this.genAI = new GoogleGenerativeAI(apiKey);
-    this.model = this.genAI.getGenerativeModel({ 
-      model: config.modelName || 'gemini-2.5-flash' 
-    });
+    this.client = new GoogleGenAI({ apiKey });
+    this.modelName = config.modelName || 'gemini-2.0-flash';
   }
 
   async execute(prompt: string, mode: AgentMode): Promise<string> {
     try {
-      // Here you could customize system instructions based on 'mode'
-      // For now, we prepend it to the prompt.
-      const result = await this.model.generateContent(prompt);
-      const response = await result.response;
-      return response.text();
+      const result = await this.client.models.generateContent({
+        model: this.modelName,
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      });
+      
+      return result.response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
     } catch (error) {
       console.error('Gemini execution failed:', error);
       throw error;
@@ -38,9 +37,16 @@ export class GeminiClient {
 
   async *streamExecute(prompt: string, mode: AgentMode): AsyncGenerator<string, void, unknown> {
     try {
-      const result = await this.model.generateContentStream(prompt);
+      const result = await this.client.models.generateContentStream({
+        model: this.modelName,
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      });
+
       for await (const chunk of result.stream) {
-        yield chunk.text();
+        const text = chunk.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+          yield text;
+        }
       }
     } catch (error) {
       console.error('Gemini streaming failed:', error);
@@ -50,8 +56,10 @@ export class GeminiClient {
 
   async checkHealth(): Promise<boolean> {
     try {
-      // Simple generation to check connectivity
-      await this.model.generateContent('ping');
+      await this.client.models.generateContent({
+        model: this.modelName,
+        contents: [{ role: 'user', parts: [{ text: 'ping' }] }]
+      });
       return true;
     } catch (e) {
       console.error('[ERROR] Health check failed:', e);

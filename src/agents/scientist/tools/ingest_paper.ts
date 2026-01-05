@@ -27,8 +27,8 @@ function splitText(text: string): string[] {
 export async function ingestPaper({ content, metadata }: IngestPaperArgs) {
   console.log(`[Ingest] Starting ingestion for paper: ${metadata.title || 'Unknown'}`);
   
-  // 1. Split text into chunks
-  const chunks = splitText(content);
+  // Split content into chunks (e.g., by paragraph or fixed length)
+  const chunks = content.split('\n\n').filter(c => c.trim().length > 100);
   console.log(`[Ingest] Split content into ${chunks.length} chunks.`);
 
   // 2. Generate embeddings

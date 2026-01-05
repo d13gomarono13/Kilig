@@ -92,7 +92,7 @@ const searchKnowledgeBaseTool = new FunctionTool({
 export const scientistAgent = new Agent({
   name: 'scientist',
   description: 'Specialized in deep scientific research, paper analysis, and critical thinking. Use this agent to search for papers and extract core methodology and findings.',
-  model: 'gemini-2.0-flash-lite',
+  model: 'gemini-2.0-flash',
   instruction: `You are the **Scientist Agent** for Kilig. 
   
 Your goal is to perform deep scientific research and critical analysis of papers.
@@ -114,7 +114,12 @@ Your goal is to perform deep scientific research and critical analysis of papers
     *   **Strengths & Weaknesses**: What did the study do well or poorly?
 4.  **Output**: Create a structured critical analysis.
 
-**Focus**: Accuracy, skepticism, and scientific rigor are paramount.`,
+**Focus**: Accuracy, skepticism, and scientific rigor are paramount.
+
+**STOP! CRITICAL INSTRUCTION**: 
+1.  Use 'synthesize_critical_analysis' to format your final findings.
+2.  Once you have the result, you MUST use 'transfer_to_agent' to send the findings back to 'root'.
+3.  Do NOT attempt to transfer to other agents like 'narrative' yourself.`,
   // Load both discovered MCP tools and custom tools
   // Note: toolsets property is removed, all tools/toolsets go into tools array
   tools: [

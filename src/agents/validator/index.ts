@@ -4,7 +4,7 @@ import { validateSceneGraphTool } from './tools/validate_scenegraph.js';
 export const validatorAgent = new Agent({
   name: 'validator',
   description: 'Specialized in quality control and JSON schema validation. Verifies that the SceneGraph JSON is compliant with Revideo standards.',
-  model: 'gemini-2.0-flash-lite',
+  model: 'gemini-2.0-flash',
   instruction: `You are the **QC & Validator Agent** for Kilig.
 
 **Goal**: Ensure the generated Revideo SceneGraph JSON is valid, compliant, and ready for rendering.

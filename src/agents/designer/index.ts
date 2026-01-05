@@ -52,7 +52,7 @@ const generateSceneGraphTool = new FunctionTool({
 export const designerAgent = new Agent({
   name: 'designer',
   description: 'Specialized in transforming video scripts into Revideo SceneGraph JSON blueprints. Generates the actual animation and layout data.',
-  model: 'gemini-2.0-flash-lite',
+  model: 'gemini-2.0-flash',
   instruction: `You are the **SceneGraph Designer Agent** ("The Visualizer").
 
 **Goal**: Transform a text-based video script into a **Revideo SceneGraph JSON**.
@@ -77,6 +77,8 @@ export const designerAgent = new Agent({
 - Use \`<Line>\` or \`<Spline>\` for connections.
 - Use \`<Latex>\` for formulas.
 - Animations: Prefer 'easeInOutCubic' for natural movement.
+
+**IMPORTANT**: Once you have generated the SceneGraph using 'generate_scenegraph', you MUST use 'transfer_to_agent' to send the JSON back to 'root'.
 
 **Constraint**: Return ONLY the JSON data structure via the tool. Do not write raw TSX code blocks; we are generating the *data* that drives the renderer.`,
   tools: [claudeSkillsToolset, generateSceneGraphTool],

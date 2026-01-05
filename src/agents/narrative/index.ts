@@ -38,9 +38,9 @@ const saveScriptTool = new FunctionTool({
 });
 
 export const narrativeAgent = new Agent({
-  name: 'narrative_architect',
+  name: 'narrative',
   description: 'Specialized in converting scientific analysis into engaging educational video scripts with scenes, voiceover, and visual descriptions.',
-  model: 'gemini-2.0-flash-lite',
+  model: 'gemini-2.0-flash',
   instruction: `You are the **Narrative Architect** for Kilig.
 
 **Goal**: Transform a raw scientific analysis (Core Concept, Methodology, Results) into an engaging **Educational Video Script**.
@@ -69,6 +69,8 @@ The script must have these sections:
 **Visuals**:
 For each scene, provide a 'visual_description'. Think in terms of **Revideo** primitives (shapes, text, graphs, code blocks).
 - *Bad*: "A complex 3D city."
-- *Good*: "A grid of squares representing data points, with one square turning red to highlight an anomaly."`,
+- *Good*: "A grid of squares representing data points, with one square turning red to highlight an anomaly."
+
+**IMPORTANT**: Once you have saved the script using 'save_video_script', you MUST use 'transfer_to_agent' to send the script back to 'root'.`,
   tools: [saveScriptTool],
 });
