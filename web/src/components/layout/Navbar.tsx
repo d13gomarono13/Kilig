@@ -34,6 +34,16 @@ export function Navbar() {
               Home
             </Link>
             <Link
+              to="/gallery"
+              className={`px-6 py-2 font-black uppercase text-sm tracking-[0.1em] border-4 transition-all ${
+                isActive("/gallery")
+                  ? "bg-black text-white border-black"
+                  : "border-transparent hover:border-black"
+              }`}
+            >
+              Gallery
+            </Link>
+            <Link
               to="/dashboard"
               className={`px-6 py-2 font-black uppercase text-sm tracking-[0.1em] border-4 transition-all ${
                 isActive("/dashboard")
@@ -41,7 +51,7 @@ export function Navbar() {
                   : "border-transparent hover:border-black"
               }`}
             >
-              Dashboard
+              Paper Editor
             </Link>
             <div className="ml-4">
               <Button size="sm" asChild>
@@ -75,6 +85,17 @@ export function Navbar() {
                 Home
               </Link>
               <Link
+                to="/gallery"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-4 py-4 font-black uppercase text-lg tracking-widest border-4 ${
+                  isActive("/gallery")
+                    ? "bg-black text-white border-black shadow-md"
+                    : "border-black bg-white shadow-sm"
+                }`}
+              >
+                Gallery
+              </Link>
+              <Link
                 to="/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
                 className={`px-4 py-4 font-black uppercase text-lg tracking-widest border-4 ${
@@ -83,7 +104,7 @@ export function Navbar() {
                     : "border-black bg-white shadow-sm"
                 }`}
               >
-                Dashboard
+                Paper Editor
               </Link>
               <Button className="mt-4 h-16 text-xl" asChild>
                 <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)}>

@@ -26,7 +26,7 @@ export function Footer() {
               <li>
                 <Link to="/dashboard" className="text-lg font-bold hover:text-neo-yellow transition-colors flex items-center gap-2">
                   <span className="w-2 h-2 bg-white rotate-45" />
-                  Dashboard
+                  Paper Editor
                 </Link>
               </li>
               <li>

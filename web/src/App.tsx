@@ -7,6 +7,9 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Studio from "./pages/Studio";
 import NotFound from "./pages/NotFound";
+import Workbench from "./pages/Workbench";
+
+import Gallery from "./pages/Gallery";
 
 const queryClient = new QueryClient();
 
@@ -19,8 +22,9 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/gallery" element={<Gallery />} />
           <Route path="/studio/:id" element={<Studio />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/workbench" element={<Workbench />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

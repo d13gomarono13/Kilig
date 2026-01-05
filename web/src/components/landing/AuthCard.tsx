@@ -84,13 +84,13 @@ export function AuthCard() {
               <p className="text-xs text-center text-foreground font-black uppercase tracking-[0.2em] mb-6">
                 OR
               </p>
-              <Button 
-                variant="outline" 
-                className="w-full h-12 bg-white" 
-                onClick={() => navigate("/dashboard")}
-              >
-                Skip to Dashboard (Demo)
-              </Button>
+          <Button 
+            variant="ghost" 
+            className="w-full h-14 border-4 border-black font-black uppercase tracking-widest hover:bg-neo-blue/10"
+            onClick={() => navigate("/dashboard")}
+          >
+            Skip to Paper Editor (Demo)
+          </Button>
             </div>
           </Card.Content>
         </Card>
