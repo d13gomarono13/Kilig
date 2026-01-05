@@ -12,7 +12,7 @@
 ## Frontend (Body & Visualization)
 - **Framework:** React 18+ (Vite)
 - **Styling:** Tailwind CSS v3 (Neo-Brutalism)
-- **Video Rendering:** Revideo (Programmatic video editing based on Motion Canvas)
+- **Video Rendering:** Revideo
 - **State Management:** TanStack Query (Server state/caching), React Context (Client state)
 - **Routing:** React Router v6
 

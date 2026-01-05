@@ -1,4 +1,4 @@
 # Conductor Tracks
 
-- [Frontend UI (Neo-Brutalism)](./tracks/frontend_ui/plan.md): Refine aesthetics to match Neo-Brutalism design system. (Completed)
-- [Frontend Redesign V2](./tracks/frontend_redesign_v2/plan.md): Upgrade to Tailwind v4 and integrate RetroUI components. (Completed)
+- [Agent Implementation](./tracks/agent_implementation/plan.md): Implement Root, Scientist, Narrative, Designer, and Validator agents using Google ADK. (In Progress)
+- [Final Integration](./tracks/final_integration_20251228/plan.md): End-to-end testing and optimization of the scientific video generation pipeline. (In Progress)
