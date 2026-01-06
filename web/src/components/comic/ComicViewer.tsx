@@ -96,7 +96,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
   };
 
   return (
-    <div className="w-full h-screen bg-slate-100 flex flex-col overflow-y-auto">
+    <div className="w-full h-full bg-slate-100 flex flex-col overflow-y-scroll">
       
       {/* TOOLBAR */}
       <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 sticky top-0 z-50 shadow-sm">
@@ -130,7 +130,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
       </div>
 
       {/* CANVAS */}
-      <div className="flex-1 w-full overflow-y-auto cursor-grab active:cursor-grabbing bg-slate-200">
+      <div className="flex-1 w-full cursor-grab active:cursor-grabbing bg-slate-200">
         <TransformWrapper
           ref={transformRef}
           initialScale={0.6}
@@ -142,7 +142,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
           pinch={{ disabled: true }}
           doubleClick={{ disabled: true }}
         >
-          <TransformComponent wrapperClass="!w-full !h-full" contentClass="flex flex-col items-center gap-20 p-20">
+          <TransformComponent wrapperClass="!w-full min-h-full" contentClass="flex flex-col items-center gap-20 p-20">
             
             {/* THE "PAGE" CONTAINER */}
             {manifest.pages.map(page => (
