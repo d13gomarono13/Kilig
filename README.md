@@ -4,6 +4,14 @@
 
 ---
 
+## 📺 Demo
+
+<p align="center" width="100%">
+<video src="https://github.com/user-attachments/assets/30935829-f9fe-4e5e-8410-065bb6aa5084" width="80%" controls></video>
+</p>
+
+---
+
 ## 🏗 System Architecture
 
 Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (Agent Development Kit). Each agent follows the **SPARC** (Specification, Pseudocode, Architecture, Refinement, Completion) methodology.
