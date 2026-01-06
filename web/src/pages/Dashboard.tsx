@@ -8,9 +8,8 @@ import { Link } from "react-router-dom";
 const Dashboard = () => {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <div className="border-b-4 border-black bg-white p-4 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-              <h1 className="text-2xl font-black uppercase">Paper Editor</h1>
+      <div className="p-4 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto flex justify-end items-center">
               <Link to="/">
                   <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
                       Back to Home
@@ -22,7 +21,7 @@ const Dashboard = () => {
       <main className="flex-1 px-4 py-12">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-4">
-              <h1 className="text-6xl font-black uppercase tracking-tighter">The Editor</h1>
+              <h1 className="text-6xl font-black uppercase tracking-tighter">Laboratory</h1>
               <p className="text-xl font-medium text-slate-600 max-w-2xl mx-auto">
                   Manage your scientific illustrations and comic generation pipelines.
               </p>

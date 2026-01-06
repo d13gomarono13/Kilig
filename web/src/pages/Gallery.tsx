@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -60,31 +60,6 @@ const RetroCard = ({ project }: { project: Project }) => {
     const isPastEvent = project.status === "expired";
     const imageUrl = `https://picsum.photos/seed/${project.id}/800/400`; // Random consistent image
 
-    const renderStatus = () => {
-        if (project.status === "done") {
-            return (
-                <div className="mt-4 flex items-center p-3 rounded-lg border-2 border-green-500 bg-green-50 text-green-700 font-bold">
-                    <Check className="w-5 h-5 mr-2" /> Analysis Complete
-                </div>
-            );
-        }
-        if (project.status === "waiting") {
-             return (
-                <div className="mt-4 flex items-center justify-between p-3 rounded-lg border-2 border-amber-500 bg-amber-50 text-amber-700 font-bold">
-                    <div className="flex items-center">
-                        <LoaderCircle className="w-4 h-4 mr-2 animate-spin" />
-                        Queue #{project.queuePosition}
-                    </div>
-                </div>
-            );
-        }
-        return (
-            <div className="mt-4 flex items-center p-3 rounded-lg border-2 border-red-200 bg-red-50 text-red-500 font-bold">
-                <XCircle className="w-5 h-5 mr-2" /> Archived
-            </div>
-        );
-    };
-
     return (
         <Card className={`rounded-none overflow-hidden transition-all duration-200 relative bg-white border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-1 hover:shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] ${isPastEvent ? "opacity-75" : ""}`}>
             <div className="relative w-full h-48 border-b-4 border-black">
@@ -99,18 +74,18 @@ const RetroCard = ({ project }: { project: Project }) => {
                 <p className="mt-4 text-black font-medium line-clamp-2 border-l-4 border-black pl-3">
                     {project.description}
                 </p>
-                {renderStatus()}
             </div>
         </Card>
     );
 };
 
 export default function Gallery() {
+  const [timeRange, setTimeRange] = useState<'week' | 'month'>('week');
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f0f0]">
-      <div className="border-b-4 border-black bg-white p-4 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-              <h1 className="text-2xl font-black uppercase">Gallery</h1>
+      <div className="p-4 sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto flex justify-end items-center">
               <div className="flex gap-4">
                   <Link to="/">
                       <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
@@ -123,11 +98,34 @@ export default function Gallery() {
       
       <main className="flex-1 px-4 py-12">
         <div className="max-w-7xl mx-auto space-y-12">
-          <div className="text-center space-y-4">
-              <h1 className="text-6xl font-black uppercase tracking-tighter">The Gallery</h1>
+          <div className="text-center space-y-6">
+              <h1 className="text-6xl font-black uppercase tracking-tighter">Gallery</h1>
               <p className="text-xl font-medium text-slate-600 max-w-2xl mx-auto">
-                  A curated collection of scientific illustrations crafted by human experts.
+                  Showcasing the most popular scientific comics from the community.
               </p>
+              
+              <div className="flex justify-center gap-4">
+                  <Button 
+                    onClick={() => setTimeRange('week')}
+                    className={`rounded-full px-8 py-6 text-lg font-black uppercase tracking-wider border-4 border-black transition-all ${
+                        timeRange === 'week' 
+                        ? 'bg-yellow-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' 
+                        : 'bg-white text-slate-400 shadow-none hover:bg-slate-50'
+                    }`}
+                  >
+                    Best of Week
+                  </Button>
+                  <Button 
+                    onClick={() => setTimeRange('month')}
+                    className={`rounded-full px-8 py-6 text-lg font-black uppercase tracking-wider border-4 border-black transition-all ${
+                        timeRange === 'month' 
+                        ? 'bg-yellow-400 text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]' 
+                        : 'bg-white text-slate-400 shadow-none hover:bg-slate-50'
+                    }`}
+                  >
+                    Best of Month
+                  </Button>
+              </div>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pb-12">

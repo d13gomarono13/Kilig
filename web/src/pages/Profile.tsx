@@ -1,13 +1,24 @@
 import React from 'react';
-import { MOCK_PROFILE } from '@/data/profile-data';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FeedCard } from '@/components/feed/FeedCard';
 import { Button, Tabs, TabsPanels, TabsTrigger, TabsContent, TabsTriggerList, Badge } from "@/components/retroui";
-import { Edit, Settings, MapPin, Link as LinkIcon, BookOpen, Heart, File } from 'lucide-react';
+import { Edit, Settings, MapPin, Link as LinkIcon, BookOpen, Heart, File, Loader2 } from 'lucide-react';
+import { useProfile } from '@/hooks/use-profile';
 
 const Profile = () => {
-  const profile = MOCK_PROFILE;
+  const { data: profile, isLoading } = useProfile();
+
+  if (isLoading || !profile) {
+    return (
+      <div className="min-h-screen bg-slate-100 flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <Loader2 className="animate-spin w-12 h-12 text-black" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col">

@@ -6,14 +6,21 @@ import { Button } from '@/components/ui/button';
 import { Search, Filter, Sparkles, Loader2 } from 'lucide-react';
 import { useFeed } from '@/hooks/use-feed';
 
-const FIELDS = ['All', 'Physics', 'Biology', 'CS', 'Math', 'Chemistry'];
+const FEATURED_SCIENTISTS = [
+  { id: '1', name: 'Dr. Stone', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Stone' },
+  { id: '2', name: 'Curie Lab', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Curie' },
+  { id: '3', name: 'Feynman', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Feynman' },
+  { id: '4', name: 'Turing', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Turing' },
+  { id: '5', name: 'Lovelace', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lovelace' },
+  { id: '6', name: 'Hawking', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Hawking' },
+  { id: '7', name: 'Darwin', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Darwin' },
+];
 
 const Feed = () => {
-  const [activeField, setActiveField] = useState('All');
-  const { data: filteredPosts, isLoading } = useFeed(activeField);
+  const { data: filteredPosts, isLoading } = useFeed('All');
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col">
+    <div className="min-h-screen bg-yellow-400 cube-bg flex flex-col">
        {/* 
          NOTE: We might replace the main Navbar later, but for now we keep it 
          to maintain navigation to other parts of the app (like Studio).
@@ -24,22 +31,18 @@ const Feed = () => {
        <div className="sticky top-0 z-40 bg-white border-b-4 border-black px-4 py-3 shadow-md">
          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             
-            {/* Field Selector */}
-            <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto no-scrollbar pb-2 md:pb-0">
-               {FIELDS.map(field => (
-                 <button
-                   key={field}
-                   onClick={() => setActiveField(field)}
-                   className={`
-                     px-4 py-1.5 font-bold text-sm border-2 border-black transition-all
-                     ${activeField === field 
-                        ? 'bg-black text-white shadow-[2px_2px_0px_rgba(100,100,100,1)]' 
-                        : 'bg-white hover:bg-slate-50 hover:-translate-y-0.5 shadow-[2px_2px_0px_rgba(0,0,0,1)]'
-                     }
-                   `}
-                 >
-                   {field}
-                 </button>
+            {/* Stories / Accounts Rail */}
+            <div className="flex items-center gap-4 overflow-x-auto w-full md:w-auto no-scrollbar pb-2 md:pb-0">
+               {/* Add a 'Your Story' or 'New' circle optionally, but sticking to the request for user circles */}
+               {FEATURED_SCIENTISTS.map(scientist => (
+                 <div key={scientist.id} className="flex flex-col items-center gap-1 min-w-[64px] cursor-pointer group">
+                   <div className="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-yellow-400 to-red-500 group-hover:from-yellow-300 group-hover:to-red-400 transition-all">
+                     <div className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-white">
+                       <img src={scientist.avatar} alt={scientist.name} className="w-full h-full object-cover" />
+                     </div>
+                   </div>
+                   <span className="text-[10px] font-bold uppercase tracking-wide truncate w-full text-center">{scientist.name}</span>
+                 </div>
                ))}
             </div>
 

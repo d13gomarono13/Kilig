@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Zap, Menu, X, LogOut, Beaker, BookOpen, Images } from "lucide-react";
+import { Zap, Menu, X, LogOut, FlaskConical, BookOpen, Images } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/retroui";
 import { useAuth } from "@/lib/auth";
@@ -43,7 +43,7 @@ export function Navbar() {
                   : "border-transparent hover:border-black"
               }`}
             >
-              <Beaker size={16} /> Laboratory
+              <FlaskConical size={16} /> Laboratory
             </Link>
             <Link
               to="/gallery"
@@ -120,7 +120,7 @@ export function Navbar() {
                     : "border-black bg-white shadow-sm"
                 }`}
               >
-                <Beaker /> Laboratory
+                <FlaskConical /> Laboratory
               </Link>
               <Link
                 to="/gallery"
