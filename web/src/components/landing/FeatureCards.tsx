@@ -65,14 +65,14 @@ export function FeatureCards() {
             </Card>
           ))}
 
-          {/* CTA CARD: ENTER LABORATORY */}
+          {/* CTA CARD: START CREATING */}
           <Link to="/laboratory" className="md:col-span-2 group">
-            <Card className="hover-lift bg-neo-yellow border-4 border-black shadow-[8px_8px_0px_0px_black] group-hover:shadow-none group-hover:translate-x-[4px] group-hover:translate-y-[4px] transition-all">
+            <Card className="hover-lift bg-neo-blue border-4 border-black shadow-[8px_8px_0px_0px_black] group-hover:shadow-none group-hover:translate-x-[4px] group-hover:translate-y-[4px] transition-all">
               <Card.Header>
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-6">
                     <div className="w-20 h-20 bg-white border-4 border-black shadow-sm flex items-center justify-center">
-                      <Microscope className="w-10 h-10 text-black animate-pulse" />
+                      <Zap className="w-10 h-10 text-black fill-black animate-pulse" />
                     </div>
                     <div>
                       <Card.Title className="text-4xl font-black uppercase tracking-tighter italic">Start Creating</Card.Title>

@@ -33,7 +33,8 @@ export function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Button size="lg" asChild className="text-lg">
             <Link to="/laboratory" className="flex items-center gap-2">
-              <Button size="lg" className="bg-white text-neo-blue border-4 border-neo-blue hover:bg-neo-blue hover:text-white transition-all shadow-[4px_4px_0px_0px_rgba(75,100,255,1)] rounded-none font-black uppercase text-xl h-16 px-8">
+              <Button size="lg" className="bg-neo-blue text-black border-4 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase text-xl h-16 px-8 flex items-center gap-3">
+                <Zap className="w-6 h-6 fill-black" />
                 Start Creating
               </Button>
             </Link>
