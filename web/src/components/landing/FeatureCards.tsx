@@ -1,5 +1,6 @@
-import { Bot, Play, FileText, Wand2, ArrowRight } from "lucide-react";
+import { Bot, Play, FileText, Wand2, ArrowRight, Microscope } from "lucide-react";
 import { Card } from "@/components/retroui";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -63,6 +64,26 @@ export function FeatureCards() {
               </Card.Content>
             </Card>
           ))}
+
+          {/* CTA CARD: ENTER LABORATORY */}
+          <Link to="/laboratory" className="md:col-span-2 group">
+            <Card className="hover-lift bg-neo-yellow border-4 border-black shadow-[8px_8px_0px_0px_black] group-hover:shadow-none group-hover:translate-x-[4px] group-hover:translate-y-[4px] transition-all">
+              <Card.Header>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-6">
+                    <div className="w-20 h-20 bg-white border-4 border-black shadow-sm flex items-center justify-center">
+                      <Microscope className="w-10 h-10 text-black animate-pulse" />
+                    </div>
+                    <div>
+                      <Card.Title className="text-4xl font-black uppercase tracking-tighter italic">Enter Laboratory</Card.Title>
+                      <p className="text-xl font-bold text-black/60 uppercase tracking-widest mt-1">Start your scientific journey</p>
+                    </div>
+                  </div>
+                  <ArrowRight className="w-12 h-12 text-black hidden md:block group-hover:translate-x-4 transition-transform" />
+                </div>
+              </Card.Header>
+            </Card>
+          </Link>
         </div>
 
         {/* Workflow visualization */}
