@@ -5,6 +5,7 @@ import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
 import { Search, Filter, Sparkles, Loader2 } from 'lucide-react';
 import { useFeed } from '@/hooks/use-feed';
+import { Link } from 'react-router-dom';
 
 const FEATURED_SCIENTISTS = [
   { id: '1', name: 'Dr. Stone', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Stone' },
