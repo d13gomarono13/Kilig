@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/retroui";
 
 export function HeroSection() {
+  console.log("Rendering HeroSection...");
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center px-4 py-20 cube-bg border-b-4 border-black overflow-hidden">
       {/* Top Right Sign In */}
