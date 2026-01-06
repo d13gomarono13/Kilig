@@ -1,6 +1,6 @@
 # 🎬 Kilig
 
-**Kilig** is an advanced AI-driven platform that transforms scientific papers into professional animated videos. By orchestrating a specialized pipeline of AI agents, Kilig automates the entire process: from paper ingestion and deep scientific analysis to narrative scripting and final video rendering using **Revideo (Motion Canvas)**.
+**Kilig** is an advanced AI-driven platform that transforms scientific papers into professional animated videos. By orchestrating a specialized pipeline of AI agents, Kilig automates the entire process: from paper ingestion and deep scientific analysis to narrative scripting and final video rendering using **Revideo**.
 
 ---
 
@@ -12,11 +12,11 @@
 
 ---
 
-## 🏗 System Architecture
+## 🏗 System architecture
 
 Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (Agent Development Kit). Each agent follows the **SPARC** (Specification, Pseudocode, Architecture, Refinement, Completion) methodology.
 
-### The Agent Pipeline
+### The agent pipeline
 1.  **Root Agent (Coordinator):** Orchestrates the task queue and manages state across the pipeline.
 2.  **Ingestor:** Fetches and parses scientific papers (e.g., from ArXiv or local PDFs).
 3.  **Scientific Analyzer:** Extracts core methodologies, data points, and key findings.
@@ -43,7 +43,7 @@ Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (A
 
 ---
 
-## 📁 Project Structure
+## 📁 Project structure
 
 ```text
 ├── src/                # Backend Source
@@ -63,14 +63,14 @@ Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (A
 
 ---
 
-## 🛠 Getting Started
+## 🛠 Getting started
 
 ### Prerequisites
 - Node.js (v20+)
 - PNPM or NPM
 - Supabase CLI (for local DB management)
 
-### Environment Setup
+### Environment setup
 Create a `.env` file in the root and `web/` directory:
 
 ```env
@@ -93,13 +93,13 @@ pnpm install
 cd web && pnpm install
 ```
 
-### Running the Platform
+### Running the platform
 **1. Start the Backend Orchestrator:**
 ```bash
 pnpm dev
 ```
 
-**2. Start the Frontend Studio:**
+**2. Start the frontend studio:**
 ```bash
 cd web
 pnpm dev
