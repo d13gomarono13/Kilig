@@ -81,9 +81,9 @@ export const MOCK_FEED: FeedPost[] = [
     tags: ['LIGO', 'Astrophysics', 'Black Holes']
   },
   {
-    id: 'post-4',
+    id: 'post-test',
     type: 'comic',
-    title: 'The Perfect Espresso Extraction',
+    title: 'The Physics of Coffee',
     abstract: 'Understanding thermodynamics and fluid dynamics in your morning cup. Optimized for 93°C.',
     field: 'Chemistry',
     author: humanAuthor,

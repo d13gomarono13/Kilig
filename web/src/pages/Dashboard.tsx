@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-yellow-400 cube-bg">
       <div className="p-4 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto flex justify-end items-center">
               <Link to="/">

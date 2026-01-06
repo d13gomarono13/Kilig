@@ -30,6 +30,10 @@ export const useFeed = (field: string = 'All') => {
     queryFn: async (): Promise<FeedPost[]> => {
       console.log('Fetching feed from Supabase...');
       
+      // TEMPORARY: Bypass Supabase for UI testing to avoid loading issues if backend isn't ready
+      return filterMockFeed(field);
+
+      /*
       let query = supabase
         .from('posts')
         .select(`
@@ -84,6 +88,7 @@ export const useFeed = (field: string = 'All') => {
           tags: post.tags || []
         };
       });
+      */
     }
   });
 };

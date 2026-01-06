@@ -132,6 +132,14 @@
   background-position: 0% 0%;
 }
 
+@utility no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+
 @utility animate-float {
   animation: float 3s ease-in-out infinite;
 }

@@ -39,10 +39,10 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
       const naturalPanelHeight = panelRect.height / currentScale;
 
       // Calculate target scale (fit width or height, whichever is smaller)
-      // 0.85 factor adds comfortable padding
+      // 0.65 factor adds comfortable padding to prevent clipping
       const scaleX = wrapperRect.width / naturalPanelWidth;
       const scaleY = wrapperRect.height / naturalPanelHeight;
-      const targetScale = Math.min(scaleX, scaleY) * 0.85;
+      const targetScale = Math.min(scaleX, scaleY) * 0.65;
 
       // Limit zoom levels
       const finalScale = Math.min(Math.max(targetScale, 0.5), 4);
@@ -115,26 +115,25 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
       </div>
 
       {/* CANVAS */}
-      <div className="flex-1 w-full h-full cursor-grab active:cursor-grabbing">
+      <div className="flex-1 w-full overflow-y-auto cursor-grab active:cursor-grabbing bg-slate-200">
         <TransformWrapper
           ref={transformRef}
-          initialScale={0.9}
-          minScale={0.5}
+          initialScale={0.6}
+          minScale={0.2}
           maxScale={4}
           centerOnInit={true}
           limitToBounds={false}
           wheel={{ disabled: true }}
           doubleClick={{ disabled: true }}
-          pinch={{ disabled: true }}
         >
-          <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
+          <TransformComponent wrapperClass="!w-full min-h-full" contentClass="flex items-center justify-center min-h-full p-4">
             
             {/* THE "PAGE" CONTAINER */}
-            <div className="bg-white shadow-2xl p-8" style={{ width: '1000px', aspectRatio: '1/1.414' }}> {/* A4 Ratio */}
+            <div className="bg-white shadow-2xl p-0 border-2 border-black" style={{ width: '1000px', aspectRatio: '1/1.414' }}> {/* A4 Ratio */}
                 {manifest.pages.map(page => (
                    <div 
                      key={page.id} 
-                     className="grid grid-cols-6 gap-4 w-full h-full"
+                     className="grid grid-cols-6 gap-0 w-full h-full"
                      style={{ gridTemplateRows: 'repeat(8, 1fr)' }} 
                    >
                       {page.panels.map((panel, idx) => {

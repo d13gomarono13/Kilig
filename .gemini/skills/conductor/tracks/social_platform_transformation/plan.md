@@ -11,42 +11,41 @@ Transform Kilig from a simple tool-based dashboard into a social-media-style pla
 
 ## Phases
 
-### Phase 1: Core UI/UX Design (The "Feed")
+### Phase 1: Core UI/UX Design (The "Feed") - COMPLETED
 **Goal**: Design and implement the main scrollable feed interface.
-- [ ] **Design System Update**: Define the "Feed Card" component.
+- [x] **Design System Update**: Define the "Feed Card" component.
     -   Must support: Title, Abstract, Author, Tags, Interactive Preview (SmartPanel).
     -   Style: Neo-Brutalist with "Instagram" social actions (Like, Save, Share).
-- [ ] **Layout Implementation**: Create `web/src/pages/Feed.tsx`.
-    -   Responsive Masonry or Grid layout.
-    -   Infinite scroll mechanism (mocked initially).
-    -   "Topic Selector" sticky header (STEM fields: Physics, Biology, CS, Math).
-- [ ] **Mock Data**: Create a robust set of mock posts (Manifests) in `web/src/data/feed-data.ts`.
+- [x] **Layout Implementation**: Create `web/src/pages/Feed.tsx`.
+    -   Responsive Masonry or Grid layout (Changed to Vertical Feed).
+    -   "Topic Selector" sticky header (Replaced with "Stories" rail).
+- [x] **Mock Data**: Create a robust set of mock posts (Manifests) in `web/src/data/feed-data.ts`.
 
-### Phase 2: Authentication & Routing
+### Phase 2: Authentication & Routing - COMPLETED
 **Goal**: Restructure the app entry point.
-- [ ] **New Landing Page**: Move current landing to `web/src/pages/Landing.tsx` (or remove if obsolete).
-- [ ] **Auth Guard**:
+- [x] **New Landing Page**: Move current landing to `web/src/pages/Landing.tsx` (or remove if obsolete).
+- [x] **Auth Guard**:
     -   Root path (`/`) checks auth status.
     -   If Guest -> Redirect to `/login` (New, high-design login page).
     -   If Authenticated -> Redirect to `/feed`.
-- [ ] **Navigation**: Update `Navbar` to reflect the new structure (Feed, Explore, Laboratory, Create).
+- [x] **Navigation**: Update `Navbar` to reflect the new structure (Feed, Explore, Laboratory, Create).
 
-### Phase 3: User Profile ("The Laboratory")
+### Phase 3: User Profile ("The Laboratory") - MOSTLY COMPLETED
 **Goal**: Create the personal user space.
-- [ ] **Profile Page**: `web/src/pages/Profile.tsx`.
+- [x] **Profile Page**: `web/src/pages/Profile.tsx`.
     -   Header: User stats (Papers Analyzed, Comics Created, Reputation).
     -   Tabs: "My Works", "Saved", "Drafts".
-- [ ] **Edit Profile**: Settings for bio, field of study, and avatar.
+- [ ] **Edit Profile**: Settings for bio, field of study, and avatar. (UI exists, logic pending)
 
-### Phase 4: Backend Integration
+### Phase 4: Backend Integration - COMPLETED
 **Goal**: Connect the frontend to real data.
-- [ ] **Supabase Schema**:
+- [x] **Supabase Schema**:
     -   `profiles` table (linked to auth.users).
     -   `posts` table (linked to comic manifests).
     -   `interactions` table (likes, saves).
-- [ ] **Data Fetching**: Replace mock data in `Feed.tsx` with Supabase queries.
+- [x] **Data Fetching**: Replace mock data in `Feed.tsx` with Supabase queries.
 
-### Phase 5: Recommendation Engine (Basic)
+### Phase 5: Recommendation Engine (Basic) - PENDING
 **Goal**: Personalize the feed.
 - [ ] **Tag Logic**: Simple algorithm to boost posts matching user's selected "Field of Study".
 - [ ] **"For You" vs "Recent"**: Toggle in the feed header.

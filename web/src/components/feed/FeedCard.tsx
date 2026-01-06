@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { FeedPost } from '@/data/feed-data';
 import { SmartPanel } from '../comic/SmartPanel';
 import { Heart, Bookmark, Share2, MoreHorizontal, Zap } from 'lucide-react';
@@ -15,8 +15,24 @@ const FIELD_COLORS: Record<string, string> = {
 };
 
 export const FeedCard = ({ post }: { post: FeedPost }) => {
-  // Find the first interesting panel (revideo) or fallback to first panel
-  const heroPanel = post.manifest.pages[0].panels.find(p => p.type === 'revideo') || post.manifest.pages[0].panels[0];
+  const page = post.manifest.pages[0];
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(0.3); // Default starting scale
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        // Target width is 1000px (reference A4 size in Viewer)
+        const newScale = entry.contentRect.width / 1000;
+        setScale(newScale);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div className="bg-white border-4 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] hover:shadow-[12px_12px_0px_rgba(0,0,0,1)] hover:-translate-y-1 transition-all duration-200 overflow-hidden flex flex-col h-full">
@@ -46,21 +62,39 @@ export const FeedCard = ({ post }: { post: FeedPost }) => {
             {post.abstract}
         </p>
 
-        {/* HERO PANEL PREVIEW */}
-        <div className="aspect-video w-full border-2 border-black relative rounded-md overflow-hidden bg-gray-100">
-             {/* We wrap SmartPanel to strip interaction logic for the feed card */}
-             <div className="absolute inset-0 pointer-events-none">
-                <SmartPanel 
-                    data={{...heroPanel, layout: {x:1, y:1, w:1, h:1}}} // Override layout for preview container
-                    isActive={false} 
-                    onClick={() => {}} 
-                />
-             </div>
-             <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black/20">
-                <Button className="bg-white text-black border-2 border-black hover:bg-yellow-400">
-                    <Zap size={16} className="mr-2"/> Read Comic
-                </Button>
-             </div>
+        {/* FULL PAGE PREVIEW (Scaled A4) */}
+        <div 
+          ref={containerRef}
+          className="w-full border-2 border-black relative rounded-md overflow-hidden bg-white"
+          style={{ aspectRatio: '1/1.414' }}
+        >
+             <Link to={`/workbench?paper=${post.id.replace('post-', 'paper-')}`} className="block w-full h-full">
+                {/* Scaled Inner Container */}
+                <div 
+                  style={{ 
+                    width: '1000px', 
+                    height: '1414px', // A4 aspect ratio 1:1.414 of 1000px
+                    transform: `scale(${scale})`, 
+                    transformOrigin: 'top left',
+                    padding: '0' // p-0 matches Viewer
+                  }}
+                  className="bg-white"
+                >
+                  <div 
+                    className="grid grid-cols-6 gap-0 w-full h-full"
+                    style={{ gridTemplateRows: 'repeat(8, 1fr)' }} 
+                  >
+                    {page.panels.map(panel => (
+                      <SmartPanel 
+                          key={panel.id}
+                          data={panel} 
+                          isActive={false} 
+                          onClick={() => {}} 
+                      />
+                    ))}
+                  </div>
+                </div>
+             </Link>
         </div>
         
         {/* TAGS */}

@@ -145,7 +145,7 @@ export const MANIFESTS: Record<string, ComicManifest> = {
     ]
   },
   "paper-test": {
-    title: "The Physics of a Perfect Coffee",
+    title: "The Physics of Coffee",
     pages: [
       {
         id: "p-test",

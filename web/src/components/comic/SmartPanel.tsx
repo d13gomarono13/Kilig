@@ -9,9 +9,10 @@ interface SmartPanelProps {
   data: ComicPanelData;
   isActive: boolean; // True if the Guided View is currently focused on this panel
   onClick: () => void;
+  showTitle?: boolean;
 }
 
-export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick }) => {
+export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick, showTitle = true }) => {
   const [showLiveContent, setShowLiveContent] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
 
@@ -48,8 +49,8 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick 
     <motion.div
       id={`panel-${data.id}`}
       className={cn(
-        "relative overflow-hidden bg-white border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer",
-        isActive && "shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] z-50"
+        "relative overflow-hidden bg-white border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-shadow cursor-pointer",
+        isActive && "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] z-50"
       )}
       style={{
         gridColumn: `span ${data.layout.w}`,
@@ -59,8 +60,8 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick 
       layoutId={`panel-${data.id}`}
     >
       {/* HEADER / TITLE */}
-      {data.title && (
-        <div className="absolute top-0 left-0 bg-yellow-300 border-b-2 border-r-2 border-black px-3 py-1 z-10">
+      {showTitle && data.title && (
+        <div className="absolute top-0 left-0 bg-yellow-300 border-b border-r border-black px-3 py-1 z-10">
           <h3 className="font-bold text-sm uppercase tracking-wider">{data.title}</h3>
         </div>
       )}
@@ -103,12 +104,27 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick 
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
                    exit={{ opacity: 0 }}
-                   className="absolute inset-0 flex flex-col items-center justify-center bg-blue-50"
+                   className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100"
                  >
-                    <span className="text-4xl">{hasEnded ? "🔄" : "🎬"}</span>
-                    <span className="text-xs text-blue-500 font-bold mt-2 uppercase tracking-tighter">
-                      {hasEnded ? "Replay Visual" : "Click to Play"}
-                    </span>
+                    {data.revideo?.thumbnailUrl ? (
+                      <>
+                        <img 
+                          src={data.revideo.thumbnailUrl} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover opacity-80"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/10">
+                           <span className="text-4xl drop-shadow-md filter">{hasEnded ? "🔄" : "🎬"}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <span className="text-4xl">{hasEnded ? "🔄" : "🎬"}</span>
+                        <span className="text-xs text-blue-500 font-bold mt-2 uppercase tracking-tighter">
+                          {hasEnded ? "Replay Visual" : "Click to Play"}
+                        </span>
+                      </>
+                    )}
                     
                     {/* If we returned to thumb while still zoomed in, show a clearer Replay button */}
                     {hasEnded && isActive && (
