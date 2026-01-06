@@ -94,9 +94,11 @@ export function Navbar() {
           {/* Right Side: Auth Actions */}
           <div className="flex items-center gap-4 z-10">
             {!isAuthenticated && (
-              <Button size="sm" asChild className="flex border-2 border-black">
-                <Link to="/login">Sign In</Link>
-              </Button>
+              <Link to="/login">
+                <Button className="bg-white text-black border-4 border-black hover:bg-neo-yellow transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase px-6">
+                  Sign In
+                </Button>
+              </Link>
             )}
           </div>
 
