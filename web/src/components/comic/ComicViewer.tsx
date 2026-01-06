@@ -8,53 +8,70 @@ import { Link } from 'react-router-dom';
 
 interface ComicViewerProps {
   manifest: ComicManifest;
+  selectedPanelId?: string | null;
+  onSelectPanel?: (id: string | null) => void;
 }
 
-export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
+export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPanelId, onSelectPanel }) => {
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const [activePanelId, setActivePanelId] = useState<string | null>(null);
   const [currentPanelIndex, setCurrentPanelIndex] = useState(-1); // -1 = Full View
 
   // Flatten all panels across pages for sequential navigation
-  const allPanels = manifest.pages.flatMap(p => p.panels);
+  const allPanels = React.useMemo(() => manifest.pages.flatMap(p => p.panels), [manifest]);
 
-  const handleZoomToPanel = (panelId: string, index: number) => {
+  // Sync internal index when external selection changes
+  React.useEffect(() => {
+    if (selectedPanelId) {
+      const index = allPanels.findIndex(p => p.id === selectedPanelId);
+      if (index !== -1) {
+        handleZoomToPanel(selectedPanelId, index, false); 
+      }
+    } else if (selectedPanelId === null && currentPanelIndex !== -1) {
+      handleReset(false);
+    }
+  }, [selectedPanelId, allPanels]);
+
+  const handleZoomToPanel = (panelId: string, index: number, updateExternal = true) => {
     if (!transformRef.current) return;
     
     setActivePanelId(panelId);
+    if (updateExternal && onSelectPanel) onSelectPanel(panelId);
     setCurrentPanelIndex(index);
 
     // Calculate dynamic scale to fit panel perfectly
     const { instance } = transformRef.current;
     const wrapper = instance.wrapperComponent;
-    const panel = document.getElementById(`panel-${panelId}`);
+    
+    // Slight delay to ensure DOM is ready
+    setTimeout(() => {
+      const panel = document.getElementById(`panel-${panelId}`);
 
-    if (wrapper && panel) {
-      const wrapperRect = wrapper.getBoundingClientRect();
-      const panelRect = panel.getBoundingClientRect();
-      
-      // Calculate the current scale to normalize dimensions
-      const currentScale = instance.transformState.scale;
-      const naturalPanelWidth = panelRect.width / currentScale;
-      const naturalPanelHeight = panelRect.height / currentScale;
+      if (wrapper && panel) {
+        const wrapperRect = wrapper.getBoundingClientRect();
+        
+        // Use offset dimensions for natural size
+        const naturalPanelWidth = (panel as HTMLElement).offsetWidth;
+        const naturalPanelHeight = (panel as HTMLElement).offsetHeight;
 
-      // Calculate target scale (fit width or height, whichever is smaller)
-      // 0.65 factor adds comfortable padding to prevent clipping
-      const scaleX = wrapperRect.width / naturalPanelWidth;
-      const scaleY = wrapperRect.height / naturalPanelHeight;
-      const targetScale = Math.min(scaleX, scaleY) * 0.65;
+        // Calculate target scale with comfortable margin
+        const scaleX = (wrapperRect.width - 100) / naturalPanelWidth;
+        const scaleY = (wrapperRect.height - 100) / naturalPanelHeight;
+        const targetScale = Math.min(scaleX, scaleY);
 
-      // Limit zoom levels
-      const finalScale = Math.min(Math.max(targetScale, 0.5), 4);
+        // Limit zoom levels
+        const finalScale = Math.min(Math.max(targetScale, 0.5), 2.5);
 
-      const { zoomToElement } = transformRef.current;
-      zoomToElement(`panel-${panelId}`, finalScale, 600, "easeInOutQuad");
-    }
+        const { zoomToElement } = transformRef.current;
+        zoomToElement(`panel-${panelId}`, finalScale, 600, "easeInOutQuad");
+      }
+    }, 50);
   };
 
-  const handleReset = () => {
+  const handleReset = (updateExternal = true) => {
     if (!transformRef.current) return;
     setActivePanelId(null);
+    if (updateExternal && onSelectPanel) onSelectPanel(null);
     setCurrentPanelIndex(-1);
     transformRef.current.resetTransform();
   };
@@ -79,7 +96,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
   };
 
   return (
-    <div className="w-full h-screen bg-slate-100 flex flex-col overflow-y-auto">
+    <div className="w-full h-screen bg-slate-100 flex flex-col overflow-hidden">
       
       {/* TOOLBAR */}
       <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 z-50 shadow-sm">
@@ -87,14 +104,14 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
           <div className="flex items-center gap-2">
              <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()} title="Zoom In"><ZoomIn size={16}/></Button>
              <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomOut()} title="Zoom Out"><ZoomOut size={16}/></Button>
-             <Button variant="outline" size="icon" onClick={handleReset} title="Reset View"><RotateCcw size={16}/></Button>
+             <Button variant="outline" size="icon" onClick={() => handleReset()} title="Reset View"><RotateCcw size={16}/></Button>
           </div>
           
           <div className="flex items-center gap-2">
              <Button 
                onClick={handlePrev} 
                disabled={currentPanelIndex < 0}
-               className="bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all h-9 px-4"
+               className="bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all h-9 px-4 disabled:opacity-50"
              >
                <ChevronLeft size={16} className="mr-1"/> Prev
              </Button>
@@ -107,50 +124,47 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
           </div>
         </div>
 
-        <Link to="/">
+        <Link to="/laboratory">
           <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-            Back to Home
+            Exit Viewer
           </Button>
         </Link>
       </div>
 
       {/* CANVAS */}
-      <div className="flex-1 w-full overflow-y-auto cursor-grab active:cursor-grabbing bg-slate-200">
+      <div className="flex-1 w-full overflow-hidden cursor-grab active:cursor-grabbing bg-slate-200">
         <TransformWrapper
           ref={transformRef}
           initialScale={0.6}
-          minScale={0.2}
+          minScale={0.1}
           maxScale={4}
           centerOnInit={true}
           limitToBounds={false}
-          wheel={{ disabled: true }}
+          wheel={{ disabled: false }}
           doubleClick={{ disabled: true }}
         >
-          <TransformComponent wrapperClass="!w-full min-h-full" contentClass="flex items-center justify-center min-h-full p-4">
+          <TransformComponent wrapperClass="!w-full !h-full" contentClass="flex flex-col items-center gap-20 p-20">
             
             {/* THE "PAGE" CONTAINER */}
-            <div className="bg-white shadow-2xl p-0 border-2 border-black" style={{ width: '1000px', aspectRatio: '1/1.414' }}> {/* A4 Ratio */}
-                {manifest.pages.map(page => (
-                   <div 
-                     key={page.id} 
-                     className="grid grid-cols-6 gap-0 w-full h-full"
-                     style={{ gridTemplateRows: 'repeat(8, 1fr)' }} 
-                   >
-                      {page.panels.map((panel, idx) => {
-                         // Calculate global index for this panel
-                         const globalIdx = allPanels.findIndex(p => p.id === panel.id);
-                         return (
-                           <SmartPanel 
-                             key={panel.id}
-                             data={panel}
-                             isActive={activePanelId === panel.id}
-                             onClick={() => handleZoomToPanel(panel.id, globalIdx)}
-                           />
-                         );
-                      })}
-                   </div>
-                ))}
-            </div>
+            {manifest.pages.map(page => (
+               <div 
+                 key={page.id} 
+                 className="bg-white shadow-2xl p-0 border-2 border-black shrink-0 relative overflow-hidden" 
+                 style={{ width: '1000px', height: '1414px', display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(8, 1fr)' }}
+               >
+                  {page.panels.map((panel) => {
+                     const globalIdx = allPanels.findIndex(p => p.id === panel.id);
+                     return (
+                       <SmartPanel 
+                         key={panel.id}
+                         data={panel}
+                         isActive={(selectedPanelId || activePanelId) === panel.id}
+                         onClick={() => handleZoomToPanel(panel.id, globalIdx)}
+                       />
+                     );
+                  })}
+               </div>
+            ))}
 
           </TransformComponent>
         </TransformWrapper>

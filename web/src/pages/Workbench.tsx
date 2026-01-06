@@ -56,7 +56,11 @@ const Workbench = () => {
 
         {/* RIGHT CONTENT: VIEWER */}
         <ResizablePanel defaultSize={75}>
-          <ComicViewer manifest={manifest} />
+          <ComicViewer 
+            manifest={manifest} 
+            selectedPanelId={selectedPanelId}
+            onSelectPanel={setSelectedPanelId}
+          />
         </ResizablePanel>
 
       </ResizablePanelGroup>

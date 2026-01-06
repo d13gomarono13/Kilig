@@ -53,8 +53,10 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
         isActive && "shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] z-50"
       )}
       style={{
-        gridColumn: `span ${data.layout.w}`,
-        gridRow: `span ${data.layout.h}`,
+        gridColumnStart: data.layout.x,
+        gridColumnEnd: `span ${data.layout.w}`,
+        gridRowStart: data.layout.y,
+        gridRowEnd: `span ${data.layout.h}`,
       }}
       onClick={onClick}
       layoutId={`panel-${data.id}`}
