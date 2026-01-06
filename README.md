@@ -14,14 +14,14 @@
 
 ## 🏗 System architecture
 
-Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (Agent Development Kit). Each agent follows the **SPARC** (Specification, Pseudocode, Architecture, Refinement, Completion) methodology.
+Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (Typescript).
 
 ### The agent pipeline
 1.  **Root Agent (Coordinator):** Orchestrates the task queue and manages state across the pipeline.
 2.  **Ingestor:** Fetches and parses scientific papers (e.g., from ArXiv or local PDFs).
 3.  **Scientific Analyzer:** Extracts core methodologies, data points, and key findings.
 4.  **Narrative Architect:** Translates dense scientific data into engaging, educational scripts.
-5.  **SceneGraph Designer:** Generates the Motion Canvas/Revideo JSON definitions for the visual timeline.
+5.  **SceneGraph Designer:** Generates the Revideo JSON definitions for the visual timeline.
 6.  **QC & Validator:** Ensures schema compliance and design system integrity before rendering.
 
 ---
@@ -37,7 +37,7 @@ Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (A
 
 ### Frontend
 - **Framework:** React 18 + Vite
-- **Video Engine:** Revideo (Motion Canvas) for 2D programmatic animation
+- **Video Engine:** Revideo for 2D programmatic animation
 - **Styling:** Tailwind CSS 4 + Shadcn UI
 - **Animations:** Framer Motion + Lucide Icons
 
@@ -74,15 +74,9 @@ Kilig operates on a multi-agent orchestration layer powered by **Google ADK** (A
 Create a `.env` file in the root and `web/` directory:
 
 ```env
-# Backend
 GEMINI_API_KEY=your_key_here
 SUPABASE_URL=your_project_url
 SUPABASE_SERVICE_ROLE_KEY=your_key
-
-# Frontend
-VITE_SUPABASE_URL=your_project_url
-VITE_SUPABASE_ANON_KEY=your_key
-```
 
 ### Installation
 ```bash
