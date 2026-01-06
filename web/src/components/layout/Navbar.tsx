@@ -84,10 +84,10 @@ export function Navbar() {
           </div>
 
           {/* Centered Logo */}
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center">
             <Link to="/" className="flex flex-col items-center group">
               <span className="text-3xl font-black tracking-tighter uppercase leading-none">KILIG</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">The most personal is the most creative</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500 whitespace-nowrap">The most personal is the most creative</span>
             </Link>
           </div>
 
@@ -95,7 +95,7 @@ export function Navbar() {
           <div className="flex items-center gap-4 z-10">
             {!isAuthenticated && (
               <Link to="/login">
-                <Button className="bg-white text-black border-4 border-black hover:bg-neo-yellow transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase px-6">
+                <Button className="bg-neo-yellow text-black border-4 border-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase px-6 h-10">
                   Sign In
                 </Button>
               </Link>
