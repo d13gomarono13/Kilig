@@ -8,7 +8,7 @@ import { AuthProvider, useAuth } from "./lib/auth";
 import Feed from "./pages/Feed";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import Dashboard from "./pages/Dashboard";
+import Laboratory from "./pages/Laboratory";
 import Gallery from "./pages/Gallery";
 import Studio from "./pages/Studio";
 import Workbench from "./pages/Workbench";
@@ -51,9 +51,9 @@ const App = () => (
             } />
 
             {/* OTHER PROTECTED ROUTES */}
-            <Route path="/dashboard" element={
+            <Route path="/laboratory" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Laboratory />
               </ProtectedRoute>
             } />
             <Route path="/gallery" element={

@@ -123,7 +123,7 @@ export default function Studio() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button size="icon" asChild className="border-2 w-10 h-10">
-              <Link to="/dashboard">
+              <Link to="/laboratory">
                 <ArrowLeft className="w-6 h-6" />
               </Link>
             </Button>

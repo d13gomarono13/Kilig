@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowRight, FileText, FlaskConical, Atom } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const Dashboard = () => {
+const Laboratory = () => {
   return (
     <div className="min-h-screen flex flex-col bg-yellow-400 cube-bg">
       <div className="p-4 sticky top-0 z-50">
@@ -139,4 +139,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Laboratory;

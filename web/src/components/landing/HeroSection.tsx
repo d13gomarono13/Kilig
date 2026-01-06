@@ -24,10 +24,10 @@ export function HeroSection() {
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Button size="lg" asChild className="text-lg">
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <Zap className="w-6 h-6 fill-current" />
-              Start Creating
-              <ArrowRight className="w-6 h-6" />
+            <Link to="/laboratory" className="flex items-center gap-2">
+              <Button size="lg" className="bg-neo-yellow text-black border-4 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase text-xl h-16 px-8">
+                Enter Laboratory
+              </Button>
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild className="text-lg bg-white">

@@ -18,7 +18,7 @@ export function AuthCard() {
       title: isLogin ? "Welcome back!" : "Account created!",
       description: "Redirecting to your dashboard...",
     });
-    navigate("/dashboard");
+    navigate("/laboratory");
   };
 
   return (
@@ -87,7 +87,7 @@ export function AuthCard() {
           <Button 
             variant="ghost" 
             className="w-full h-14 border-4 border-black font-black uppercase tracking-widest hover:bg-neo-blue/10"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/laboratory")}
           >
             Skip to Paper Editor (Demo)
           </Button>

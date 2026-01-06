@@ -12,7 +12,7 @@ export function Footer() {
               <div className="w-14 h-14 bg-neo-yellow border-4 border-black shadow-sm flex items-center justify-center">
                 <Zap className="w-8 h-8 text-black fill-black" />
               </div>
-              <span className="text-3xl font-black tracking-tighter uppercase italic">KILIG</span>
+              <span className="text-3xl font-black tracking-tighter uppercase">KILIG</span>
             </Link>
             <p className="text-black/80 max-w-sm text-lg font-medium leading-relaxed">
               Transform scientific papers into engaging, animated explanatory videos using AI-powered automation. Built for the modern researcher.
