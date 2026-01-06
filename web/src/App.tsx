@@ -59,7 +59,7 @@ const App = () => (
                 <Studio />
               </ProtectedRoute>
             } />
-            <Route path="/workbench" element={
+            <Route path="/editor" element={
               <ProtectedRoute>
                 <Workbench />
               </ProtectedRoute>
