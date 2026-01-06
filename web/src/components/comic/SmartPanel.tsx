@@ -79,7 +79,7 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
                  <img src={data.imageUrl} className="w-full h-full object-cover opacity-30" alt="" />
                </div>
              )}
-             <div className="prose prose-sm leading-snug relative z-10">
+             <div className="prose prose-sm leading-snug relative z-10 overflow-y-auto no-scrollbar">
                <p>{data.content}</p>
              </div>
            </>
@@ -87,7 +87,7 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
 
         {/* Type: REVIDEO / CHART */}
         {data.type === 'revideo' && (
-          <div className="flex-1 w-full h-full relative bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md overflow-hidden">
+          <div className="flex-1 w-full h-full relative bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-md overflow-hidden no-scrollbar">
              <AnimatePresence mode="wait">
                {showLiveContent && !hasEnded ? (
                  <motion.div 
@@ -95,7 +95,7 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
                    exit={{ opacity: 0 }}
-                   className="w-full h-full bg-white flex flex-col items-center justify-center overflow-hidden"
+                   className="w-full h-full bg-white flex flex-col items-center justify-center overflow-hidden no-scrollbar"
                  >
                    {/* DYNAMIC TEMPLATE RENDERER */}
                    {data.revideo && renderTemplate(data.revideo.templateId, data.revideo.data)}
@@ -106,7 +106,7 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
                    exit={{ opacity: 0 }}
-                   className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100"
+                   className="absolute inset-0 flex flex-col items-center justify-center bg-slate-100 no-scrollbar"
                  >
                     {data.revideo?.thumbnailUrl ? (
                       <>
@@ -145,7 +145,7 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
 
         {/* Type: CODE */}
         {data.type === 'code' && (
-          <div className="flex-1 w-full h-full bg-slate-900 p-2 rounded text-xs font-mono text-green-400 overflow-hidden">
+          <div className="flex-1 w-full h-full bg-slate-900 p-2 rounded text-xs font-mono text-green-400 overflow-y-auto no-scrollbar">
              <pre>{data.codeSnippet?.code}</pre>
           </div>
         )}
