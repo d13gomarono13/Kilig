@@ -169,7 +169,7 @@ export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, se
                   </div>
               </div>
           ))}
-      </ScrollArea>
+      </div>
     </div>
   );
 };
