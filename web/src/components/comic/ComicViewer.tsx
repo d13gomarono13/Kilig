@@ -96,10 +96,10 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
   };
 
   return (
-    <div className="w-full h-screen bg-slate-100 flex flex-col overflow-hidden">
+    <div className="w-full h-screen bg-slate-100 flex flex-col overflow-y-auto">
       
       {/* TOOLBAR */}
-      <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 z-50 shadow-sm">
+      <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
              <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()} title="Zoom In"><ZoomIn size={16}/></Button>
@@ -132,7 +132,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
       </div>
 
       {/* CANVAS */}
-      <div className="flex-1 w-full overflow-hidden cursor-grab active:cursor-grabbing bg-slate-200">
+      <div className="flex-1 w-full overflow-y-auto cursor-grab active:cursor-grabbing bg-slate-200">
         <TransformWrapper
           ref={transformRef}
           initialScale={0.6}
