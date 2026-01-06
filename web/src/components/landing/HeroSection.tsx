@@ -26,7 +26,7 @@ export function HeroSection() {
           <Button size="lg" asChild className="text-lg">
             <Link to="/laboratory" className="flex items-center gap-2">
               <Button size="lg" className="bg-neo-yellow text-black border-4 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase text-xl h-16 px-8">
-                Enter Laboratory
+                Start Creating
               </Button>
             </Link>
           </Button>
