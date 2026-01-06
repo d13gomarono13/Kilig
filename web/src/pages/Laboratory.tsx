@@ -12,16 +12,6 @@ const Laboratory = () => {
     <div className="min-h-screen flex flex-col bg-yellow-400 cube-bg">
       <Navbar />
 
-      <div className="p-4 sticky top-20 z-40 pointer-events-none">
-          <div className="max-w-7xl mx-auto flex justify-end items-center pointer-events-auto">
-              <Link to="/">
-                  <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-                      Back to Home
-                  </Button>
-              </Link>
-          </div>
-      </div>
-
       <main className="flex-1 px-4 py-12">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-4">

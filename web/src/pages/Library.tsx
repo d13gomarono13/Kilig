@@ -28,16 +28,6 @@ const Library = () => {
        */}
        <Navbar /> 
 
-       <div className="p-4 sticky top-20 z-40 pointer-events-none">
-          <div className="max-w-7xl mx-auto flex justify-end items-center pointer-events-auto">
-              <Link to="/">
-                  <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-                      Back to Home
-                  </Button>
-              </Link>
-          </div>
-      </div>
-
        {/* FEED CONTENT */}
        <main className="flex-1 max-w-xl mx-auto w-full p-4 md:p-8">
           <div className="flex flex-col gap-8">
