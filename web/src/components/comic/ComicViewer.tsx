@@ -102,6 +102,8 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
       <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 sticky top-0 z-50 shadow-sm">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
+             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()} title="Zoom In"><ZoomIn size={16}/></Button>
+             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomOut()} title="Zoom Out"><ZoomOut size={16}/></Button>
              <Button variant="outline" size="icon" onClick={() => handleReset()} title="Reset View"><RotateCcw size={16}/></Button>
           </div>
           
