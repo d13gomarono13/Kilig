@@ -1,10 +1,23 @@
 import { Zap, Github, Twitter, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/retroui";
+import { useAuth } from "@/lib/auth";
 
 export function Footer() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <footer className="bg-white text-black border-t-4 border-black py-20 px-4">
       <div className="max-w-7xl mx-auto">
+        <div className="flex justify-end mb-8">
+          {!isAuthenticated && (
+            <Link to="/login">
+              <Button className="bg-white text-black border-4 border-black hover:bg-neo-yellow transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase">
+                Sign In
+              </Button>
+            </Link>
+          )}
+        </div>
         <div className="grid md:grid-cols-4 gap-12">
           {/* Brand */}
           <div className="md:col-span-2">

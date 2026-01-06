@@ -6,15 +6,6 @@ export function HeroSection() {
   console.log("Rendering HeroSection...");
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center px-4 py-20 cube-bg border-b-4 border-black overflow-hidden">
-      {/* Top Right Sign In */}
-      <div className="absolute top-8 right-8 z-20">
-        <Link to="/login">
-          <Button className="bg-white text-black border-4 border-black hover:bg-neo-yellow transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase">
-            Sign In
-          </Button>
-        </Link>
-      </div>
-      
       <div className="max-w-5xl mx-auto text-center relative z-10">
         {/* Main headline */}
         <h1 className="text-7xl md:text-9xl font-bold tracking-tighter mb-6">
