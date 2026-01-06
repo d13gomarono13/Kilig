@@ -38,18 +38,6 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Index />} />
 
-            {/* PROTECTED ARCHIVES (FORMER LIBRARY) */}
-            <Route path="/archives" element={
-              <ProtectedRoute>
-                <Library />
-              </ProtectedRoute>
-            } />
-            <Route path="/feed" element={
-              <ProtectedRoute>
-                <Library />
-              </ProtectedRoute>
-            } />
-
             {/* OTHER PROTECTED ROUTES */}
             <Route path="/laboratory" element={
               <ProtectedRoute>
