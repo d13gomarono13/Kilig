@@ -102,7 +102,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
                onClick={handleNext}
                className="bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all h-9 px-4"
              >
-               Next Panel <ChevronRight size={16} className="ml-1"/>
+               Next <ChevronRight size={16} className="ml-1"/>
              </Button>
           </div>
         </div>

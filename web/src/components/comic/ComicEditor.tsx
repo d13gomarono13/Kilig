@@ -1,6 +1,5 @@
 import React from 'react';
 import { ComicManifest, ComicPanelData } from './types';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -70,7 +69,7 @@ export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, se
         )}
       </div>
 
-      <ScrollArea className="flex-1 p-4 no-scrollbar">
+      <div className="flex-1 p-4 overflow-y-auto no-scrollbar">
           {manifest.pages.map((page, pageIndex) => (
               <div key={page.id} className="mb-8">
                   <div className="flex items-center justify-between mb-4">
