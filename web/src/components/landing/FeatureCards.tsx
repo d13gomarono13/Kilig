@@ -1,4 +1,4 @@
-import { Bot, Play, FileText, Wand2, ArrowRight, Microscope } from "lucide-react";
+import { Bot, Play, FileText, Wand2, ArrowRight, Microscope, Zap } from "lucide-react";
 import { Card } from "@/components/retroui";
 import { Link } from "react-router-dom";
 
