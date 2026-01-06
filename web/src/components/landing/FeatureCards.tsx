@@ -75,7 +75,7 @@ export function FeatureCards() {
                       <Microscope className="w-10 h-10 text-black animate-pulse" />
                     </div>
                     <div>
-                      <Card.Title className="text-4xl font-black uppercase tracking-tighter italic">Enter Laboratory</Card.Title>
+                      <Card.Title className="text-4xl font-black uppercase tracking-tighter italic">Start Creating</Card.Title>
                       <p className="text-xl font-bold text-black/60 uppercase tracking-widest mt-1">Start your scientific journey</p>
                     </div>
                   </div>

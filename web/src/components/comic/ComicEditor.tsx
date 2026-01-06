@@ -70,7 +70,7 @@ export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, se
         )}
       </div>
 
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea className="flex-1 p-4 no-scrollbar">
           {manifest.pages.map((page, pageIndex) => (
               <div key={page.id} className="mb-8">
                   <div className="flex items-center justify-between mb-4">
