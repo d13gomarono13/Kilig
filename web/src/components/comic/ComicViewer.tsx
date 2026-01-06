@@ -126,7 +126,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
 
         <Link to="/laboratory">
           <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-            Exit Viewer
+            Exit Editor
           </Button>
         </Link>
       </div>
