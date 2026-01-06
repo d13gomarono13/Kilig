@@ -119,12 +119,22 @@ export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, se
 
                                   {/* CONTENT EDITING */}
                                   {panel.type === 'static' && (
-                                      <Textarea 
-                                          value={panel.content} 
-                                          onChange={(e) => updatePanel(pageIndex, panel.id, { content: e.target.value })}
-                                          className="text-xs min-h-[80px]"
-                                          placeholder="Panel content..."
-                                      />
+                                      <div className="space-y-2">
+                                          <Label className="text-[10px]">Content</Label>
+                                          <Textarea 
+                                              value={panel.content} 
+                                              onChange={(e) => updatePanel(pageIndex, panel.id, { content: e.target.value })}
+                                              className="text-xs min-h-[60px]"
+                                              placeholder="Panel content..."
+                                          />
+                                          <Label className="text-[10px]">Image URL</Label>
+                                          <Input 
+                                              value={panel.imageUrl || ''} 
+                                              onChange={(e) => updatePanel(pageIndex, panel.id, { imageUrl: e.target.value })}
+                                              className="h-7 text-xs"
+                                              placeholder="https://..."
+                                          />
+                                      </div>
                                   )}
                                   {panel.type === 'code' && (
                                       <Textarea 

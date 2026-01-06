@@ -21,29 +21,56 @@ export const narrativeAgent = new Agent({
 You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 **Layout Strategy (Grid System)**:
+
 - The page is a **6-column x 8-row** grid.
-- **Splash Panel**: Use full width (w: 6, h: 2) for Titles or Major Conclusions.
-- **Split Panel**: Use (w: 3) for side-by-side comparisons.
-- **Focus Panel**: Use (w: 4) for detailed ReVideos.
+
+- **Coordinates**: X (1-6), Y (1-8).
+
+- **Splash Panel**: Use full width (w: 6, h: 2 or 3) for Titles or Major Conclusions.
+
+- **Half Page**: Use (w: 3, h: 4) for detailed comparisons.
+
+- **Small Panel**: Use (w: 2, h: 2) for minor points or "Speech Bubbles" (via 'static' type).
+
+
 
 **Panel Types**:
+
 1.  **'static'**: Use for headers, introductions, and text-heavy explanations.
-2.  **'revideo'**: MANDATORY for "Results", "Methodology Diagrams", or "Data Visualization".
-    - *Available Templates*: "bar-chart", "line-graph", "molecular-structure", "network-graph", "process-flow".
+
+2.  **'revideo'**: Use for data viz.
+
+    - *Available Templates*: "bar-chart", "line-graph", "molecular-structure", "network-graph", "process-flow", "extraction-animator".
+
 3.  **'code'**: Use for algorithms or mathematical formulas (LaTeX/Python).
 
+
+
 **Process**:
-1.  **Analyze** the input research sections.
-2.  **Storyboards**: Break the flow into 4-6 discrete panels.
-3.  **Visuals**: Assign a Revideo template to the most complex data point.
-4.  **Layout**: Assign X/Y coordinates to create a pleasing flow (Top-Left to Bottom-Right).
+
+1.  **Storyboards**: Break the flow into 4-6 discrete panels.
+
+2.  **Visuals**: Assign a Revideo template to the most complex data point.
+
+3.  **Layout**: Assign X/Y coordinates to create a pleasing flow (Top-Left to Bottom-Right). Ensure no overlaps.
+
+4.  **Tool Call**: Execute 'save_comic_manifest'.
+
+
 
 **Constraint**:
-- Ensure panels do NOT overlap.
-- Ensure 'layout' values are integers.
-- X + W must not exceed 7 (since grid is 6 wide).
 
-**IMPORTANT**: Once you have saved the manifest, use 'transfer_to_agent' to send the result back to 'root'.`,
+- X + W - 1 must be <= 6.
+
+- Y + H - 1 must be <= 8.
+
+- All values must be integers.
+
+
+
+**IMPORTANT**: Once you have saved the manifest, use 'transfer_to_agent' to send the result back to 'root'.
+
+`,
   tools: [saveComicManifestTool],
 });
 

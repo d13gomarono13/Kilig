@@ -1,0 +1,35 @@
+{
+  "title": "Attention Is All You Need (AI) - Generated",
+  "pages": [
+    {
+      "id": "page-1",
+      "panels": [
+        {
+          "id": "p1-title",
+          "type": "static",
+          "title": "The Transformer",
+          "content": "We propose a new network architecture based solely on attention mechanisms, dispensing with recurrence and convolutions entirely.",
+          "layout": { "x": 1, "y": 1, "w": 6, "h": 2 }
+        },
+        {
+          "id": "p1-problem",
+          "type": "static",
+          "title": "The Bottleneck",
+          "content": "Recurrent models process data sequentially. This prevents parallelization and makes long-range dependencies hard to learn.",
+          "layout": { "x": 1, "y": 3, "w": 3, "h": 2 }
+        },
+        {
+          "id": "p1-solution",
+          "type": "revideo",
+          "title": "Multi-Head Attention",
+          "revideo": {
+            "templateId": "attention-mechanism",
+            "data": { "heads": 8 },
+            "thumbnailUrl": "/placeholder.svg"
+          },
+          "layout": { "x": 4, "y": 3, "w": 3, "h": 2 }
+        }
+      ]
+    }
+  ]
+}

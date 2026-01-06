@@ -1,4 +1,3 @@
-
 export type PanelType = 'static' | 'revideo' | 'code' | 'chart';
 
 export interface RevideoConfig {
@@ -19,8 +18,8 @@ export interface ComicPanelData {
     code: string;
   };
   layout: {
-    x: number; // Grid column (1-12)
-    y: number; // Grid row
+    x: number; // Grid column (1-6)
+    y: number; // Grid row (1-8)
     w: number; // Width (cols)
     h: number; // Height (rows)
   };

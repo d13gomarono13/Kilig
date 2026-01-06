@@ -1,5 +1,7 @@
 import { FunctionTool } from '@google/adk';
 import { z } from 'zod';
+import fs from 'fs/promises';
+import path from 'path';
 
 export const saveComicManifestTool = new FunctionTool({
   name: 'save_comic_manifest',
@@ -13,6 +15,7 @@ export const saveComicManifestTool = new FunctionTool({
         type: z.enum(['static', 'revideo', 'code']).describe('The type of panel content.'),
         title: z.string().optional().describe('Panel header title.'),
         content: z.string().optional().describe('Text content for static panels.'),
+        imageUrl: z.string().optional().describe('URL for a background image or illustration.'),
         codeSnippet: z.object({
           language: z.string(),
           code: z.string()
@@ -33,8 +36,17 @@ export const saveComicManifestTool = new FunctionTool({
   }),
   execute: async (manifest) => {
     console.log(`[Narrative Agent] Generated Comic Manifest: "${manifest.title}" with ${manifest.pages[0].panels.length} panels.`);
-    // In a real backend, we would save this to the DB.
-    // For now, we return it so the Root Agent can see the result.
+    
+    // Persistence: Save to local file for frontend usage
+    try {
+      const outputPath = path.join(process.cwd(), 'web/src/data/comic-manifest.json');
+      await fs.mkdir(path.dirname(outputPath), { recursive: true });
+      await fs.writeFile(outputPath, JSON.stringify(manifest, null, 2));
+      console.log(`[Narrative Agent] Manifest saved to: ${outputPath}`);
+    } catch (error) {
+      console.error('[Narrative Agent] Failed to save manifest to file:', error);
+    }
+
     return JSON.stringify(manifest, null, 2);
   }
 });

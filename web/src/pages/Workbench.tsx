@@ -18,10 +18,17 @@ const Workbench = () => {
   const [manifest, setManifest] = useState<ComicManifest>(MANIFESTS[paperId] || MANIFESTS['paper-1']);
   const [selectedPanelId, setSelectedPanelId] = useState<string | null>(null);
 
-  // Update manifest if URL changes
+  // Update manifest if URL changes or fetch generated
   useEffect(() => {
-    const data = MANIFESTS[paperId];
-    if (data) setManifest(data);
+    if (paperId === 'generated') {
+      fetch('/src/data/comic-manifest.json')
+        .then(res => res.json())
+        .then(data => setManifest(data))
+        .catch(err => console.error("Failed to load generated manifest", err));
+    } else {
+      const data = MANIFESTS[paperId];
+      if (data) setManifest(data);
+    }
   }, [paperId]);
 
   return (

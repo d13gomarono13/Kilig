@@ -26,34 +26,30 @@ We will implement a **Cache Provider Pattern** that allows seamless switching be
 
 ## Phases
 
-### Phase 1: Foundation & File Cache
-- [ ] Create `src/services/cache/types.ts` defining `ICacheProvider`.
-- [ ] Create `src/services/cache/file-system-cache.ts` implementing the interface using `fs/promises`.
-- [ ] Create `src/services/cache/key-generator.ts` for SHA-256 hashing.
-- [ ] Create `src/services/cache/index.ts` (CacheManager) to expose the singleton.
+### Phase 1: Foundation & File Cache (Completed)
+- [x] Create `src/services/cache/types.ts` defining `ICacheProvider`.
+- [x] Create `src/services/cache/file-system-cache.ts` implementing the interface using `fs/promises`.
+- [x] Create `src/services/cache/key-generator.ts` for SHA-256 hashing.
+- [x] Create `src/services/cache/index.ts` (CacheManager) to expose the singleton.
 
-### Phase 2: Core Service Integration
-- [ ] Refactor `src/core/gemini-client.ts` to use `CacheManager`.
-    -   Add logic to check cache before API call.
-    -   Add logic to save result after API call.
-    -   Handle streaming (buffer full response then cache, or skip caching for streams if too complex initially - *Decision: Cache full text result of streams if possible, or only cache unary calls first*).
-- [ ] Refactor `src/services/embeddings.ts` to use `CacheManager`.
-    -   Batch requests should check cache for each item individually to maximize hits.
+### Phase 2: Core Service Integration (Completed)
+- [x] Refactor `src/core/gemini-client.ts` to use `CacheManager`.
+- [x] Refactor `src/services/embeddings.ts` to use `CacheManager`.
 
-### Phase 3: Configuration & Controls
-- [ ] Update `.env` support for:
+### Phase 3: Configuration & Controls (Completed)
+- [x] Update `.env` support for:
     -   `CACHE_ENABLED=true/false`
     -   `CACHE_PROVIDER=file|redis`
     -   `CACHE_TTL=86400` (24 hours default)
     -   `CACHE_DIR=.cache`
-- [ ] Add CLI utility or script `scripts/clear-cache.ts` to easily purge the cache.
+- [x] Add CLI utility or script `scripts/clear-cache.ts` to easily purge the cache.
 
-### Phase 4: Future Proofing (Redis)
+### Phase 4: Future Proofing (Redis) (Planned)
 - [ ] Create `src/services/cache/redis-cache.ts` implementing `ICacheProvider` using `ioredis`.
 - [ ] Update `CacheManager` to support `redis` provider.
 
 ## Testing
-- [ ] Create a unit test `src/tests/cache.test.ts` ensuring the file system cache persists and retrieves correctly.
+- [x] Create a unit test `src/tests/cache.test.ts` ensuring the file system cache persists and retrieves correctly.
 - [ ] Run `scripts/test_pipeline.ts` twice.
     -   Run 1: Should take normal time (Cache Miss).
     -   Run 2: Should be near-instant (Cache Hit).

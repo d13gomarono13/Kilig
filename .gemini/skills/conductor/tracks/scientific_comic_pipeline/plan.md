@@ -9,47 +9,40 @@
 
 ---
 
-## Phase 1: Architecture & Data Contract (The "Manifest")
+## Phase 1: Architecture & Data Contract (The "Manifest") (Completed)
 **Goal:** Define the strict JSON schema that acts as the bridge between AI Agents and the Frontend.
 
-*   [ ] **Define `ComicManifest` Schema:**
-    *   Structure for `Pages`, `Panels`, `Bubbles`.
-    *   **Smart Panel Types:**
-        *   `Static`: Image/Text only.
-        *   `Revideo`: References a Template ID + Parameters (Data).
-        *   `Code`: Syntax highlighted block.
+*   [x] **Define `ComicManifest` Schema:**
+    *   Structure for `Pages`, `Panels`, `Bubbles`. (Implemented in `src/types/comic.ts`)
 *   [ ] **Create Revideo Template Library:**
-    *   Create a set of standard, parameterized Revideo components (e.g., `BarChart`, `ProcessFlow`, `NetworkGraph`, `TalkingHead`).
-    *   Agents will *configure* these (e.g., passing data points), not write them.
+    *   Identify and parameterize standard templates (e.g., `bar-chart`, `process-flow`). (Initial list defined in Narrative Agent).
 
-## Phase 2: Agent Implementation (The "Draftsman")
+## Phase 2: Agent Implementation (The "Draftsman") (In Progress)
 **Goal:** Update agents to produce the Manifest deterministically.
 
-*   [ ] **Scientist Agent Update:**
-    *   Ensure extraction of structured data (Research Question, Methods, Results) suitable for visual representation.
-*   [ ] **Narrative Agent Update:**
-    *   New Tool: `generate_comic_manifest`.
+*   [x] **Scientist Agent Update:**
+    *   Ensure extraction of structured data suitable for visual representation.
+*   [x] **Narrative Agent Update:**
+    *   New Tool: `save_comic_manifest`.
     *   Logic: Map scientific sections to Panel Layouts and Revideo Templates.
-    *   *Constraint:* Must use only available Templates from the registry.
+*   [x] **Validator Agent Update:**
+    *   New Tool: `validate_comic_manifest` for overlap and schema checks.
 
-## Phase 3: Frontend "Vivacious" Engine
+## Phase 3: Frontend "Vivacious" Engine (Completed)
 **Goal:** Build the interactive web viewer.
 
-*   [ ] **Install Dependencies:** `react-zoom-pan-pinch`, `framer-motion`.
-*   [ ] **Build `<ComicViewer />`:**
+*   [x] **Install Dependencies:** `react-zoom-pan-pinch`, `framer-motion`.
+*   [x] **Build `<ComicViewer />`:**
     *   Canvas container with Zoom/Pan logic.
-    *   "Guided View" navigation (Next/Prev Panel).
-*   [ ] **Build `<SmartPanel />`:**
-    *   **Lazy Loading:** Shows a lightweight Preview/Thumbnail by default.
-    *   **Activation:** On Zoom > 1.5x, swaps to the live `<RevideoPlayer />`.
+*   [x] **Build `<SmartPanel />`:**
+    *   Lazy Loading and Animation activation.
 
-## Phase 4: The Illustrator's Workbench (Editor)
+## Phase 4: The Illustrator's Workbench (Editor) (In Progress)
 **Goal:** The UI for the human illustrator.
 
-*   [ ] **Manifest Editor:** A split-screen UI.
-    *   **Left:** JSON Editor / Form Fields (Edit text, change templates, tweak data).
-    *   **Right:** Live Preview of the Comic.
-*   [ ] **Asset Management:** Allow uploading custom images to replace AI suggestions.
+*   [x] **Manifest Editor:** A split-screen UI.
+*   [x] **Asset Management:** Support for `imageUrl` field in panels.
+*   [ ] **Manual Refresh:** Button to reload the generated manifest from disk.
 
 ---
 

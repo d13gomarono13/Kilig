@@ -65,13 +65,20 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick 
       )}
 
       {/* CONTENT LAYER */}
-      <div className="w-full h-full flex flex-col p-4 pt-10">
+      <div className="w-full h-full flex flex-col p-4 pt-10 relative">
         
         {/* Type: STATIC TEXT */}
         {data.type === 'static' && (
-           <div className="prose prose-sm leading-snug">
-             <p>{data.content}</p>
-           </div>
+           <>
+             {data.imageUrl && (
+               <div className="absolute inset-0 z-0">
+                 <img src={data.imageUrl} className="w-full h-full object-cover opacity-30" alt="" />
+               </div>
+             )}
+             <div className="prose prose-sm leading-snug relative z-10">
+               <p>{data.content}</p>
+             </div>
+           </>
         )}
 
         {/* Type: REVIDEO / CHART */}
