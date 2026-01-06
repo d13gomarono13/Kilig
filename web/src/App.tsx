@@ -38,8 +38,8 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Index />} />
 
-            {/* PROTECTED LIBRARY */}
-            <Route path="/library" element={
+            {/* PROTECTED ARCHIVES (FORMER LIBRARY) */}
+            <Route path="/archives" element={
               <ProtectedRoute>
                 <Library />
               </ProtectedRoute>
@@ -66,7 +66,7 @@ const App = () => (
                 <Studio />
               </ProtectedRoute>
             } />
-            <Route path="/workbench" element={
+            <Route path="/library" element={
               <ProtectedRoute>
                 <Workbench />
               </ProtectedRoute>

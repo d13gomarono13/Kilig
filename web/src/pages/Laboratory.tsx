@@ -45,7 +45,7 @@ const Laboratory = () => {
                 <p className="text-sm text-slate-600 mb-4 line-clamp-2">
                   Proposing the Transformer architecture based solely on attention mechanisms, replacing RNNs.
                 </p>
-                <Link to="/workbench?paper=paper-1">
+                <Link to="/library?paper=paper-1">
                   <Button className="w-full bg-slate-900 hover:bg-slate-800">
                     Open Workbench <ArrowRight size={16} className="ml-2"/>
                   </Button>
@@ -69,7 +69,7 @@ const Laboratory = () => {
                 <p className="text-sm text-slate-600 mb-4 line-clamp-2">
                   A programmable dual-RNA-guided DNA endonuclease in adaptive bacterial immunity.
                 </p>
-                <Link to="/workbench?paper=paper-2">
+                <Link to="/library?paper=paper-2">
                   <Button className="w-full bg-slate-900 hover:bg-slate-800">
                     Open Workbench <ArrowRight size={16} className="ml-2"/>
                   </Button>
@@ -93,7 +93,7 @@ const Laboratory = () => {
                 <p className="text-sm text-slate-600 mb-4 line-clamp-2">
                   Observation of Gravitational Waves from a Binary Black Hole Merger by LIGO.
                 </p>
-                <Link to="/workbench?paper=paper-3">
+                <Link to="/library?paper=paper-3">
                   <Button className="w-full bg-slate-900 hover:bg-slate-800">
                     Open Workbench <ArrowRight size={16} className="ml-2"/>
                   </Button>
@@ -117,7 +117,7 @@ const Laboratory = () => {
                 <p className="text-sm text-slate-600 mb-4 line-clamp-2">
                   A simple test case to demonstrate the Vivacious Panel Engine with Revideo integration.
                 </p>
-                <Link to="/workbench?paper=paper-test">
+                <Link to="/library?paper=paper-test">
                   <Button className="w-full bg-amber-600 hover:bg-amber-700">
                     Run Test Workbench <ArrowRight size={16} className="ml-2"/>
                   </Button>

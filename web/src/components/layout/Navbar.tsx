@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Zap, Menu, LogOut, Microscope, BookOpen, Images, User, HelpCircle } from "lucide-react";
+import { Zap, Menu, LogOut, Microscope, BookOpen, Images, User, HelpCircle, Archive } from "lucide-react";
 import { Button } from "@/components/retroui";
 import { useAuth } from "@/lib/auth";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -52,6 +52,7 @@ export function Navbar() {
                     <NavLink to="/library" icon={BookOpen}>Library</NavLink>
                     <NavLink to="/laboratory" icon={Microscope}>Laboratory</NavLink>
                     <NavLink to="/gallery" icon={Images}>Gallery</NavLink>
+                    <NavLink to="/archives" icon={Archive}>Archives</NavLink>
                   </div>
 
                   {/* User Section at bottom of sidebar */}
