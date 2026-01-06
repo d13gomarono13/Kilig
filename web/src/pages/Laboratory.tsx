@@ -4,19 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight, FileText, FlaskConical, Atom } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 
 const Laboratory = () => {
   return (
     <div className="min-h-screen flex flex-col bg-yellow-400 cube-bg">
-      <div className="p-4 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto flex justify-end items-center">
-              <Link to="/">
-                  <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-                      Back to Home
-                  </Button>
-              </Link>
-          </div>
-      </div>
+      <Navbar />
 
       <main className="flex-1 px-4 py-12">
         <div className="max-w-7xl mx-auto space-y-12">
@@ -135,6 +129,7 @@ const Laboratory = () => {
         </div>
       </div>
       </main>
+      <Footer />
     </div>
   );
 };
