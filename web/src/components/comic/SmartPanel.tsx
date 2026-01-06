@@ -3,6 +3,7 @@ import { ComicPanelData } from './types';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RotateCcw } from 'lucide-react';
+import { renderTemplate } from './templates';
 
 interface SmartPanelProps {
   data: ComicPanelData;
@@ -91,24 +92,10 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick 
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
                    exit={{ opacity: 0 }}
-                   className="w-full h-full bg-slate-950 text-white flex flex-col items-center justify-center p-6"
+                   className="w-full h-full bg-white flex flex-col items-center justify-center overflow-hidden"
                  >
-                   {/* SIMULATED VIVACIOUS OUTPUT */}
-                   <div className="flex items-end gap-1 h-24 mb-4">
-                      {[40, 70, 45, 90, 65].map((h, i) => (
-                        <motion.div 
-                          key={i}
-                          initial={{ height: 10 }}
-                          animate={{ height: [`${h}%`, "10%", `${h}%`] }}
-                          transition={{ repeat: Infinity, duration: 1.5, repeatType: 'reverse', delay: i * 0.1 }}
-                          className="w-4 bg-blue-500 rounded-t-sm"
-                        />
-                      ))}
-                   </div>
-                   <div className="text-center">
-                     <p className="text-blue-400 font-mono text-[10px] uppercase tracking-[0.2em] mb-1">Live Revideo Output</p>
-                     <p className="text-sm font-bold border-t border-blue-900 pt-2 px-4">{data.revideo?.templateId}</p>
-                   </div>
+                   {/* DYNAMIC TEMPLATE RENDERER */}
+                   {data.revideo && renderTemplate(data.revideo.templateId, data.revideo.data)}
                  </motion.div>
                ) : (
                  <motion.div

@@ -6,16 +6,17 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, RefreshCcw } from 'lucide-react';
 
 interface ComicEditorProps {
   manifest: ComicManifest;
   onChange: (newManifest: ComicManifest) => void;
   selectedPanelId: string | null;
   onSelectPanel: (id: string | null) => void;
+  onRefresh?: () => void;
 }
 
-export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, selectedPanelId, onSelectPanel }) => {
+export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, selectedPanelId, onSelectPanel, onRefresh }) => {
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange({ ...manifest, title: e.target.value });
@@ -53,13 +54,20 @@ export const ComicEditor: React.FC<ComicEditorProps> = ({ manifest, onChange, se
 
   return (
     <div className="h-full flex flex-col bg-background border-r">
-      <div className="p-4 border-b">
-        <Label className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Comic Title</Label>
-        <Input 
-          value={manifest.title} 
-          onChange={handleTitleChange} 
-          className="font-bold text-lg border-transparent hover:border-input focus:border-input px-0 h-auto"
-        />
+      <div className="p-4 border-b-4 border-black flex items-center justify-between">
+        <div className="flex-1 mr-2">
+          <Label className="text-xs text-muted-foreground uppercase tracking-widest font-bold">Comic Title</Label>
+          <Input 
+            value={manifest.title} 
+            onChange={handleTitleChange} 
+            className="font-bold text-lg border-transparent hover:border-input focus:border-input px-0 h-auto"
+          />
+        </div>
+        {onRefresh && (
+          <Button variant="outline" size="icon" className="h-8 w-8" onClick={onRefresh} title="Reload AI Manifest">
+            <RefreshCcw size={14} />
+          </Button>
+        )}
       </div>
 
       <ScrollArea className="flex-1 p-4">

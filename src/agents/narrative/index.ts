@@ -36,13 +36,45 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 **Panel Types**:
 
+
+
 1.  **'static'**: Use for headers, introductions, and text-heavy explanations.
 
-2.  **'revideo'**: Use for data viz.
 
-    - *Available Templates*: "bar-chart", "line-graph", "molecular-structure", "network-graph", "process-flow", "extraction-animator".
+
+2.  **'revideo'**: Use for data viz and animations.
+
+
+
+    - *Templates & Data Schemas*:
+
+
+
+        - **'bar-chart'**: `data: { labels: string[], values: number[] }` (Best for results/comparisons)
+
+
+
+        - **'process-flow'**: `data: { steps: string[] }` (Best for methodology steps)
+
+
+
+        - **'network-graph'**: `data: { nodes: {id, label}[], links: {source, target}[] }` (Best for relationships or attention heads)
+
+
+
+        - **'molecular-structure'**: (Uses network-graph schema)
+
+
+
+        - **'attention-mechanism'**: (Uses network-graph schema)
+
+
 
 3.  **'code'**: Use for algorithms or mathematical formulas (LaTeX/Python).
+
+
+
+
 
 
 

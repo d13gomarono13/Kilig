@@ -4,6 +4,7 @@ import { ComicManifest, ComicPanelData } from './types';
 import { SmartPanel } from './SmartPanel';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface ComicViewerProps {
   manifest: ComicManifest;
@@ -81,24 +82,36 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
     <div className="w-full h-screen bg-slate-100 flex flex-col overflow-y-auto">
       
       {/* TOOLBAR */}
-      <div className="h-14 bg-white border-b border-gray-200 flex items-center justify-between px-4 z-50 shadow-sm">
-        <div className="flex items-center gap-2">
-           <h1 className="font-bold text-lg">{manifest.title}</h1>
-           <span className="text-xs bg-black text-white px-2 py-0.5 rounded-full">Kilig Scientific</span>
+      <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 z-50 shadow-sm">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()} title="Zoom In"><ZoomIn size={16}/></Button>
+             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomOut()} title="Zoom Out"><ZoomOut size={16}/></Button>
+             <Button variant="outline" size="icon" onClick={handleReset} title="Reset View"><RotateCcw size={16}/></Button>
+          </div>
+          
+          <div className="flex items-center gap-2">
+             <Button 
+               onClick={handlePrev} 
+               disabled={currentPanelIndex < 0}
+               className="bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all h-9 px-4"
+             >
+               <ChevronLeft size={16} className="mr-1"/> Prev
+             </Button>
+             <Button 
+               onClick={handleNext}
+               className="bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all h-9 px-4"
+             >
+               Next Panel <ChevronRight size={16} className="ml-1"/>
+             </Button>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-2">
-           <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()}><ZoomIn size={16}/></Button>
-           <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomOut()}><ZoomOut size={16}/></Button>
-           <Button variant="outline" size="icon" onClick={handleReset}><RotateCcw size={16}/></Button>
-           <div className="w-4" />
-           <Button variant="secondary" size="sm" onClick={handlePrev} disabled={currentPanelIndex < 0}>
-             <ChevronLeft size={16} className="mr-1"/> Prev
-           </Button>
-           <Button className="bg-blue-600 hover:bg-blue-700" size="sm" onClick={handleNext}>
-             Next Panel <ChevronRight size={16} className="ml-1"/>
-           </Button>
-        </div>
+
+        <Link to="/">
+          <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+            Back to Home
+          </Button>
+        </Link>
       </div>
 
       {/* CANVAS */}
@@ -110,7 +123,9 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest }) => {
           maxScale={4}
           centerOnInit={true}
           limitToBounds={false}
-          wheel={{ step: 0.1 }}
+          wheel={{ disabled: true }}
+          doubleClick={{ disabled: true }}
+          pinch={{ disabled: true }}
         >
           <TransformComponent wrapperClass="!w-full !h-full" contentClass="!w-full !h-full flex items-center justify-center">
             

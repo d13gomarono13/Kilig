@@ -21,8 +21,11 @@ export const saveComicManifestTool = new FunctionTool({
           code: z.string()
         }).optional().describe('Code snippet for "code" type panels.'),
         revideo: z.object({
-          templateId: z.string().describe('ID of the Revideo template (e.g., "bar-chart", "molecular-structure").'),
-          data: z.record(z.any()).describe('Data parameters for the template.'),
+          templateId: z.string().describe('ID of the Revideo template (e.g., "bar-chart", "process-flow", "network-graph").'),
+          data: z.record(z.any()).describe(`Data parameters for the template. 
+          - bar-chart: { labels: string[], values: number[] }
+          - process-flow: { steps: string[] }
+          - network-graph: { nodes: {id, label}[], links: {source, target}[] }`),
           thumbnailUrl: z.string().optional().describe('Placeholder image URL.')
         }).optional().describe('Configuration for "revideo" type panels.'),
         layout: z.object({
