@@ -9,8 +9,14 @@ import { Zap, ShieldCheck, Mail, ArrowRight, Loader2 } from 'lucide-react';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, loginAsGuest } = useAuth();
+  const { login, loginAsGuest, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,11 +42,6 @@ const Login = () => {
     <div className="min-h-screen bg-yellow-400 flex items-center justify-center p-4 cube-bg">
       <div className="max-w-md w-full bg-white border-8 border-black shadow-[16px_16px_0px_0px_rgba(0,0,0,1)] p-8 relative overflow-hidden">
         
-        {/* Decorative corner accent */}
-        <div className="absolute top-0 right-0 bg-black text-white px-4 py-1 font-black uppercase text-xs transform rotate-45 translate-x-4 translate-y-2">
-            Beta Access
-        </div>
-
         <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-black text-yellow-400 rounded-full mb-4 border-4 border-black">
                 <Zap size={32} fill="currentColor" />

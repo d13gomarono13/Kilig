@@ -35,11 +35,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             {/* PUBLIC ROUTES */}
-            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/landing" element={<Index />} />
 
             {/* PROTECTED FEED (ROOT) */}
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Feed />
+              </ProtectedRoute>
+            } />
             <Route path="/feed" element={
               <ProtectedRoute>
                 <Feed />

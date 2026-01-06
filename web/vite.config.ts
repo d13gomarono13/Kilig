@@ -6,6 +6,8 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  envDir: "../",
+  envPrefix: ["VITE_", "SUPABASE_"],
   server: {
     host: "::",
     port: 8080,

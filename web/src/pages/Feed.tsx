@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import { MOCK_FEED } from '@/data/feed-data';
 import { FeedCard } from '@/components/feed/FeedCard';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/button';
-import { Search, Filter, Sparkles } from 'lucide-react';
+import { Search, Filter, Sparkles, Loader2 } from 'lucide-react';
+import { useFeed } from '@/hooks/use-feed';
 
 const FIELDS = ['All', 'Physics', 'Biology', 'CS', 'Math', 'Chemistry'];
 
 const Feed = () => {
   const [activeField, setActiveField] = useState('All');
-
-  const filteredPosts = activeField === 'All' 
-    ? MOCK_FEED 
-    : MOCK_FEED.filter(p => p.field === activeField);
+  const { data: filteredPosts, isLoading } = useFeed(activeField);
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col">
@@ -64,24 +61,34 @@ const Feed = () => {
        </div>
 
        {/* FEED CONTENT */}
-       <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {/* Featured / AI Generated Promotion Card? */}
-             <div className="bg-gradient-to-br from-yellow-300 to-yellow-500 border-4 border-black shadow-[8px_8px_0px_black] p-6 flex flex-col justify-center items-center text-center space-y-4">
-                <div className="bg-black text-white p-3 rounded-full">
-                   <Sparkles size={32} />
+       <main className="flex-1 max-w-2xl mx-auto w-full p-4 md:p-8">
+          <div className="flex flex-col gap-12">
+             {/* Featured / AI Generated Promotion Card - Made much smaller */}
+             <div className="bg-gradient-to-br from-yellow-300 to-yellow-500 border-4 border-black shadow-[4px_4px_0px_black] p-4 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="bg-black text-white p-2 rounded-full">
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-black uppercase leading-none">Generate Your Own</h2>
+                    <p className="text-xs font-bold text-black/80">Turn papers into comics with AI.</p>
+                  </div>
                 </div>
-                <h2 className="text-3xl font-black uppercase leading-tight">Generate Your Own</h2>
-                <p className="font-medium text-black/80">Turn any paper into a comic in minutes using our AI agents.</p>
-                <Button className="w-full border-2 border-black shadow-[4px_4px_0px_black] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all bg-white text-black hover:bg-slate-50">
-                   Start Laboratory
+                <Button size="sm" className="border-2 border-black shadow-[2px_2px_0px_black] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all bg-white text-black hover:bg-slate-50 text-xs font-black uppercase">
+                   Start Lab
                 </Button>
              </div>
 
              {/* POSTS */}
-             {filteredPosts.map(post => (
-               <FeedCard key={post.id} post={post} />
-             ))}
+             {isLoading ? (
+               <div className="flex items-center justify-center py-20">
+                 <Loader2 className="animate-spin w-12 h-12 text-black" />
+               </div>
+             ) : (
+               filteredPosts?.map(post => (
+                 <FeedCard key={post.id} post={post} />
+               ))
+             )}
           </div>
        </main>
 

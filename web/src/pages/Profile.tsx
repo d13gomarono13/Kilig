@@ -4,7 +4,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { FeedCard } from '@/components/feed/FeedCard';
 import { Button, Tabs, TabsPanels, TabsTrigger, TabsContent, TabsTriggerList, Badge } from "@/components/retroui";
-import { Edit, Settings, MapPin, Link as LinkIcon, BookOpen, Heart, FileDashed } from 'lucide-react';
+import { Edit, Settings, MapPin, Link as LinkIcon, BookOpen, Heart, File } from 'lucide-react';
 
 const Profile = () => {
   const profile = MOCK_PROFILE;
@@ -87,7 +87,7 @@ const Profile = () => {
                  <Heart size={18} /> Saved
               </TabsTrigger>
               <TabsTrigger className="rounded-none border-b-0 border-transparent px-8 py-4 font-black uppercase text-sm data-selected:bg-black data-selected:text-white hover:bg-slate-100 transition-colors flex items-center gap-2">
-                 <FileDashed size={18} /> Drafts ({profile.drafts.length})
+                 <File size={18} /> Drafts ({profile.drafts.length})
               </TabsTrigger>
            </TabsTriggerList>
 
@@ -116,7 +116,7 @@ const Profile = () => {
                     {profile.drafts.map(post => (
                        <div key={post.id} className="opacity-70 grayscale hover:opacity-100 hover:grayscale-0 transition-all cursor-pointer border-4 border-dashed border-black bg-slate-50 p-8 flex flex-col items-center justify-center text-center space-y-4 min-h-[300px]">
                           <div className="bg-slate-200 p-4 rounded-full">
-                             <FileDashed size={32} className="text-slate-500" />
+                             <File size={32} className="text-slate-500" />
                           </div>
                           <h3 className="text-xl font-black uppercase">{post.title}</h3>
                           <p className="font-mono text-sm text-slate-500">{post.timestamp}</p>
