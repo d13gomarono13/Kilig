@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchContentRef } from 'react-zoom-pan-pinch';
 import { ComicManifest } from './types';
 import { SmartPanel } from './SmartPanel';
@@ -14,17 +14,44 @@ interface ComicViewerProps {
 
 export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPanelId, onSelectPanel }) => {
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activePanelId, setActivePanelId] = useState<string | null>(null);
   const [currentPanelIndex, setCurrentPanelIndex] = useState(-1); // -1 = Full View
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  // Flatten all panels across pages for sequential navigation
-  const allPanels = React.useMemo(() => manifest.pages.flatMap(p => p.panels), [manifest]);
+  // Constants for layout
+  const PAGE_HEIGHT = 1414;
+  const PAGE_GAP = 80; // gap-20 = 80px
+  const PADDING = 80; // p-20 = 80px
+
+  const allPanels = useMemo(() => manifest.pages.flatMap(p => p.panels), [manifest]);
+
+  // Sync scroll container with transform
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    const handleScroll = () => {
+      if (isSyncing || !transformRef.current) return;
+      const { setTransform } = transformRef.current;
+      const { scale, positionX } = transformRef.current.instance.transformState;
+      
+      // Map scroll top to position Y
+      // We invert it because panning down means positionY becomes more negative
+      const newY = -scrollContainer.scrollTop;
+      
+      setTransform(positionX, newY, scale, 0);
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+  }, [isSyncing]);
 
   // Sync internal index when external selection changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedPanelId) {
       const index = allPanels.findIndex(p => p.id === selectedPanelId);
-      if (index !== -1 && index !== currentPanelIndex) {
+      if (index !== -1) {
         handleZoomToPanel(selectedPanelId, index, false); 
       }
     } else if (selectedPanelId === null && currentPanelIndex !== -1) {
@@ -39,30 +66,23 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
     if (updateExternal && onSelectPanel) onSelectPanel(panelId);
     setCurrentPanelIndex(index);
 
-    // Slight delay to ensure DOM is ready
     setTimeout(() => {
-      const panel = document.getElementById(`panel-${panelId}`);
       if (!transformRef.current) return;
       const { instance } = transformRef.current;
       const wrapper = instance.wrapperComponent;
+      const panel = document.getElementById(`panel-${panelId}`);
 
       if (wrapper && panel) {
         const wrapperRect = wrapper.getBoundingClientRect();
-        
-        // Use offset dimensions for natural size
         const naturalPanelWidth = (panel as HTMLElement).offsetWidth;
         const naturalPanelHeight = (panel as HTMLElement).offsetHeight;
 
-        // Calculate target scale with comfortable margin
-        const scaleX = (wrapperRect.width - 100) / naturalPanelWidth;
-        const scaleY = (wrapperRect.height - 100) / naturalPanelHeight;
+        const scaleX = (wrapperRect.width - 120) / naturalPanelWidth;
+        const scaleY = (wrapperRect.height - 120) / naturalPanelHeight;
         const targetScale = Math.min(scaleX, scaleY);
-
-        // Limit zoom levels
         const finalScale = Math.min(Math.max(targetScale, 0.5), 2.5);
 
-        const { zoomToElement } = transformRef.current;
-        zoomToElement(`panel-${panelId}`, finalScale, 600, "easeInOutQuad");
+        transformRef.current.zoomToElement(`panel-${panelId}`, finalScale, 600, "easeInOutQuad");
       }
     }, 50);
   };
@@ -80,7 +100,6 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
     if (nextIndex < allPanels.length) {
       handleZoomToPanel(allPanels[nextIndex].id, nextIndex);
     } else {
-      // End of comic, zoom out
       handleReset();
     }
   };
@@ -95,10 +114,10 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
   };
 
   return (
-    <div className="w-full h-full bg-slate-100 flex flex-col overflow-y-scroll">
+    <div className="w-full h-full bg-slate-100 flex flex-col overflow-hidden">
       
       {/* TOOLBAR */}
-      <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 sticky top-0 z-50 shadow-sm">
+      <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 z-50 shadow-sm">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
              <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()} title="Zoom In"><ZoomIn size={16}/></Button>
@@ -130,44 +149,55 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
         </Link>
       </div>
 
-      {/* CANVAS */}
-      <div className="flex-1 w-full cursor-grab active:cursor-grabbing bg-slate-200">
-        <TransformWrapper
-          ref={transformRef}
-          initialScale={0.6}
-          minScale={0.1}
-          maxScale={4}
-          centerOnInit={true}
-          limitToBounds={false}
-          wheel={{ disabled: true }}
-          pinch={{ disabled: true }}
-          doubleClick={{ disabled: true }}
-        >
-          <TransformComponent wrapperClass="!w-full !h-full" contentClass="flex flex-col items-center gap-20 p-20">
-            
-            {/* THE "PAGE" CONTAINER */}
-            {manifest.pages.map(page => (
-               <div 
-                 key={page.id} 
-                 className="bg-white shadow-2xl p-0 border-2 border-black shrink-0 relative overflow-hidden" 
-                 style={{ width: '1000px', height: '1414px', display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(8, 1fr)' }}
-               >
-                  {page.panels.map((panel) => {
-                     const globalIdx = allPanels.findIndex(p => p.id === panel.id);
-                     return (
-                       <SmartPanel 
-                         key={panel.id}
-                         data={panel}
-                         isActive={(selectedPanelId || activePanelId) === panel.id}
-                         onClick={() => handleZoomToPanel(panel.id, globalIdx)}
-                       />
-                     );
-                  })}
-               </div>
-            ))}
-
-          </TransformComponent>
-        </TransformWrapper>
+      {/* CANVAS AREA WITH FORCED SCROLLBAR */}
+      <div className="flex-1 w-full relative overflow-y-scroll no-scrollbar-inner bg-slate-200" ref={scrollContainerRef}>
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+           {/* This TransformWrapper is fixed relative to the visible area */}
+           <div className="sticky top-0 left-0 w-full h-[calc(100vh-84px)] pointer-events-auto">
+              <TransformWrapper
+                ref={transformRef}
+                initialScale={0.6}
+                minScale={0.1}
+                maxScale={4}
+                centerOnInit={true}
+                limitToBounds={false}
+                wheel={{ disabled: false }}
+                pinch={{ disabled: false }}
+                doubleClick={{ disabled: true }}
+              >
+                <TransformComponent wrapperClass="!w-full !h-full" contentClass="flex flex-col items-center gap-20 p-20">
+                  {manifest.pages.map(page => (
+                     <div 
+                       key={page.id} 
+                       className="bg-white shadow-2xl p-0 border-2 border-black shrink-0 relative overflow-hidden" 
+                       style={{ width: '1000px', height: '1414px', display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gridTemplateRows: 'repeat(8, 1fr)' }}
+                     >
+                        {page.panels.map((panel) => {
+                           const globalIdx = allPanels.findIndex(p => p.id === panel.id);
+                           return (
+                             <SmartPanel 
+                               key={panel.id}
+                               data={panel}
+                               isActive={(selectedPanelId || activePanelId) === panel.id}
+                               onClick={() => handleZoomToPanel(panel.id, globalIdx)}
+                             />
+                           );
+                        })}
+                     </div>
+                  ))}
+                </TransformComponent>
+              </TransformWrapper>
+           </div>
+        </div>
+        
+        {/* Invisible spacer to enable the vertical scrollbar on the right */}
+        <div 
+          style={{ 
+            height: `${manifest.pages.length * (PAGE_HEIGHT + PAGE_GAP) + (PADDING * 2)}px`,
+            width: '1px' 
+          }} 
+          className="pointer-events-none"
+        />
       </div>
     </div>
   );
