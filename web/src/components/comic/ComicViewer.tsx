@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchContentRef } from 'react-zoom-pan-pinch';
-import { ComicManifest, ComicPanelData } from './types';
+import { ComicManifest } from './types';
 import { SmartPanel } from './SmartPanel';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft, ZoomIn, ZoomOut, RotateCcw } from 'lucide-react';
@@ -24,7 +24,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
   React.useEffect(() => {
     if (selectedPanelId) {
       const index = allPanels.findIndex(p => p.id === selectedPanelId);
-      if (index !== -1) {
+      if (index !== -1 && index !== currentPanelIndex) {
         handleZoomToPanel(selectedPanelId, index, false); 
       }
     } else if (selectedPanelId === null && currentPanelIndex !== -1) {
@@ -39,13 +39,12 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
     if (updateExternal && onSelectPanel) onSelectPanel(panelId);
     setCurrentPanelIndex(index);
 
-    // Calculate dynamic scale to fit panel perfectly
-    const { instance } = transformRef.current;
-    const wrapper = instance.wrapperComponent;
-    
     // Slight delay to ensure DOM is ready
     setTimeout(() => {
       const panel = document.getElementById(`panel-${panelId}`);
+      if (!transformRef.current) return;
+      const { instance } = transformRef.current;
+      const wrapper = instance.wrapperComponent;
 
       if (wrapper && panel) {
         const wrapperRect = wrapper.getBoundingClientRect();
@@ -144,7 +143,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
           pinch={{ disabled: true }}
           doubleClick={{ disabled: true }}
         >
-          <TransformComponent wrapperClass="!w-full min-h-full" contentClass="flex flex-col items-center gap-20 p-20">
+          <TransformComponent wrapperClass="!w-full !h-full" contentClass="flex flex-col items-center gap-20 p-20">
             
             {/* THE "PAGE" CONTAINER */}
             {manifest.pages.map(page => (
