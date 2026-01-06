@@ -1,4 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
+import { CacheManager } from './cache/index.js';
 
 const MODEL_NAME = 'text-embedding-004';
 
@@ -15,6 +16,15 @@ function getClient() {
  * Returns a 768-dimensional vector.
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
+  const cacheKey = CacheManager.generateKey({ model: MODEL_NAME, text }, 'embeddings');
+
+  // Check Cache
+  const cached = await CacheManager.get<number[]>(cacheKey);
+  if (cached) {
+    // console.log(`[Embeddings] Cache HIT (${cacheKey.substring(0, 8)}...)`);
+    return cached;
+  }
+
   try {
     const client = getClient();
     const result = await client.models.embedContent({
@@ -29,7 +39,11 @@ export async function generateEmbedding(text: string): Promise<number[]> {
         throw new Error('No embedding returned from API');
     }
 
-    console.log(`[DEBUG] Generated embedding with dimension: ${values.length}`);
+    // console.log(`[DEBUG] Generated embedding with dimension: ${values.length}`);
+    
+    // Save to Cache
+    await CacheManager.set(cacheKey, values);
+    
     return values;
   } catch (error) {
     console.error('Error generating embedding:', error);
