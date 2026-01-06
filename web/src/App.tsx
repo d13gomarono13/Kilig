@@ -5,7 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "./lib/auth";
 
-import Feed from "./pages/Feed";
+import Library from "./pages/Library";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Laboratory from "./pages/Laboratory";
@@ -36,17 +36,17 @@ const App = () => (
           <Routes>
             {/* PUBLIC ROUTES */}
             <Route path="/login" element={<Login />} />
-            <Route path="/landing" element={<Index />} />
+            <Route path="/" element={<Index />} />
 
-            {/* PROTECTED FEED (ROOT) */}
-            <Route path="/" element={
+            {/* PROTECTED LIBRARY */}
+            <Route path="/library" element={
               <ProtectedRoute>
-                <Feed />
+                <Library />
               </ProtectedRoute>
             } />
             <Route path="/feed" element={
               <ProtectedRoute>
-                <Feed />
+                <Library />
               </ProtectedRoute>
             } />
 

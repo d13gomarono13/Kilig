@@ -48,8 +48,8 @@ export function Navbar() {
 
                   {/* Navigation */}
                   <div className="flex flex-col gap-4">
-                    <NavLink to="/landing" icon={HelpCircle}>How it works</NavLink>
-                    <NavLink to="/" icon={BookOpen}>Library</NavLink>
+                    <NavLink to="/" icon={HelpCircle}>How it works</NavLink>
+                    <NavLink to="/library" icon={BookOpen}>Library</NavLink>
                     <NavLink to="/laboratory" icon={Microscope}>Laboratory</NavLink>
                     <NavLink to="/gallery" icon={Images}>Gallery</NavLink>
                   </div>

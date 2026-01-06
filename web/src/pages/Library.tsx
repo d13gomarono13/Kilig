@@ -16,7 +16,7 @@ const FEATURED_SCIENTISTS = [
   { id: '7', name: 'Darwin', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Darwin' },
 ];
 
-const Feed = () => {
+const Library = () => {
   const { data: filteredPosts, isLoading } = useFeed('All');
 
   return (
@@ -78,4 +78,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default Library;
