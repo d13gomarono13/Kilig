@@ -14,10 +14,11 @@
 
 *   [x] **Define `ComicManifest` Schema:**
     *   Structure for `Pages`, `Panels`, `Bubbles`. (Implemented in `src/types/comic.ts`)
-*   [ ] **Create Revideo Template Library:**
-    *   Identify and parameterize standard templates (e.g., `bar-chart`, `process-flow`). (Initial list defined in Narrative Agent).
+*   [x] **Create Revideo Template Library:**
+    *   Implemented `BarChart`, `ProcessFlow`, and `NetworkGraph` components.
+    *   Updated Narrative Agent with specific data schemas for each template.
 
-## Phase 2: Agent Implementation (The "Draftsman") (In Progress)
+## Phase 2: Agent Implementation (The "Draftsman") (Completed)
 **Goal:** Update agents to produce the Manifest deterministically.
 
 *   [x] **Scientist Agent Update:**
@@ -36,13 +37,14 @@
     *   Canvas container with Zoom/Pan logic.
 *   [x] **Build `<SmartPanel />`:**
     *   Lazy Loading and Animation activation.
+    *   Dynamic Template Rendering via `TemplateRegistry`.
 
-## Phase 4: The Illustrator's Workbench (Editor) (In Progress)
+## Phase 4: The Illustrator's Workbench (Editor) (Completed)
 **Goal:** The UI for the human illustrator.
 
 *   [x] **Manifest Editor:** A split-screen UI.
 *   [x] **Asset Management:** Support for `imageUrl` field in panels.
-*   [ ] **Manual Refresh:** Button to reload the generated manifest from disk.
+*   [x] **Manual Refresh:** Button to reload the generated manifest from disk.
 
 ---
 
