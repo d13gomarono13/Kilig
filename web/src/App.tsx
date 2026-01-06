@@ -38,7 +38,12 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Index />} />
 
-            {/* OTHER PROTECTED ROUTES */}
+            {/* PROTECTED ROUTES */}
+            <Route path="/library" element={
+              <ProtectedRoute>
+                <Library />
+              </ProtectedRoute>
+            } />
             <Route path="/laboratory" element={
               <ProtectedRoute>
                 <Laboratory />
@@ -54,7 +59,7 @@ const App = () => (
                 <Studio />
               </ProtectedRoute>
             } />
-            <Route path="/library" element={
+            <Route path="/workbench" element={
               <ProtectedRoute>
                 <Workbench />
               </ProtectedRoute>
