@@ -27,7 +27,7 @@ Please orchestrate the following pipeline strictly:
 **Task**:
 - Take the Scientist's analysis and transform it into a **Revideo Video Script**.
 - Apply 'Scientific Writer (Stage 2)' principles: Clarity, Flow, and Accuracy.
-- The tone should be [Neo-Brutalism/Edgy/Educational] - high energy but rigorous.
+- The tone should be [Edgy/Educational] - high energy but rigorous.
 **Output Format**:
 - MUST use the `save_video_script` tool.
 - Structure:
@@ -42,7 +42,7 @@ Please orchestrate the following pipeline strictly:
 **Delegate to**: `SceneGraph Designer Agent`
 **Task**:
 - Convert the Narrative Architect's script into a **Revideo SceneGraph**.
-- Use the 'scientific_visualization' skill to ensure aesthetics match the **Neo-Brutalism** style (High contrast, bold colors).
+- Use the 'scientific_visualization' skill to ensure aesthetics match the 
 - STRICTLY use valid Revideo components: `<Circle>`, `<Rect>`, `<Line>`, `<Layout>`, `<Latex>`, `<Text>`.
 **Output Format**:
 - MUST use the `generate_scenegraph` tool.
