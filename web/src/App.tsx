@@ -12,6 +12,7 @@ import Laboratory from "./pages/Laboratory";
 import Gallery from "./pages/Gallery";
 import Studio from "./pages/Studio";
 import Workbench from "./pages/Workbench";
+import Viewer from "./pages/Viewer";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 
@@ -36,7 +37,8 @@ const App = () => (
           <Routes>
             {/* PUBLIC ROUTES */}
             <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Index />} />
+            <Route path="/landing" element={<Index />} />
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
             {/* PROTECTED ROUTES */}
             <Route path="/library" element={
@@ -62,6 +64,11 @@ const App = () => (
             <Route path="/editor" element={
               <ProtectedRoute>
                 <Workbench />
+              </ProtectedRoute>
+            } />
+            <Route path="/viewer" element={
+              <ProtectedRoute>
+                <Viewer />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={

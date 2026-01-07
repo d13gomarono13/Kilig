@@ -47,7 +47,7 @@ const Laboratory = () => {
                 </p>
                 <Link to="/editor?paper=paper-1">
                   <Button className="w-full bg-slate-900 hover:bg-slate-800">
-                    Open Workbench <ArrowRight size={16} className="ml-2"/>
+                    Open Editor <ArrowRight size={16} className="ml-2"/>
                   </Button>
                 </Link>
               </CardContent>
@@ -71,7 +71,7 @@ const Laboratory = () => {
                 </p>
                 <Link to="/editor?paper=paper-2">
                   <Button className="w-full bg-slate-900 hover:bg-slate-800">
-                    Open Workbench <ArrowRight size={16} className="ml-2"/>
+                    Open Editor <ArrowRight size={16} className="ml-2"/>
                   </Button>
                 </Link>
               </CardContent>
@@ -95,7 +95,7 @@ const Laboratory = () => {
                 </p>
                 <Link to="/editor?paper=paper-3">
                   <Button className="w-full bg-slate-900 hover:bg-slate-800">
-                    Open Workbench <ArrowRight size={16} className="ml-2"/>
+                    Open Editor <ArrowRight size={16} className="ml-2"/>
                   </Button>
                 </Link>
               </CardContent>
@@ -119,7 +119,7 @@ const Laboratory = () => {
                 </p>
                 <Link to="/editor?paper=paper-test">
                   <Button className="w-full bg-amber-600 hover:bg-amber-700">
-                    Run Test Workbench <ArrowRight size={16} className="ml-2"/>
+                    Run Test Editor <ArrowRight size={16} className="ml-2"/>
                   </Button>
                 </Link>
               </CardContent>

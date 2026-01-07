@@ -10,9 +10,17 @@ interface ComicViewerProps {
   manifest: ComicManifest;
   selectedPanelId?: string | null;
   onSelectPanel?: (id: string | null) => void;
+  backLink?: string;
+  backLabel?: string;
 }
 
-export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPanelId, onSelectPanel }) => {
+export const ComicViewer: React.FC<ComicViewerProps> = ({ 
+  manifest, 
+  selectedPanelId, 
+  onSelectPanel,
+  backLink = "/laboratory",
+  backLabel = "Exit Editor"
+}) => {
   const transformRef = useRef<ReactZoomPanPinchContentRef>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [activePanelId, setActivePanelId] = useState<string | null>(null);
@@ -142,9 +150,9 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({ manifest, selectedPane
           </div>
         </div>
 
-        <Link to="/laboratory">
+        <Link to={backLink}>
           <Button className="rounded-none border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
-            Exit Editor
+            {backLabel}
           </Button>
         </Link>
       </div>

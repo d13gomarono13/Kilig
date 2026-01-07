@@ -29,11 +29,6 @@ export function HeroSection() {
               Start Creating
             </Button>
           </Link>
-          <Link to="#features">
-            <Button variant="outline" size="lg" className="text-lg bg-white border-4 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all shadow-[4px_4px_0px_0px_black] rounded-none font-black uppercase h-16 px-8">
-              See How It Works
-            </Button>
-          </Link>
         </div>
 
         {/* Stats bar */}

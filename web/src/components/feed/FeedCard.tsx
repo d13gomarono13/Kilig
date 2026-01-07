@@ -53,7 +53,7 @@ export const FeedCard = ({ post }: { post: FeedPost }) => {
 
       {/* CONTENT PREVIEW */}
       <div className="p-4 flex-1 space-y-4">
-        <Link to={`/editor?paper=${post.id.replace('post-', 'paper-')}`} className="block group">
+        <Link to={`/viewer?paper=${post.id.replace('post-', 'paper-')}`} className="block group">
             <h3 className="text-2xl font-black uppercase leading-none mb-2 group-hover:underline decoration-4 underline-offset-4 decoration-yellow-400">
                 {post.title}
             </h3>
@@ -68,7 +68,7 @@ export const FeedCard = ({ post }: { post: FeedPost }) => {
           className="w-full border-2 border-black relative rounded-md overflow-hidden bg-white"
           style={{ aspectRatio: '1/1.414' }}
         >
-             <Link to={`/editor?paper=${post.id.replace('post-', 'paper-')}`} className="block w-full h-full">
+             <Link to={`/viewer?paper=${post.id.replace('post-', 'paper-')}`} className="block w-full h-full">
                 {/* Scaled Inner Container */}
                 <div 
                   style={{ 
