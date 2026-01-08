@@ -53,7 +53,7 @@ const synthesizeAnalysisTool = new FunctionTool({
     // This tool acts as a "formatter" or "thinker" that ensures the output follows
     // the Kilig Scientific Analysis format.
     console.log(`[Scientist] Synthesizing findings into structured critical analysis...`);
-    
+
     // In ADK, we can either let the model do this in its response, 
     // or use this tool to explicitly structure data.
     return `Synthesis protocol activated. Results will be formatted as Core Concept, Methodology, Results, Validity, Strengths, and Weaknesses.`;
@@ -69,9 +69,9 @@ const ingestPaperTool = new FunctionTool({
     url: z.string().optional().describe('The URL source of the paper.'),
   }),
   execute: async ({ content, title, url }) => {
-    return await ingestPaper({ 
-      content, 
-      metadata: { title, url } 
+    return await ingestPaper({
+      content,
+      metadata: { title, url }
     });
   }
 });
@@ -130,10 +130,10 @@ When analyzing a paper, look for:
   // Load both discovered MCP tools and custom tools
   // Note: toolsets property is removed, all tools/toolsets go into tools array
   tools: [
-    arxivToolset, 
+    arxivToolset,
     claudeSkillsToolset,
-    synthesizeAnalysisTool, 
-    ingestPaperTool, 
+    synthesizeAnalysisTool,
+    ingestPaperTool,
     searchKnowledgeBaseTool
   ],
 });

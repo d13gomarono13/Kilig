@@ -50,7 +50,7 @@ Always provide clear and detailed instructions when transferring to another agen
 
 **CRITICAL**: When you want to transfer to another agent, you MUST use the \`transfer_to_agent\` tool. Do NOT just write it as text. Use the tool.`,
   // Register sub-agents for delegation (ADK Auto Flow)
-  subAgents: [scientistAgent, narrativeAgent, designerAgent, validatorAgent], 
+  subAgents: [scientistAgent, narrativeAgent, designerAgent, validatorAgent],
 });
 
 // Post-initialization: Allow agents to transfer to each other
@@ -58,4 +58,3 @@ scientistAgent.subAgents = [narrativeAgent, rootAgent];
 narrativeAgent.subAgents = [designerAgent, rootAgent];
 designerAgent.subAgents = [validatorAgent, rootAgent];
 validatorAgent.subAgents = [rootAgent];
-
