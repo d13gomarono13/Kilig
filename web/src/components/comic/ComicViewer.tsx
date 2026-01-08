@@ -128,9 +128,8 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({
       <div className="bg-white border-b-4 border-black flex items-center justify-between px-4 py-4 z-50 shadow-sm">
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
-             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn()} title="Zoom In"><ZoomIn size={16}/></Button>
-             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomOut()} title="Zoom Out"><ZoomOut size={16}/></Button>
-             <Button variant="outline" size="icon" onClick={() => handleReset()} title="Reset View"><RotateCcw size={16}/></Button>
+             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomIn(0.1)} title="Zoom In"><ZoomIn size={16}/></Button>
+             <Button variant="outline" size="icon" onClick={() => transformRef.current?.zoomOut(0.1)} title="Zoom Out"><ZoomOut size={16}/></Button>
           </div>
           
           <div className="flex items-center gap-2">
@@ -169,7 +168,7 @@ export const ComicViewer: React.FC<ComicViewerProps> = ({
                 maxScale={4}
                 centerOnInit={true}
                 limitToBounds={false}
-                wheel={{ disabled: false }}
+                wheel={{ disabled: true }}
                 pinch={{ disabled: false }}
                 doubleClick={{ disabled: true }}
               >
