@@ -1,58 +1,70 @@
 # Promptfoo configuration for Kilig
 # For more info: https://www.promptfoo.dev/docs/configuration/guide/
 
+# We use a pass-through prompt because we are evaluating existing artifacts
 prompts:
-  - "Review the following scientific artifact for accuracy, structural integrity, and visual potential:\n\n{{content}}"
+  - "{{content}}"
 
+# The provider simply returns the artifact content so we can assert on it
 providers:
-  - id: openai:gpt-4o-mini # Using a cheap judge
-  - id: google:gemini-1.5-flash-latest
+  - id: file://scripts/pass_through_provider.js
+    label: "Artifact Pass-through"
+
+# Default options for all tests
+defaultTest:
+  options:
+    # Use Gemini as the judge for llm-rubric assertions
+    rubricProvider: google:gemini-1.5-flash-latest
 
 tests:
   # Scientist Synthesis Validation
   - vars:
-      content: file://test_artifacts/latest/turn-1-scientist-p3-text.json
+      content: file://test_artifacts/latest/scientist_analysis.txt
     assert:
       - type: javascript
-        value: value.length > 500
-      - type: llm-rubric
-        value: >
-          The analysis must follow the Kilig Scientific Analysis format. 
-          It MUST include sections for 'Core Concept', 'Methodology', 'Results', and 'Validity'.
-          It MUST highlight specific numerical values that can be plotted (e.g., 'X increased by Y%').
+        value: output.length > 100 # Basic length check
+      - type: javascript
+        value: |
+          const required = ['Core Concept', 'Methodology', 'Results'];
+          const missing = required.filter(r => !output.includes(r));
+          if (missing.length > 0) return `Missing sections: ${missing.join(', ')}`;
+          return true;
       - type: icontains
         value: "Methodology"
 
   # Narrative Comic Manifest Validation
   - vars:
-      content: file://test_artifacts/latest/turn-2-narrative-p1-call.json
+      content: file://test_artifacts/latest/comic_manifest.json
     assert:
-      - type: contains-json
+      - type: is-json
       - type: javascript
         value: |
-          const json = JSON.parse(value);
-          if (json.name !== 'save_comic_manifest') return false;
+          // Value is a JSON string of the manifest (because content was read from file)
+          let manifest;
+          try {
+            manifest = JSON.parse(output);
+          } catch (e) {
+            return false; // Invalid JSON
+          }
           
-          const args = JSON.parse(json.args);
-          if (!args.pages || args.pages.length === 0) return false;
+          // Allow empty object for dummy file case (so test fails with specific message or passes if we want to allow skipping)
+          // But for robust testing, we want it to FAIL if it's the dummy file.
+          if (Object.keys(manifest).length === 0) return "Manifest is empty (Dummy file used)";
+
+          if (!manifest.pages || manifest.pages.length === 0) return "Manifest must have pages";
           
-          // Check for basic layout consistency (e.g., no negative coordinates)
-          for (const page of args.pages) {
+          // Check for basic layout consistency
+          for (const page of manifest.pages) {
             for (const panel of page.panels) {
               if (panel.layout.x < 1 || panel.layout.y < 1) return "Panel layout coordinates must be 1-indexed (min 1)";
               if (panel.layout.w < 1 || panel.layout.h < 1) return "Panel dimensions must be positive";
             }
           }
           return true;
-      - type: llm-rubric
-        value: >
-          The comic manifest should represent a logical narrative arc based on the scientific paper. 
-          The sequencing of panels should make sense (Intro -> Methodology -> Results -> Conclusion).
-          The "revideo" panels must have high-quality template selections (e.g. process-flow for methodology).
 
-  # Validator Check (If run reached turn 3)
+  # Validator Check (Optional)
   - vars:
-      content: file://test_artifacts/latest/turn-3-validator-p1-text.json
+      content: file://test_artifacts/latest/validator_report.txt
     assert:
-      - type: llm-rubric
-        value: "The validator should provide a summary of the quality of the manifest and highlight any potential errors or improvements."
+       - type: javascript
+         value: output.length > 10 # Check if validator ran

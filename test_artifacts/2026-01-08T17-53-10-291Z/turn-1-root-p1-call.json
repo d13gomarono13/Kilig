@@ -1,0 +1,10 @@
+{
+  "functionCall": {
+    "name": "transfer_to_agent",
+    "args": {
+      "agentName": "scientist",
+      "message": " Research the paper https://arxiv.org/abs/1706.03762 and extract the core concept of 'Attention', then transfer the findings to the narrative agent for scripting"
+    },
+    "id": "adk-551e5a85-ff4c-4e04-8481-e5095a799609"
+  }
+}
