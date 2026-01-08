@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
+    "test:pipeline": "tsx scripts/test_pipeline.ts",
     "cache:clear": "tsx scripts/clear-cache.ts"
   },
   "dependencies": {

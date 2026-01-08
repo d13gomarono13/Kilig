@@ -1,0 +1,3 @@
+{
+  "text": "<function=transfer_to_agent>{\"agentName\":\"narrative\",\"message\":\"Create a video script about the 'Attention' concept in sequence-to-sequence models, focusing on how it improves translation quality by allowing the model to focus on specific parts of the input data. Also, include the process flow and comparative data to visualize the attention mechanism.\"}</function>"
+}

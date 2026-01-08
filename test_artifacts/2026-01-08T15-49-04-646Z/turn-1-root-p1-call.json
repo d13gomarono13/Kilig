@@ -1,0 +1,10 @@
+{
+  "functionCall": {
+    "name": "transfer_to_agent",
+    "args": {
+      "agentName": "scientist",
+      "message": "Research the paper https://arxiv.org/abs/1706.03762 and extract the core concept of \"Attention\", then transfer the findings to the narrative agent for scripting, followed by the designer agent for SceneGraph creation, and finally the validator agent for validation."
+    },
+    "id": "adk-27e8ba9a-f3be-4431-864a-1c77c847820f"
+  }
+}

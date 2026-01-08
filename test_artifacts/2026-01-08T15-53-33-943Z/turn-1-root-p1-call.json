@@ -1,0 +1,10 @@
+{
+  "functionCall": {
+    "name": "transfer_to_agent",
+    "args": {
+      "agentName": "scientist",
+      "message": "Research the paper https://arxiv.org/abs/1706.03762 and extract the core concept of 'Attention' to be used in a video script."
+    },
+    "id": "adk-9de50f36-0ea3-4bfb-812e-2e720ab13f8d"
+  }
+}

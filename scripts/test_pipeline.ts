@@ -1,25 +1,35 @@
 import 'dotenv/config';
 import { rootAgent } from '../src/agents/root/index.js';
 import { InMemoryRunner, isFinalResponse } from '@google/adk';
+import fs from 'fs';
+import path from 'path';
 
 // Helper to wait
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function main() {
   console.log('--- Testing Kilig Pipeline (End-to-End) ---');
-  
+
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const artifactsDir = path.join(process.cwd(), 'test_artifacts', timestamp);
+
   try {
+    if (!fs.existsSync(artifactsDir)) {
+      fs.mkdirSync(artifactsDir, { recursive: true });
+    }
+    console.log(`Logging artifacts to: ${artifactsDir}`);
+
     const runner = new InMemoryRunner({
-        agent: rootAgent,
-        appName: 'kilig-pipeline-test'
+      agent: rootAgent,
+      appName: 'kilig-pipeline-test'
     });
     console.log('Runner initialized with Root Agent.');
 
     // Create session explicitly
     await runner.sessionService.createSession({
-        appName: 'kilig-pipeline-test',
-        userId: 'test-user-01',
-        sessionId: 'test-session-01'
+      appName: 'kilig-pipeline-test',
+      userId: 'test-user-01',
+      sessionId: 'test-session-01'
     });
     console.log('Session created.');
 
@@ -38,7 +48,7 @@ async function main() {
     while (!isFinished && turnCount < maxTurns) {
       turnCount++;
       console.log(`\n--- Starting Turn ${turnCount} ---`);
-      
+
       let success = false;
       let retries = 0;
       const maxRetries = 3;
@@ -46,53 +56,60 @@ async function main() {
       while (!success && retries < maxRetries) {
         try {
           const resultGenerator = runner.runAsync({
-              userId: 'test-user-01',
-              sessionId: 'test-session-01',
-              newMessage: turnCount === 1 ? {
-                  role: 'user',
-                  parts: [{ text: prompt }]
-              } : undefined
+            userId: 'test-user-01',
+            sessionId: 'test-session-01',
+            newMessage: turnCount === 1 ? {
+              role: 'user',
+              parts: [{ text: prompt }]
+            } as any : undefined as any
           });
 
+          let partIndex = 0;
           for await (const event of resultGenerator) {
-              const author = event.author || 'system';
-              if (author !== lastAuthor) {
-                  console.log(`\n[Agent Switch] Now Active: ${author}`);
-                  lastAuthor = author;
-              }
+            const author = event.author || 'system';
+            if (author !== lastAuthor) {
+              console.log(`\n[Agent Switch] Now Active: ${author}`);
+              lastAuthor = author;
+            }
 
-              if (event.content) {
-                const parts = event.content.parts || [];
-                parts.forEach((part: any, i: number) => {
-                  if (part.text) {
-                    console.log(`[${author}] Text: ${part.text.substring(0, 100)}...`);
-                  } else if (part.functionCall) {
-                    console.log(`[${author}] Tool Call: ${part.functionCall.name}`);
-                  } else if (part.functionResponse) {
-                    console.log(`[${author}] Tool Result: ${part.functionResponse.name}`);
-                  }
-                });
-              }
-              
-              if (event.errorCode) {
-                  console.error(`[ERROR] ${event.errorCode}: ${event.errorMessage}`);
-                  if (event.errorCode === 429 || event.errorMessage?.includes('Quota exceeded')) {
-                      console.log('Rate Limit hit. Waiting 5s before retry...');
-                      await delay(5000);
-                      throw new Error('429');
-                  }
-              }
+            if (event.content) {
+              const parts = event.content.parts || [];
+              parts.forEach((part: any, i: number) => {
+                partIndex++;
+                const filename = `turn-${turnCount}-${author}-p${partIndex}-${part.text ? 'text' : part.functionCall ? 'call' : 'resp'}.json`;
+                const filePath = path.join(artifactsDir, filename);
+                fs.writeFileSync(filePath, JSON.stringify(part, null, 2));
 
-              if (isFinalResponse(event)) {
-                  // Check if this is the ROOT agent providing final response
-                  if (author === 'root') {
-                      isFinished = true;
-                  }
+                if (part.text) {
+                  console.log(`[${author}] Text: ${part.text.substring(0, 100)}...`);
+                } else if (part.functionCall) {
+                  console.log(`[${author}] Tool Call: ${part.functionCall.name}`);
+                } else if (part.functionResponse) {
+                  console.log(`[${author}] Tool Result: ${part.functionResponse.name}`);
+                }
+              });
+            }
+
+            if (event.errorCode) {
+              console.error(`[ERROR] ${event.errorCode}: ${event.errorMessage}`);
+              if (String(event.errorCode) === '429' || event.errorMessage?.includes('Quota exceeded') || event.errorMessage?.includes('Rate limit')) {
+                console.log('Rate Limit hit. Waiting 65s before retry...');
+                await delay(65000);
+                throw new Error('429');
               }
+            }
+
+            if (isFinalResponse(event)) {
+              // Check if this is the ROOT agent providing final response
+              if (author === 'root') {
+                isFinished = true;
+              }
+            }
           }
           success = true;
-          // Small breathing room between turns
-          await delay(2000);
+          // Breathing room between turns (10s to stay under RPM limits)
+          console.log('Turn complete. Waiting 10s...');
+          await delay(10000);
         } catch (err: any) {
           if (err.message === '429') {
             retries++;

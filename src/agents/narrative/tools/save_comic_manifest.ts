@@ -22,7 +22,7 @@ export const saveComicManifestTool = new FunctionTool({
         }).optional().describe('Code snippet for "code" type panels.'),
         revideo: z.object({
           templateId: z.string().describe('ID of the Revideo template (e.g., "bar-chart", "process-flow", "network-graph").'),
-          data: z.record(z.any()).describe(`Data parameters for the template. 
+          data: z.string().describe(`JSON string containing data parameters for the template. 
           - bar-chart: { labels: string[], values: number[] }
           - process-flow: { steps: string[] }
           - network-graph: { nodes: {id, label}[], links: {source, target}[] }`),
@@ -39,7 +39,7 @@ export const saveComicManifestTool = new FunctionTool({
   }),
   execute: async (manifest) => {
     console.log(`[Narrative Agent] Generated Comic Manifest: "${manifest.title}" with ${manifest.pages[0].panels.length} panels.`);
-    
+
     // Persistence: Save to local file for frontend usage
     try {
       const outputPath = path.join(process.cwd(), 'web/src/data/comic-manifest.json');

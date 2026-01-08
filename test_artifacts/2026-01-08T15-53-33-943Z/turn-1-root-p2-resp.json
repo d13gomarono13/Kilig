@@ -1,0 +1,9 @@
+{
+  "functionResponse": {
+    "id": "adk-9de50f36-0ea3-4bfb-812e-2e720ab13f8d",
+    "name": "transfer_to_agent",
+    "response": {
+      "result": "Transfer queued"
+    }
+  }
+}

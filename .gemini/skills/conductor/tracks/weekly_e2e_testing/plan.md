@@ -15,10 +15,10 @@ Establish a robust, automated weekly testing protocol to ensure the Kilig video 
 -   **Reporting**: Log execution results to a local file or dashboard.
 
 ## Tasks
-- [ ] **Stabilize Test Script**: Ensure `scripts/test_pipeline.ts` handles all agent turns reliably without manual intervention.
-- [ ] **Artifact Logging**: Update the runner to save intermediate artifacts (JSONs) to a `test_artifacts/{timestamp}/` folder for inspection.
-- [ ] **Schedule**: Define a manual or automated schedule (e.g., every Monday morning).
-- [ ] **Alerting**: (Optional) Simple mechanism to flag failures (e.g., exit code 1).
+- [x] **Stabilize Test Script**: Ensure `scripts/test_pipeline.ts` handles all agent turns reliably without manual intervention.
+- [x] **Artifact Logging**: Update the runner to save intermediate artifacts (JSONs) to a `test_artifacts/{timestamp}/` folder for inspection.
+- [x] **Schedule**: Manual for now (run `npm run test:pipeline` every Monday morning).
+- [x] **Alerting**: Basic exit code strategy implemented (exit 1 on failure).
 
 ## Status
-- **Planned**: Initial setup.
+- **Completed**: Stabilization, Logging, and manual schedule defined.

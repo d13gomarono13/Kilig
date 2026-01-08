@@ -1,0 +1,10 @@
+{
+  "functionCall": {
+    "name": "transfer_to_agent",
+    "args": {
+      "agentName": "narrative",
+      "message": "synthesize_critical_analysis(\"Attention Is All You Need\", \"self-attention mechanism\", \"Transformer model\", \"state-of-the-art performance on machine translation tasks"
+    },
+    "id": "adk-8553bb91-bf24-43e0-9073-200483b1c549"
+  }
+}
