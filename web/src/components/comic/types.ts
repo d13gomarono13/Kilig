@@ -1,5 +1,5 @@
 
-export type PanelType = 'static' | 'revideo' | 'code' | 'chart';
+export type PanelType = 'static' | 'revideo' | 'code' | 'chart' | 'revideo-scene';
 
 export interface RevideoConfig {
   templateId: string; // e.g., "bar-chart-v1", "molecular-structure"
@@ -32,6 +32,8 @@ export interface ComicPage {
 }
 
 export interface ComicManifest {
+  id?: string;
   title: string;
+  meta?: Record<string, any>;
   pages: ComicPage[];
 }

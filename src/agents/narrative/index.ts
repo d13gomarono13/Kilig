@@ -81,7 +81,7 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 **Process**:
 
-1.  **Storyboards**: Break the flow into 4-6 discrete panels.
+1.  **Storyboards**: Break the flow into 4-5 discrete panels (STRICT MAXIMUM of 5).
 
 2.  **Visuals**: Assign a Revideo template to the most complex data point.
 

@@ -26,6 +26,8 @@ export const rootAgent = new Agent({
 
 Your goal is to manage the lifecycle of transforming a scientific topic into either an educational **Video** or an interactive **Scientific Comic**.
 
+**IMPORTANT**: You will be provided with a **REFERENCE DOCUMENT** (the full text of the paper) at the very beginning of the conversation history. This document is placed there to enable **Groq Prompt Caching**. You and all specialized sub-agents MUST treat this document as the primary source of truth for all analysis.
+
 **CRITICAL**: You MUST NOT answer the user directly with information you already know. You MUST always delegate to the specialized sub-agents.
 
 **Pipelines**:
@@ -54,7 +56,7 @@ Always provide clear and detailed instructions when transferring to another agen
 });
 
 // Post-initialization: Allow agents to transfer to each other
-scientistAgent.subAgents = [narrativeAgent, rootAgent];
-narrativeAgent.subAgents = [designerAgent, rootAgent];
-designerAgent.subAgents = [validatorAgent, rootAgent];
-validatorAgent.subAgents = [rootAgent];
+(scientistAgent as any).subAgents = [narrativeAgent, rootAgent];
+(narrativeAgent as any).subAgents = [designerAgent, rootAgent];
+(designerAgent as any).subAgents = [validatorAgent, rootAgent];
+(validatorAgent as any).subAgents = [rootAgent];

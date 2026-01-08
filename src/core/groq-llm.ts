@@ -52,7 +52,7 @@ export class GroqLlm extends BaseLlm {
     for (const content of llmRequest.contents) {
       const role = content.role === 'model' ? 'assistant' : 'user';
       const parts = content.parts || [];
-      
+
       const assistantTextParts: string[] = [];
       const assistantToolCalls: any[] = [];
       const toolResponseMessages: GroqMessage[] = [];
@@ -62,7 +62,7 @@ export class GroqLlm extends BaseLlm {
           if (role === 'assistant') assistantTextParts.push(part.text);
           else messages.push({ role: 'user', content: part.text });
         }
-        
+
         if (part.functionCall) {
           const id = `call_${part.functionCall.name}_${Math.random().toString(36).substring(2, 7)}`;
           assistantToolCalls.push({
@@ -77,11 +77,11 @@ export class GroqLlm extends BaseLlm {
         }
 
         if (part.functionResponse) {
-          const id = pendingToolCalls.get(part.functionResponse.name) || `call_${part.functionResponse.name}_fixed`;
+          const id = pendingToolCalls.get(part.functionResponse.name as any) || `call_${part.functionResponse.name}_fixed`;
           toolResponseMessages.push({
             role: 'tool',
             tool_call_id: id,
-            name: part.functionResponse.name,
+            name: part.functionResponse.name as any,
             content: JSON.stringify(part.functionResponse.response)
           });
         }
@@ -96,7 +96,7 @@ export class GroqLlm extends BaseLlm {
           });
         }
       }
-      
+
       if (toolResponseMessages.length > 0) {
         messages.push(...toolResponseMessages);
       }
@@ -131,6 +131,7 @@ export class GroqLlm extends BaseLlm {
       payload.tool_choice = 'auto';
     }
 
+    console.log(`[GroqLlm] Sending Payload (truncated): ${JSON.stringify(payload).substring(0, 500)}...`);
     try {
       const response = await fetch(this.baseUrl, {
         method: 'POST',
@@ -168,18 +169,18 @@ export class GroqLlm extends BaseLlm {
 
               const responseParts: Part[] = [];
               if (delta.content) responseParts.push({ text: delta.content });
-              
+
               if (delta.tool_calls) {
-                  for (const tc of delta.tool_calls) {
-                      if (tc.function?.name) {
-                          responseParts.push({
-                              functionCall: {
-                                  name: tc.function.name,
-                                  args: tc.function.arguments ? JSON.parse(tc.function.arguments) : {}
-                              }
-                          });
+                for (const tc of delta.tool_calls) {
+                  if (tc.function?.name) {
+                    responseParts.push({
+                      functionCall: {
+                        name: tc.function.name,
+                        args: tc.function.arguments ? JSON.parse(tc.function.arguments) : {}
                       }
+                    });
                   }
+                }
               }
 
               yield {
@@ -191,81 +192,84 @@ export class GroqLlm extends BaseLlm {
         }
       } else {
         const data = await response.json();
+        if (data.usage) {
+          console.log(`[GroqLlm] Usage RAW: ${JSON.stringify(data.usage)}`);
+        }
         const choice = data.choices[0];
         const msg = choice.message;
-        
+
         const responseParts: Part[] = [];
         let heuristicFound = false;
 
         if (msg.content) {
-            console.log(`[GroqLlm] Raw Content: ${msg.content.substring(0, 100)}...`);
-            // Dynamic Heuristic: Check for any available tool usage in text
-            if (llmRequest.toolsDict) {
-                console.log(`[GroqLlm] Available Tools: ${Object.keys(llmRequest.toolsDict).join(', ')}`);
-                for (const toolName of Object.keys(llmRequest.toolsDict)) {
-                    // Regex to catch: tool_name(args)
-                    // We need to double escape backslashes for string constructor
-                    // Strict pattern: tool_name \s* ( \s* (?:param=)? ... )
-                    const toolRegex = new RegExp(`${toolName}\\s*\\(\\s*(?:[\\w]+\\s*=\\s*)?['"]?([^)]*)`, 'g');
-                    
-                    let match;
-                    while ((match = toolRegex.exec(msg.content)) !== null) {
-                        heuristicFound = true;
-                        let argsString = match[1] || '';
-                        
-                        let args: any = {};
-                        if (toolName === 'transfer_to_agent') {
-                             // Robust inner match for transfer
-                             // 1. Function style: transfer_to_agent(...)
-                             let tMatch = msg.content.match(/transfer_to_agent\s*\(\s*(?:agent_name\s*=\s*)?['"]?([\w-]+)['"]?([^)]*)?\)/);
-                             
-                             // 2. Command style: transfer_to_agent validator ...
-                             if (!tMatch) {
-                                 tMatch = msg.content.match(/transfer_to_agent\s+['"]?([\w-]+)['"]?\s*(.*)/);
-                             }
+          console.log(`[GroqLlm] Raw Content: ${msg.content.substring(0, 100)}...`);
+          // Dynamic Heuristic: Check for any available tool usage in text
+          if (llmRequest.toolsDict) {
+            console.log(`[GroqLlm] Available Tools: ${Object.keys(llmRequest.toolsDict).join(', ')}`);
+            for (const toolName of Object.keys(llmRequest.toolsDict)) {
+              // Regex to catch: tool_name(args)
+              // We need to double escape backslashes for string constructor
+              // Strict pattern: tool_name \s* ( \s* (?:param=)? ... )
+              const toolRegex = new RegExp(`${toolName}\\s*\\(\\s*(?:[\\w]+\\s*=\\s*)?['"]?([^)]*)`, 'g');
 
-                             if (tMatch) {
-                                 const aName = tMatch[1].trim();
-                                 let tMsg = tMatch[2] ? tMatch[2].trim() : '';
-                                 tMsg = tMsg.replace(/^,\s*/, '').replace(/^(?:message|json_data|task)\s*=\s*/, '').replace(/^['"]/, '').replace(/['"]$/, '');
-                                 if (!tMsg) tMsg = `Transferring to ${aName}`;
-                                 // ADK expects camelCase 'agentName'
-                                 args = { agentName: aName, message: tMsg };
-                             } else {
-                                 // If strict match fails, use the generic capture
-                                 // argsString has the content inside parens
-                                 const parts = argsString.split(',').map(s => s.trim());
-                                 const aName = parts[0].replace(/^(?:agent_name\s*=\s*)?['"]?([\w-]+)['"]?$/, '$1');
-                                 const tMsg = parts.slice(1).join(', ').replace(/^(?:message|json_data|task)\s*=\s*/, '').replace(/^['"]/, '').replace(/['"]$/, '');
-                                 args = { agentName: aName, message: tMsg || `Transferring to ${aName}` };
-                             }
-                        } else {
-                            // Generic Fallback
-                            argsString = argsString.replace(/['"]?\s*\)?$/, '');
-                            
-                            try {
-                                args = JSON.parse(argsString);
-                            } catch {
-                                if (toolName.includes('validate')) args = { json_content: argsString };
-                                else if (toolName.includes('save')) args = { manifest: argsString };
-                                else args = { input: argsString };
-                            }
-                        }
+              let match;
+              while ((match = toolRegex.exec(msg.content)) !== null) {
+                heuristicFound = true;
+                let argsString = match[1] || '';
 
-                        console.log(`[GroqLlm] Heuristic: Detected text-based tool call to ${toolName}`);
-                        responseParts.push({
-                            functionCall: {
-                                name: toolName,
-                                args: args
-                            }
-                        });
-                    }
+                let args: any = {};
+                if (toolName === 'transfer_to_agent') {
+                  // Robust inner match for transfer
+                  // 1. Function style: transfer_to_agent(...)
+                  let tMatch = msg.content.match(/transfer_to_agent\s*\(\s*(?:agent_name\s*=\s*)?['"]?([\w-]+)['"]?([^)]*)?\)/);
+
+                  // 2. Command style: transfer_to_agent validator ...
+                  if (!tMatch) {
+                    tMatch = msg.content.match(/transfer_to_agent\s+['"]?([\w-]+)['"]?\s*(.*)/);
+                  }
+
+                  if (tMatch) {
+                    const aName = tMatch[1].trim();
+                    let tMsg = tMatch[2] ? tMatch[2].trim() : '';
+                    tMsg = tMsg.replace(/^,\s*/, '').replace(/^(?:message|json_data|task)\s*=\s*/, '').replace(/^['"]/, '').replace(/['"]$/, '');
+                    if (!tMsg) tMsg = `Transferring to ${aName}`;
+                    // ADK expects camelCase 'agentName'
+                    args = { agentName: aName, message: tMsg };
+                  } else {
+                    // If strict match fails, use the generic capture
+                    // argsString has the content inside parens
+                    const parts = argsString.split(',').map(s => s.trim());
+                    const aName = parts[0].replace(/^(?:agent_name\s*=\s*)?['"]?([\w-]+)['"]?$/, '$1');
+                    const tMsg = parts.slice(1).join(', ').replace(/^(?:message|json_data|task)\s*=\s*/, '').replace(/^['"]/, '').replace(/['"]$/, '');
+                    args = { agentName: aName, message: tMsg || `Transferring to ${aName}` };
+                  }
+                } else {
+                  // Generic Fallback
+                  argsString = argsString.replace(/['"]?\s*\)?$/, '');
+
+                  try {
+                    args = JSON.parse(argsString);
+                  } catch {
+                    if (toolName.includes('validate')) args = { json_content: argsString };
+                    else if (toolName.includes('save')) args = { manifest: argsString };
+                    else args = { input: argsString };
+                  }
                 }
-            }
 
-            if (!heuristicFound) {
-                responseParts.push({ text: msg.content });
+                console.log(`[GroqLlm] Heuristic: Detected text-based tool call to ${toolName}`);
+                responseParts.push({
+                  functionCall: {
+                    name: toolName,
+                    args: args
+                  }
+                });
+              }
             }
+          }
+
+          if (!heuristicFound) {
+            responseParts.push({ text: msg.content });
+          }
         }
 
         if (msg.tool_calls) {
@@ -283,9 +287,9 @@ export class GroqLlm extends BaseLlm {
           content: { role: 'model', parts: responseParts },
           finishReason: choice.finish_reason === 'stop' ? 'STOP' : (choice.finish_reason === 'tool_calls' ? 'STOP' : 'OTHER') as any,
           usageMetadata: data.usage ? {
-             promptTokenCount: data.usage.prompt_tokens,
-             candidatesTokenCount: data.usage.completion_tokens,
-             totalTokenCount: data.usage.total_tokens
+            promptTokenCount: data.usage.prompt_tokens,
+            candidatesTokenCount: data.usage.completion_tokens,
+            totalTokenCount: data.usage.total_tokens
           } : undefined
         };
       }

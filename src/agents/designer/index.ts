@@ -48,7 +48,7 @@ const generateSceneGraphTool = new FunctionTool({
   }),
   execute: async (scenegraph) => {
     console.log(`[Designer] Generated SceneGraph with ${scenegraph.scenes.length} scenes.`);
-    
+
     // Persistence: Save to local file for frontend usage
     try {
       const outputPath = path.join(process.cwd(), 'web/src/data/scenegraph.json');
@@ -81,9 +81,9 @@ export const designerAgent = new Agent({
 
 **Instructions**:
 1.  Receive the script from the Narrative Architect.
-2.  For each scene, design the visuals using Revideo primitives.
+2.  For each scene (maximum 5), design the visuals using Revideo primitives.
 3.  **Visualization Check**: Ask "Is this accurate? Is it beautiful? Does it explain the concept?" using the 'scientific_visualization' skill logic.
-4.  **Generate JSON**: Output the strict JSON structure using 'generate_scenegraph'.
+4.  **Generate JSON**: Output the strict JSON structure using 'generate_scenegraph'. Ensure you DO NOT exceed 5 scenes.
 
 **Reference Patterns**:
 - Use \`<Layout>\` for grouping and alignment.

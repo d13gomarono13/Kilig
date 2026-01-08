@@ -13,8 +13,10 @@ import {
 const Workbench = () => {
   const [searchParams] = useSearchParams();
   const paperId = searchParams.get('paper') || 'paper-1';
-  
+
   const [manifest, setManifest] = useState<ComicManifest>(MANIFESTS[paperId] || MANIFESTS['paper-1']);
+  const [sceneGraph, setSceneGraph] = useState<any>(null);
+  const [mode, setMode] = useState<'comic' | 'video'>('comic');
   const [selectedPanelId, setSelectedPanelId] = useState<string | null>(null);
 
   const reloadManifest = () => {
@@ -23,12 +25,25 @@ const Workbench = () => {
         .then(res => res.json())
         .then(data => {
           setManifest(data);
+          setMode('comic');
           console.log("Manifest reloaded from disk");
         })
         .catch(err => console.error("Failed to load generated manifest", err));
+    } else if (paperId === 'video') {
+      fetch('/src/data/scenegraph.json')
+        .then(res => res.json())
+        .then(data => {
+          setSceneGraph(data);
+          setMode('video');
+          console.log("SceneGraph reloaded from disk");
+        })
+        .catch(err => console.error("Failed to load generated scenegraph", err));
     } else {
       const data = MANIFESTS[paperId];
-      if (data) setManifest(data);
+      if (data) {
+        setManifest(data);
+        setMode('comic');
+      }
     }
   };
 
@@ -40,24 +55,26 @@ const Workbench = () => {
   return (
     <div className="h-screen w-screen overflow-hidden bg-background">
       <ResizablePanelGroup direction="horizontal">
-        
+
         {/* LEFT SIDEBAR: EDITOR */}
         <ResizablePanel defaultSize={25} minSize={15} maxSize={50} className="z-10 bg-white">
-           <ComicEditor 
-             manifest={manifest} 
-             onChange={setManifest} 
-             selectedPanelId={selectedPanelId}
-             onSelectPanel={setSelectedPanelId}
-             onRefresh={paperId === 'generated' ? reloadManifest : undefined}
-           />
+          <ComicEditor
+            manifest={manifest}
+            onChange={setManifest}
+            selectedPanelId={selectedPanelId}
+            onSelectPanel={setSelectedPanelId}
+            onRefresh={paperId === 'generated' ? reloadManifest : undefined}
+          />
         </ResizablePanel>
 
         <ResizableHandle className="w-[4px] bg-black hover:bg-slate-800 transition-colors cursor-col-resize" />
 
         {/* RIGHT CONTENT: VIEWER */}
         <ResizablePanel defaultSize={75}>
-          <ComicViewer 
-            manifest={manifest} 
+          <ComicViewer
+            manifest={manifest}
+            sceneGraph={sceneGraph}
+            mode={mode}
             selectedPanelId={selectedPanelId}
             onSelectPanel={setSelectedPanelId}
           />
