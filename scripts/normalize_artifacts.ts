@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-const artifactsDir = path.join(process.cwd(), 'test_artifacts', 'latest');
+const artifactsDir = path.join(process.cwd(), 'tests', 'artifacts', 'latest');
 
 function main() {
   if (!fs.existsSync(artifactsDir)) {
-    console.error('test_artifacts/latest does not exist. Run link_latest_artifacts.ts first.');
+    console.error('tests/artifacts/latest does not exist. Run link_latest_artifacts.ts first.');
     // Don't fail hard, maybe just warn if no artifacts yet (e.g. pre-run)
     return;
   }

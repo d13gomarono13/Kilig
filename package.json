@@ -9,11 +9,12 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test:pipeline": "tsx scripts/test_pipeline.ts",
-    "test:eval": "npm run link:latest && npm run artifacts:normalize && npx promptfoo eval",
+    "test:eval": "(npx promptfoo eval -o tests/results/latest.json -o tests/results/latest.html || true) && npm run artifacts:archive",
     "test:e2e": "npm run test:pipeline && npm run test:eval",
     "test:view": "npx promptfoo view",
     "link:latest": "tsx scripts/link_latest_artifacts.ts",
     "artifacts:normalize": "tsx scripts/normalize_artifacts.ts",
+    "artifacts:archive": "tsx scripts/archive_results.ts",
     "cache:clear": "tsx scripts/clear-cache.ts"
   },
   "dependencies": {

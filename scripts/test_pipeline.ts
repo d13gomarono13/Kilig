@@ -11,7 +11,7 @@ async function main() {
   console.log('--- Testing Kilig Pipeline (End-to-End) ---');
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const artifactsDir = path.join(process.cwd(), 'test_artifacts', timestamp);
+  const artifactsDir = path.join(process.cwd(), 'tests', 'artifacts', timestamp);
 
   try {
     if (!fs.existsSync(artifactsDir)) {

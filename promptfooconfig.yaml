@@ -1,6 +1,9 @@
 # Promptfoo configuration for Kilig
 # For more info: https://www.promptfoo.dev/docs/configuration/guide/
 
+# Automatically save the latest run as JSON for programmatic access
+outputPath: tests/results/latest.json
+
 # We use a pass-through prompt because we are evaluating existing artifacts
 prompts:
   - "{{content}}"
@@ -19,7 +22,7 @@ defaultTest:
 tests:
   # Scientist Synthesis Validation
   - vars:
-      content: file://test_artifacts/latest/scientist_analysis.txt
+      content: file://tests/artifacts/latest/scientist_analysis.txt
     assert:
       - type: javascript
         value: output.length > 100 # Basic length check
@@ -34,7 +37,7 @@ tests:
 
   # Narrative Comic Manifest Validation
   - vars:
-      content: file://test_artifacts/latest/comic_manifest.json
+      content: file://tests/artifacts/latest/comic_manifest.json
     assert:
       - type: is-json
       - type: javascript
@@ -64,7 +67,7 @@ tests:
 
   # Validator Check (Optional)
   - vars:
-      content: file://test_artifacts/latest/validator_report.txt
+      content: file://tests/artifacts/latest/validator_report.txt
     assert:
        - type: javascript
          value: output.length > 10 # Check if validator ran

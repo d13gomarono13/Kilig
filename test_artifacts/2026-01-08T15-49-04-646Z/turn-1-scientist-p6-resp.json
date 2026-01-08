@@ -1,9 +1,0 @@
-{
-  "functionResponse": {
-    "id": "adk-b7478067-34b9-44ba-9729-0142bdbc4d88",
-    "name": "synthesize_critical_analysis",
-    "response": {
-      "error": "Error in tool 'synthesize_critical_analysis': [\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"string\",\n    \"received\": \"undefined\",\n    \"path\": [\n      \"raw_findings\"\n    ],\n    \"message\": \"Required\"\n  }\n]"
-    }
-  }
-}
