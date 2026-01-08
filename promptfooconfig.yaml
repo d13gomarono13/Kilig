@@ -1,0 +1,58 @@
+# Promptfoo configuration for Kilig
+# For more info: https://www.promptfoo.dev/docs/configuration/guide/
+
+prompts:
+  - "Review the following scientific artifact for accuracy, structural integrity, and visual potential:\n\n{{content}}"
+
+providers:
+  - id: openai:gpt-4o-mini # Using a cheap judge
+  - id: google:gemini-1.5-flash-latest
+
+tests:
+  # Scientist Synthesis Validation
+  - vars:
+      content: file://test_artifacts/latest/turn-1-scientist-p3-text.json
+    assert:
+      - type: javascript
+        value: value.length > 500
+      - type: llm-rubric
+        value: >
+          The analysis must follow the Kilig Scientific Analysis format. 
+          It MUST include sections for 'Core Concept', 'Methodology', 'Results', and 'Validity'.
+          It MUST highlight specific numerical values that can be plotted (e.g., 'X increased by Y%').
+      - type: icontains
+        value: "Methodology"
+
+  # Narrative Comic Manifest Validation
+  - vars:
+      content: file://test_artifacts/latest/turn-2-narrative-p1-call.json
+    assert:
+      - type: contains-json
+      - type: javascript
+        value: |
+          const json = JSON.parse(value);
+          if (json.name !== 'save_comic_manifest') return false;
+          
+          const args = JSON.parse(json.args);
+          if (!args.pages || args.pages.length === 0) return false;
+          
+          // Check for basic layout consistency (e.g., no negative coordinates)
+          for (const page of args.pages) {
+            for (const panel of page.panels) {
+              if (panel.layout.x < 1 || panel.layout.y < 1) return "Panel layout coordinates must be 1-indexed (min 1)";
+              if (panel.layout.w < 1 || panel.layout.h < 1) return "Panel dimensions must be positive";
+            }
+          }
+          return true;
+      - type: llm-rubric
+        value: >
+          The comic manifest should represent a logical narrative arc based on the scientific paper. 
+          The sequencing of panels should make sense (Intro -> Methodology -> Results -> Conclusion).
+          The "revideo" panels must have high-quality template selections (e.g. process-flow for methodology).
+
+  # Validator Check (If run reached turn 3)
+  - vars:
+      content: file://test_artifacts/latest/turn-3-validator-p1-text.json
+    assert:
+      - type: llm-rubric
+        value: "The validator should provide a summary of the quality of the manifest and highlight any potential errors or improvements."

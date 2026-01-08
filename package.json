@@ -9,6 +9,9 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test:pipeline": "tsx scripts/test_pipeline.ts",
+    "test:eval": "npm run link:latest && npx promptfoo eval",
+    "test:view": "npx promptfoo view",
+    "link:latest": "tsx scripts/link_latest_artifacts.ts",
     "cache:clear": "tsx scripts/clear-cache.ts"
   },
   "dependencies": {
