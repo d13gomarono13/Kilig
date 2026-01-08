@@ -3,6 +3,7 @@ import { scientistAgent } from '../scientist/index.js';
 import { narrativeAgent } from '../narrative/index.js';
 import { designerAgent } from '../designer/index.js';
 import { validatorAgent } from '../validator/index.js';
+import { llmModel } from '../config.js';
 
 /**
  * Root Agent (Coordinator)
@@ -20,7 +21,7 @@ import { validatorAgent } from '../validator/index.js';
 export const rootAgent = new Agent({
   name: 'root',
   description: 'The main coordinator agent for Kilig. Orchestrates both Video (SceneGraph) and Scientific Comic pipelines.',
-  model: 'gemini-2.0-flash',
+  model: llmModel,
   instruction: `You are the **Kilig Root Agent**, the coordinator of an AI scientific media generation pipeline.
 
 Your goal is to manage the lifecycle of transforming a scientific topic into either an educational **Video** or an interactive **Scientific Comic**.
@@ -45,7 +46,9 @@ Your goal is to manage the lifecycle of transforming a scientific topic into eit
 - If the user asks for a "comic", "storyboard", or "vivacious panel", use the **Comic Pipeline**.
 - If unspecified, prefer the **Comic Pipeline** as it is our primary high-fidelity format.
 
-Always provide clear and detailed instructions when transferring to another agent.`,
+Always provide clear and detailed instructions when transferring to another agent.
+
+**CRITICAL**: When you want to transfer to another agent, you MUST use the \`transfer_to_agent\` tool. Do NOT just write it as text. Use the tool.`,
   // Register sub-agents for delegation (ADK Auto Flow)
   subAgents: [scientistAgent, narrativeAgent, designerAgent, validatorAgent], 
 });

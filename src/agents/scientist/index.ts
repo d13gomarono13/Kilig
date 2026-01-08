@@ -2,6 +2,7 @@ import { LlmAgent as Agent, FunctionTool, MCPToolset } from '@google/adk';
 import { z } from 'zod';
 import { ingestPaper } from './tools/ingest_paper.js';
 import { searchKnowledgeBase } from './tools/search_knowledge_base.js';
+import { llmModel } from '../config.js';
 
 /**
  * Scientist Agent
@@ -92,7 +93,7 @@ const searchKnowledgeBaseTool = new FunctionTool({
 export const scientistAgent = new Agent({
   name: 'scientist',
   description: 'Specialized in deep scientific research, paper analysis, and critical thinking. Use this agent to search for papers and extract core methodology and findings.',
-  model: 'gemini-2.0-flash',
+  model: llmModel,
   instruction: `You are the **Scientist Agent** for Kilig. 
   
 Your goal is to perform deep scientific research and critical analysis of papers, with a focus on **visualizable data**.

@@ -1,5 +1,6 @@
 import { LlmAgent as Agent } from '@google/adk';
 import { saveComicManifestTool } from './tools/save_comic_manifest.js';
+import { llmModel } from '../config.js';
 
 /**
  * Narrative Architect Agent
@@ -12,7 +13,7 @@ import { saveComicManifestTool } from './tools/save_comic_manifest.js';
 export const narrativeAgent = new Agent({
   name: 'narrative',
   description: 'Specialized in converting scientific analysis into a "Vivacious" Scientific Comic manifest.',
-  model: 'gemini-2.0-flash',
+  model: llmModel,
   instruction: `You are the **Narrative Architect** for Kilig.
 
 **Goal**: Transform raw scientific analysis (Core Concept, Methodology, Results) into a **Visual Scientific Comic**.

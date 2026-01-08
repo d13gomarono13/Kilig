@@ -2,6 +2,7 @@ import { LlmAgent as Agent, FunctionTool, MCPToolset } from '@google/adk';
 import { z } from 'zod';
 import fs from 'fs/promises';
 import path from 'path';
+import { llmModel } from '../config.js';
 
 /**
  * SceneGraph Designer Agent
@@ -65,7 +66,7 @@ const generateSceneGraphTool = new FunctionTool({
 export const designerAgent = new Agent({
   name: 'designer',
   description: 'Specialized in transforming video scripts into Revideo SceneGraph JSON blueprints. Generates the actual animation and layout data.',
-  model: 'gemini-2.0-flash',
+  model: llmModel,
   instruction: `You are the **SceneGraph Designer Agent** ("The Visualizer").
 
 **Goal**: Transform a text-based video script into a **Revideo SceneGraph JSON**.
