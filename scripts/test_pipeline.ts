@@ -19,12 +19,6 @@ async function main() {
     }
     console.log(`Logging artifacts to: ${artifactsDir}`);
 
-    const runner = new InMemoryRunner({
-      agent: rootAgent,
-      appName: 'kilig-pipeline-test'
-    });
-    console.log('Runner initialized with Root Agent.');
-
     // Create session explicitly
     await runner.sessionService.createSession({
       appName: 'kilig-pipeline-test',
@@ -33,8 +27,23 @@ async function main() {
     });
     console.log('Session created.');
 
-    const paperUrl = 'https://arxiv.org/abs/1706.03762'; // Attention Is All You Need
+    // Get Paper URL from Env or Args (Default to Attention Is All You Need)
+    const paperUrl = process.env.PAPER_URL || process.argv[2] || 'https://arxiv.org/abs/1706.03762';
     const prompt = `Create a video explaining the paper ${paperUrl}. Focus on the core concept of "Attention".`;
+    console.log(`Sending prompt: "${prompt}"`);
+    
+    // Save run metadata for the sync script
+    fs.writeFileSync(path.join(artifactsDir, 'metadata.json'), JSON.stringify({
+      paperUrl,
+      prompt,
+      timestamp,
+      startedAt: new Date().toISOString()
+    }, null, 2));
+
+    const runner = new InMemoryRunner({
+      agent: rootAgent,
+      appName: 'kilig-pipeline-test'
+    });
     console.log(`Sending prompt: "${prompt}"`);
 
     console.log('\n--- Pipeline Execution Started ---');
