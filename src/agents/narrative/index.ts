@@ -50,15 +50,15 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 
 
-        - **'bar-chart'**: `data: { labels: string[], values: number[] }` (Best for results/comparisons)
+        - **'bar-chart'**: \`data: { labels: string[], values: number[] }\` (Best for results/comparisons)
 
 
 
-        - **'process-flow'**: `data: { steps: string[] }` (Best for methodology steps)
+        - **'process-flow'**: \`data: { steps: string[] }\` (Best for methodology steps)
 
 
 
-        - **'network-graph'**: `data: { nodes: {id, label}[], links: {source, target}[] }` (Best for relationships or attention heads)
+        - **'network-graph'**: \`data: { nodes: {id, label}[], links: {source, target}[] }\` (Best for relationships or attention heads)
 
 
 

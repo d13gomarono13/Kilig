@@ -72,8 +72,8 @@ async function main() {
             if (event.errorCode) {
                 console.error(`[ERROR] ${event.errorCode}: ${event.errorMessage}`);
                 if (event.errorCode === 429 || event.errorMessage?.includes('Quota exceeded')) {
-                    console.log('Rate Limit hit. Waiting 70s before retry...');
-                    await delay(70000);
+                    console.log('Rate Limit hit. Waiting 75s before retry...');
+                    await delay(75000);
                     throw new Error('429');
                 }
             }
