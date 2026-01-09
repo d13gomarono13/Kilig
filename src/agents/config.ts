@@ -20,7 +20,7 @@ import { ResilientLlm } from '../core/resilient-llm.js';
 const apiKey = process.env.OPENROUTER_API_KEY;
 
 // Optimal free model stack for Kilig's multi-agent pipeline
-const FREE_MODEL_STACK = [
+export const FREE_MODEL_STACK = [
     'google/gemma-3-27b-it:free',           // Primary: Fast, 128k context
     'deepseek/deepseek-r1:free',             // Backup 1: Best reasoning
     'meta-llama/llama-3.3-70b-instruct:free', // Backup 2: Large, reliable

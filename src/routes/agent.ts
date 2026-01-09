@@ -1,7 +1,8 @@
 import { FastifyInstance } from 'fastify';
-import { Runner, InMemorySessionService, isFinalResponse, getFunctionCalls } from '@google/adk';
-import { rootAgent } from '../agents/root/index.js';
+import { isFinalResponse, getFunctionCalls } from '@google/adk';
 import { dbService } from '../services/db.js';
+import { agentQueue } from '../services/queue/index.js';
+import { jobEventBus } from '../services/queue/event-bus.js';
 
 export async function agentRoutes(server: FastifyInstance) {
   server.post('/api/trigger', async (request, reply) => {
@@ -15,23 +16,18 @@ export async function agentRoutes(server: FastifyInstance) {
     const project = await dbService.createProject(query);
     const projectId = project?.id;
 
-    // Initialize ADK components
-    const sessionService = new InMemorySessionService();
     const userId = 'api-user-' + Date.now();
     const sessionId = 'session-' + Date.now();
-    
-    const runner = new Runner({
-      agent: rootAgent,
-      sessionService,
-      appName: 'kilig-api'
+
+    // 2. Add to Queue
+    const job = await agentQueue.add('agent-run', {
+        query,
+        userId,
+        sessionId,
+        projectId
     });
 
-    // Create session explicitly
-    await sessionService.createSession({
-      appName: 'kilig-api',
-      userId,
-      sessionId
-    });
+    console.log(`[API] Job ${job.id} created for project ${projectId}`);
 
     // We'll use Server-Sent Events (SSE) for real-time updates
     reply.raw.setHeader('Content-Type', 'text/event-stream');
@@ -39,35 +35,22 @@ export async function agentRoutes(server: FastifyInstance) {
     reply.raw.setHeader('Connection', 'keep-alive');
     
     // Send initial project ID
-    reply.raw.write(`data: ${JSON.stringify({ type: 'project_created', projectId })}\n\n`);
+    reply.raw.write(`data: ${JSON.stringify({ type: 'project_created', projectId, jobId: job.id })}\n\n`);
 
-    const content = {
-      role: 'user',
-      parts: [{ text: query }],
-    };
-
-    try {
-      let currentScript = null;
-      let currentAnalysis = null;
-      let currentSceneGraph = null;
-
-      for await (const event of runner.runAsync({
-        userId,
-        sessionId,
-        newMessage: content,
-      })) {
+    // 3. Subscribe to Event Bus
+    const listener = async (event: any) => {
         const toolCalls = getFunctionCalls(event);
         const isFinal = isFinalResponse(event);
 
         if (event.errorCode) {
           console.error(`[AGENT ERROR] ${event.errorCode}: ${event.errorMessage}`);
           reply.raw.write(`data: ${JSON.stringify({ type: 'error', code: event.errorCode, message: event.errorMessage })}\n\n`);
-          continue;
+          return;
         }
 
         // Stream interesting events to the client
         if (isFinal || (toolCalls && toolCalls.length > 0)) {
-          const text = event.content?.parts?.find(p => p.text)?.text;
+          const text = event.content?.parts?.find((p: any) => p.text)?.text;
           const payload = JSON.stringify({
             type: 'agent_event',
             author: event.author,
@@ -81,21 +64,18 @@ export async function agentRoutes(server: FastifyInstance) {
           if (isFinal && projectId) {
              const responseText = event.content?.parts?.[0]?.text;
              if (event.author === 'scientist') {
-                currentAnalysis = responseText;
                 await dbService.updateProjectArtifact(projectId, { 
                   status: 'scripting', 
                   research_summary: responseText 
                 });
                 reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'analysis', content: responseText })}\n\n`);
              } else if (event.author === 'narrative_architect') {
-                currentScript = responseText;
                 await dbService.updateProjectArtifact(projectId, { 
                   status: 'designing', 
                   script: responseText 
                 });
                 reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'script', content: responseText })}\n\n`);
              } else if (event.author === 'designer') {
-                currentSceneGraph = responseText;
                 await dbService.updateProjectArtifact(projectId, { 
                   status: 'completed', 
                   scenegraph: responseText 
@@ -104,15 +84,39 @@ export async function agentRoutes(server: FastifyInstance) {
              }
           }
         }
-      }
-      
-      reply.raw.write(`data: ${JSON.stringify({ type: 'done', status: 'DONE' })}\n\n`);
-    } catch (error) {
-      console.error('Agent Execution Error:', error);
-      if (projectId) await dbService.updateProjectArtifact(projectId, { status: 'failed' });
-      reply.raw.write(`data: ${JSON.stringify({ error: 'Internal Server Error' })}\n\n`);
-    } finally {
-      reply.raw.end();
-    }
+    };
+
+    const completionListener = (completedJob: any) => {
+        if (completedJob.id === job.id) {
+            reply.raw.write(`data: ${JSON.stringify({ type: 'done', status: 'DONE' })}\n\n`);
+            cleanup();
+            reply.raw.end();
+        }
+    };
+
+    const failureListener = (failedJob: any) => {
+        if (failedJob.id === job.id) {
+             if (projectId) dbService.updateProjectArtifact(projectId, { status: 'failed' });
+             reply.raw.write(`data: ${JSON.stringify({ error: 'Internal Server Error' })}\n\n`);
+             cleanup();
+             reply.raw.end();
+        }
+    };
+
+    const cleanup = () => {
+        jobEventBus.off(`job:${job.id}`, listener);
+        agentQueue.off('jobCompleted', completionListener);
+        agentQueue.off('jobFailed', failureListener);
+    };
+
+    jobEventBus.on(`job:${job.id}`, listener);
+    agentQueue.on('jobCompleted', completionListener);
+    agentQueue.on('jobFailed', failureListener);
+
+    // Handle client disconnect
+    request.raw.on('close', () => {
+        console.log(`[API] Client disconnected from job ${job.id}`);
+        cleanup();
+    });
   });
 }

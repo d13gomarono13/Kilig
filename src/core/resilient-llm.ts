@@ -32,6 +32,13 @@ export class ResilientLlm extends BaseLlm {
         }
     }
 
+    // Models that are known to return text instead of native tool calls
+    private POLYFILL_MODELS = [
+        'google/gemma-3-27b-it:free',
+        'meta-llama/llama-3.3-70b-instruct:free',
+        'qwen/qwen-2.5-coder-32b-instruct:free'
+    ];
+
     async *generateContentAsync(
         llmRequest: LlmRequest,
         stream?: boolean
@@ -42,10 +49,20 @@ export class ResilientLlm extends BaseLlm {
             const modelId = this.modelStack[this.currentModelIndex];
             console.log(`[ResilientLlm] Trying model: ${modelId}`);
 
+            // Disable streaming for polyfill models to allow parsing
+            // We use includes() to match fuzzy versions if needed, but strict string match is safer for now.
+            // Using fuzzy check since model IDs might have extra tags.
+            const forceNoStream = this.POLYFILL_MODELS.some(m => modelId.includes(m.split(':')[0])); 
+            const shouldUseStream = stream && !forceNoStream;
+            
+            if (forceNoStream && stream) {
+                console.log(`[ResilientLlm] Disabling streaming for ${modelId} to polyfill tool calls.`);
+            }
+
             try {
                 let successfulResponse = false;
 
-                for await (const chunk of this.callOpenRouter(modelId, llmRequest, stream)) {
+                for await (const chunk of this.callOpenRouter(modelId, llmRequest, shouldUseStream)) {
                     // Check for rate limit
                     if (chunk.errorCode === '429') {
                         console.warn(`[ResilientLlm] Rate limit on ${modelId}, switching to next model...`);
@@ -161,10 +178,32 @@ export class ResilientLlm extends BaseLlm {
             return;
         }
 
+        const parts = this.buildResponseParts(choice.message);
+        
+        // POLYFILL: If no native tool calls, check text content for tool-like patterns
+        const hasNativeTools = parts.some(p => p.functionCall);
+        if (!hasNativeTools && parts.length > 0 && parts[0].text) {
+             const polyfilled = this.parseToolCallsFromText(parts[0].text);
+             if (polyfilled.length > 0) {
+                 console.log(`[ResilientLlm] Polyfilled ${polyfilled.length} tool calls from text.`);
+                 // Append tool calls to parts
+                 for (const tc of polyfilled) {
+                     parts.push({
+                         functionCall: {
+                             name: tc.name,
+                             args: tc.args,
+                             // Use a polyfill marker ID
+                             id: `call_poly_${Date.now()}_${Math.random().toString(36).slice(2,7)}`
+                         }
+                     });
+                 }
+             }
+        }
+
         yield {
             content: {
                 role: 'model',
-                parts: this.buildResponseParts(choice.message)
+                parts: parts
             },
             finishReason: (choice.finish_reason?.toUpperCase() || 'STOP') as any,
             usageMetadata: data.usage ? {
@@ -173,6 +212,72 @@ export class ResilientLlm extends BaseLlm {
                 totalTokenCount: data.usage.total_tokens
             } : undefined
         } as LlmResponse;
+    }
+
+    private parseToolCallsFromText(text: string): { name: string, args: any }[] {
+        const toolCalls: { name: string, args: any }[] = [];
+        
+        // Pattern 1: Markdown code block with tool_code or json
+        // Matches ```tool_code ... ```
+        const codeBlockRegex = /```(?:tool_code|json|python)?\s*([\s\S]*?)```/g;
+        let match;
+        
+        while ((match = codeBlockRegex.exec(text)) !== null) {
+            const content = match[1].trim();
+            
+            // Try 1: Direct Python-style call: name(args)
+            // e.g. transfer_to_agent(agent_name='scientist', ...)
+            const pythonCallRegex = /^([a-zA-Z0-9_]+)\(([\s\S]*)\)$/;
+            const callMatch = pythonCallRegex.exec(content);
+            
+            if (callMatch) {
+                const name = callMatch[1];
+                const argsStr = callMatch[2];
+                try {
+                    // Quick-and-dirty parser for key='value' or key="value"
+                    const args: any = {};
+                    // Match key=value where value is quoted string (handling escaped quotes poorly but often sufficiently)
+                    // or numbers/booleans
+                    const paramRegex = /([a-zA-Z0-9_]+)\s*=\s*(?:(['"])((?:\\\2|(?!\2).)*)\2|([0-9.]+|true|false))/g;
+                    let paramMatch;
+                    let foundArgs = false;
+                    while ((paramMatch = paramRegex.exec(argsStr)) !== null) {
+                        let key = paramMatch[1];
+                        const strVal = paramMatch[3]; // The string content
+                        const rawVal = paramMatch[4]; // The number/bool
+
+                        // Normalization for common failures (Gemma prefers snake_case)
+                        if (key === 'agent_name') key = 'agentName';
+                        
+                        if (strVal !== undefined) {
+                            args[key] = strVal; // Unescape if needed?
+                        } else if (rawVal !== undefined) {
+                            args[key] = JSON.parse(rawVal);
+                        }
+                        foundArgs = true;
+                    }
+                    
+                    if (foundArgs) {
+                        toolCalls.push({ name, args });
+                        continue;
+                    }
+                } catch (e) {
+                    // ignore
+                }
+            }
+            
+            // Try 2: Raw JSON?
+            try {
+                // If the block is just JSON object
+                if (content.startsWith('{') && content.endsWith('}')) {
+                     // Wait, we need the tool name. 
+                     // Usually JSON tool calls are { "tool": "name", "args": ... } or similar if strictly prompted.
+                     // But Gemma output Python.
+                }
+            } catch (e) {}
+        }
+
+        return toolCalls;
     }
 
     private async *handleStream(response: Response): AsyncGenerator<LlmResponse, void, unknown> {
@@ -224,6 +329,10 @@ export class ResilientLlm extends BaseLlm {
             if (text) msgs.push({ role: 'system', content: text });
         }
 
+        // Track tool calls to match responses
+        // Maps tool name to list of IDs (fifo for multiple calls to same tool)
+        let pendingToolCalls: Record<string, string[]> = {};
+
         // Conversation history
         for (const content of req.contents) {
             const role = content.role === 'model' ? 'assistant' : 'user';
@@ -233,22 +342,48 @@ export class ResilientLlm extends BaseLlm {
             const textParts = parts.filter(p => p.text).map(p => p.text);
 
             // Tool calls (from assistant)
-            const toolCalls = parts.filter(p => p.functionCall).map(p => ({
-                id: `call_${(p.functionCall!.name as string).slice(0, 10)}_${Date.now()}`,
-                type: 'function',
-                function: {
-                    name: p.functionCall!.name,
-                    arguments: JSON.stringify(p.functionCall!.args)
+            const toolCalls = parts.filter(p => p.functionCall).map(p => {
+                // Use preserved ID or generate a stable one based on content if possible, 
+                // but random is safer than collision if we don't have the original.
+                // Crucially, we store this ID in pendingToolCalls for the response to use.
+                const existingId = (p.functionCall as any).id;
+                const callId = existingId || `call_${(p.functionCall!.name as string).slice(0, 10)}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+                
+                return {
+                    id: callId,
+                    type: 'function',
+                    function: {
+                        name: p.functionCall!.name,
+                        arguments: JSON.stringify(p.functionCall!.args)
+                    }
+                };
+            });
+
+            if (toolCalls.length > 0) {
+                // Reset pending for this new turn of calls? 
+                // Usually tool calls happen in one turn, then responses in next.
+                // We append to allow for accumulation if needed, but usually we clear on new assistant turn?
+                // Actually, OpenAI expects responses to match the immediately preceding assistant message.
+                pendingToolCalls = {}; 
+                for (const tc of toolCalls) {
+                    if (!pendingToolCalls[tc.function.name]) pendingToolCalls[tc.function.name] = [];
+                    pendingToolCalls[tc.function.name].push(tc.id);
                 }
-            }));
+            }
 
             // Tool responses
-            const toolResponses = parts.filter(p => p.functionResponse).map(p => ({
-                role: 'tool',
-                tool_call_id: `call_${(p.functionResponse!.name as string).slice(0, 10)}_fixed`,
-                name: p.functionResponse!.name,
-                content: JSON.stringify(p.functionResponse!.response)
-            }));
+            const toolResponses = parts.filter(p => p.functionResponse).map(p => {
+                const name = p.functionResponse!.name;
+                // Get the ID for this tool call
+                const callId = pendingToolCalls[name]?.shift() || `call_${name.slice(0, 10)}_unknown`;
+                
+                return {
+                    role: 'tool',
+                    tool_call_id: callId,
+                    name: name,
+                    content: JSON.stringify(p.functionResponse!.response)
+                };
+            });
 
             if (textParts.length > 0 || toolCalls.length > 0) {
                 msgs.push({
@@ -294,7 +429,8 @@ export class ResilientLlm extends BaseLlm {
                     parts.push({
                         functionCall: {
                             name: tc.function.name,
-                            args: JSON.parse(tc.function.arguments || '{}')
+                            args: JSON.parse(tc.function.arguments || '{}'),
+                            id: tc.id // Preserve the original ID from the provider
                         }
                     });
                 } catch (e) {

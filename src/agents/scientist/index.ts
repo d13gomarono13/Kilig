@@ -42,7 +42,11 @@ const claudeSkillsToolset = new MCPToolset({
   type: 'StdioConnectionParams',
   serverParams: {
     command: 'uvx',
-    args: ['claude-skills-mcp'],
+    args: [
+      'claude-skills-mcp',
+      '--config',
+      'src/agents/scientist/skills_config.json'
+    ],
   },
 });
 
