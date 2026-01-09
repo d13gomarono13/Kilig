@@ -46,6 +46,15 @@ const claudeSkillsToolset = new MCPToolset({
   },
 });
 
+// Docling MCP Toolset Configuration (New)
+const doclingToolset = new MCPToolset({
+  type: 'StdioConnectionParams',
+  serverParams: {
+    command: 'uvx',
+    args: ['docling-mcp'],
+  },
+});
+
 /**
  * Synthesize Analysis Tool - Structures research findings
  */
@@ -148,11 +157,15 @@ When you find an important paper, use 'ingest_paper_to_knowledge_base':
 - Section-aware chunking when available
 - Indexed for future hybrid search
 
+### Step 5: Structural Extraction (Docling)
+For papers with complex layouts, tables, or figures, use the **Docling** toolset (specifically 'convert_to_json') to get a high-fidelity JSON representation of the document structure. This allows for precise extraction of results from complex tables and metadata about figures.
+
 ## MCP TOOLS
 
 You also have access to:
 - **ArXiv MCP**: Search and download papers from arXiv
 - **Claude Skills MCP**: Use 'scientific_critical_thinking' for deep analysis
+- **Docling MCP**: Use 'convert_to_json' to parse PDFs into a structured schema, enabling precise extraction of table data and scientific metrics.
 
 ## OUTPUT FORMAT
 
@@ -183,6 +196,7 @@ Look for data that can be visualized:
     // MCP Toolsets (preserved from original)
     arxivToolset,
     claudeSkillsToolset,
+    doclingToolset,
 
     // Agentic RAG Tools (new)
     guardrailTool,

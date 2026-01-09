@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { ComicPanelData } from './types';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Volume2, VolumeX, Loader2 } from 'lucide-react';
 import { renderTemplate } from './templates';
 import RevideoCard from '../video/RevideoCard';
+import { useVoiceover } from '@/hooks/use-voiceover';
 
 interface SmartPanelProps {
   data: ComicPanelData;
@@ -16,6 +17,19 @@ interface SmartPanelProps {
 export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick, showTitle = true }) => {
   const [showLiveContent, setShowLiveContent] = useState(false);
   const [hasEnded, setHasEnded] = useState(false);
+
+  // Voiceover hook for panel narration
+  const { speak, stop, isLoading: isVoiceLoading, isPlaying } = useVoiceover();
+  const narrativeText = data.narrative || data.content || '';
+
+  // Auto-play narration when panel becomes active
+  useEffect(() => {
+    if (isActive && narrativeText.length > 10) {
+      speak(narrativeText);
+    } else if (!isActive) {
+      stop();
+    }
+  }, [isActive, narrativeText]);
 
   // When active (zoomed in), delay slightly then show live content
   useEffect(() => {
@@ -67,6 +81,29 @@ export const SmartPanel: React.FC<SmartPanelProps> = ({ data, isActive, onClick,
         <div className="absolute top-0 left-0 bg-yellow-300 border-b border-r border-black px-3 py-1 z-10">
           <h3 className="font-bold text-sm uppercase tracking-wider">{data.title}</h3>
         </div>
+      )}
+
+      {/* VOICEOVER CONTROL */}
+      {narrativeText.length > 10 && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            isPlaying ? stop() : speak(narrativeText);
+          }}
+          className={cn(
+            "absolute top-0 right-0 z-20 p-2 border-b border-l border-black transition-colors",
+            isPlaying ? "bg-red-400 text-white" : "bg-blue-400 text-white"
+          )}
+          title={isPlaying ? "Stop narration" : "Play narration"}
+        >
+          {isVoiceLoading ? (
+            <Loader2 size={16} className="animate-spin" />
+          ) : isPlaying ? (
+            <VolumeX size={16} />
+          ) : (
+            <Volume2 size={16} />
+          )}
+        </button>
       )}
 
       {/* CONTENT LAYER */}

@@ -12,6 +12,7 @@ export interface ComicPanelData {
   type: PanelType;
   title?: string;
   content?: string; // For static text
+  narrative?: string; // Voiceover script for this panel
   imageUrl?: string; // Background image or illustration
   revideo?: RevideoConfig;
   codeSnippet?: {

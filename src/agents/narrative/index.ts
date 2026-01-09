@@ -1,5 +1,6 @@
 import { LlmAgent as Agent } from '@google/adk';
 import { saveComicManifestTool } from './tools/save_comic_manifest.js';
+import { extractChartDataTool } from './tools/extract_chart_data.js';
 import { llmModel } from '../config.js';
 
 /**
@@ -90,9 +91,11 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 2.  **Visuals**: You MUST use at least 2 'revideo' panels to visualize the data.
 
-3.  **Layout**: Assign X/Y coordinates to create a pleasing flow (Top-Left to Bottom-Right). Ensure no overlaps.
+3.  **Data Extraction**: BEFORE generating a 'revideo' panel with a chart template (bar-chart, line-chart), you MUST use the 'extract_chart_data' tool to find real metrics from the indexed papers.
 
-4.  **Tool Call**: Execute 'save_comic_manifest'.
+4.  **Layout**: Assign X/Y coordinates to create a pleasing flow (Top-Left to Bottom-Right). Ensure no overlaps.
+
+5.  **Tool Call**: Execute 'save_comic_manifest'.
 
 
 
@@ -109,7 +112,7 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 **IMPORTANT**: Once you have saved the manifest, use 'transfer_to_agent' to send the result back to 'root'.
 
 `,
-  tools: [saveComicManifestTool],
+  tools: [saveComicManifestTool, extractChartDataTool],
 });
 
 export default narrativeAgent;

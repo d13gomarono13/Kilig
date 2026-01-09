@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import 'dotenv/config';
 import { agentRoutes } from './routes/agent.js';
 import { analyticsRoutes } from './routes/analytics.js';
+import { voiceoverRoutes } from './routes/voiceover.js';
 
 // Initialize Fastify
 const server: FastifyInstance = Fastify({
@@ -18,6 +19,7 @@ server.register(cors, {
 // Register Routes
 server.register(agentRoutes);
 server.register(analyticsRoutes);
+server.register(voiceoverRoutes);
 
 // Health Check
 server.get('/health', async (request, reply) => {
