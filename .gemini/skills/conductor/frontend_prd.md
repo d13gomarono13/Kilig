@@ -1,91 +1,71 @@
-# Product Requirement Document (PRD): Kilig Frontend v1.0
+# Product Requirement Document (PRD): Kilig Frontend v2.0
 
 ## 1. Product Overview
-**Kilig** is an AI-powered platform designed to transform scientific papers into engaging, animated explanatory videos. By leveraging autonomous agents and a "Data-Driven Pure TypeScript" approach, Kilig automates the research, scripting, and animation phases, allowing researchers to visualize complex ideas instantly.
+**Kilig** is a production-grade AI platform that transforms scientific papers into high-impact animated videos. It uses a **Multi-Agentic Framework (Google ADK)** to automate the entire scientific communication lifecycle: from deep research and critical analysis to narrative scripting and visual design.
 
-## 2. Target Audience
-*   **Academic Researchers:** Need to visualize findings for conferences and journals.
-*   **Science Communicators:** Need rapid video production for social media.
-*   **Students:** Need visual aids to understand dense academic material.
+---
 
-## 3. Design System & Aesthetics
-**Style:** Neo-Brutalism (STACK Open Source Theme)
-*   **Philosophy:** Raw, bold, and high-energy. Rejects the soft, rounded "SaaS" look in favor of distinctiveness.
-*   **Typography:**
-    *   **Headers:** `Space Grotesk` (Sans-serif)
-    *   **Data/Code:** `Space Mono` (Monospace)
-*   **Color Palette (Neo):**
-    *   `neo-black`: `#181818` (Primary Borders/Text)
-    *   `neo-white`: `#FFFFFF`
-    *   `neo-bg`: `#F7F9FC` (Canvas Background)
-    *   **Accents:**
-        *   `neo-yellow`: `#FFE66D`
-        *   `neo-red`: `#FF6B6B`
-        *   `neo-blue`: `#4ECDC4`
-        *   `neo-green`: `#95E1D3`
-        *   `neo-purple`: `#A06CD5`
-        *   `neo-pink`: `#FF9FF3`
-*   **Visual Elements:**
-    *   **Borders:** Thick, black borders (2px-4px) on all interactive elements.
-    *   **Shadows:** Hard, non-blurred drop shadows:
-        *   `neo`: `4px 4px 0px 0px #181818`
-        *   `neo-sm`: `2px 2px 0px 0px #181818`
-        *   `neo-lg`: `8px 8px 0px 0px #181818`
-    *   **Background Pattern:** Radial gradient dots (`#181818`) sized 24px.
-    *   **Scrollbars:** Custom brutalist scrollbars (Red thumb, Black border).
+## 2. Design System: "Digital Museum" Neo-Brutalism
+Kilig rejects standard SaaS aesthetics in favor of a sophisticated, high-energy "Digital Museum" style.
+- **Aesthetic**: Bold lines, hard shadows, vibrant accents, and high-quality typography.
+- **Typography**:
+  - **Headers**: `Space Grotesk` (Technical yet expressive)
+  - **Body/JSON**: `Space Mono` (Precision and clarity)
+- **Design Tokens**:
+  - **Borders**: 2px-4px "Steel" Black on all cards and containers.
+  - **Shadows**: Sharp, offset drop shadows (no blur) for a tiered depth effect.
+  - **Motion**: Micro-animations for agent transitions and layout shifts.
 
-## 4. Key Pages & Functional Requirements
+---
 
-### 4.1 Landing Page (`/`)
-*   **Goal:** Convert visitors into users by showcasing the platform's power.
-*   **Components:**
-    *   **Hero Section:** High-impact "Kilig" header with a sub-headline emphasizing speed and automation ("Raw. Bold. Fast.").
-    *   **Call to Action (CTA):** Prominent "Start Creating" button leading to the Dashboard.
-    *   **Feature Cards:** "Agents" (Autonomous workflow) and "Revideo" (Programmatic animation) highlights.
-    *   **Auth Entry:** Simple login/signup card.
+## 3. Core Functional Modules
 
-### 4.2 Dashboard (`/dashboard`)
-*   **Goal:** Manage existing projects and initiate new ones.
-*   **Components:**
-    *   **Header:** User greeting and "New Project" trigger.
-    *   **Project Grid:** A neo-brutalist grid of project cards.
-        *   **Card Details:** Title, creation date, status badge (Processing, Done, Failed).
-        *   **Actions:** "Edit Studio" button to enter the workspace.
-    *   **New Project Modal:** A dialog to input the paper topic or URL.
-        *   **Action:** "Launch Pipeline" triggers the agent workflow and navigates to the Studio.
+### 3.1 The Agentic Workspace (Left Panel)
+Real-time visibility into the **Google ADK Pipeline**.
+- **Live Stream**: SSE-powered log showing agent turns (Root, Scientist, Narrative, Designer).
+- **Protocol Visualization**:
+  - **Guardrail Monitor**: Displays the scope validation score.
+  - **Search Status**: Shows hybrid search progress (OpenSearch hits + RRF scores).
+  - **Document Grader**: Visual feedback on why specific chunks were accepted or rejected.
+  - **Query Refiner**: Tracks retrieval attempts (Max 3) and query evolution.
 
-### 4.3 The Studio (`/studio/:id`)
-*   **Goal:** The central workspace for the "Idea to Video" workflow.
-*   **Layout:** Three-pane split view.
-*   **Left Panel: Agent Workspace**
-    *   **Agent Logs:** A real-time chat interface displaying streamed events (SSE) from the backend.
-    *   **Status Indicators:** Visual cues for which agent is active (Scientist, Narrative Architect, Designer).
-    *   **Artifact Tabs:**
-        *   **Analysis:** View the raw scientific research summary.
-        *   **Script:** View the generated video script.
-    *   **Error Handling:** Distinct red styling for system/agent errors.
-*   **Center Panel: The Canvas**
-    *   **Revideo Player:** A React component rendering the video in real-time based on the SceneGraph JSON.
-    *   **Playback Controls:** Play, Pause, Seek.
-    *   **Visualization Hints:** Cards displaying the rationale behind specific visual choices.
-*   **Right Panel: Inspector & Config**
-    *   **SceneGraph Editor:** A read-only (or editable) view of the generated JSON structure.
-    *   **Global Controls:** Inputs to tweak global styles (Accent Color, Font) that instantly update the video.
+### 3.2 KiligCanvas & Studio (Center & Right)
+The "Source of Truth" for the scientific representation.
+- **KiligCanvas (React + Konva)**: A dynamic, interactive preview of the SceneGraph JSON.
+- **Visualizable Data Focus**:
+  - **Process Flows**: Automapped to interactive flowcharts.
+  - **Comparative Data**: Logic for bar/line chart rendering from agent results.
+  - **Key Quotes**: Stylized speech bubbles for significant research statements.
+- **Inspector**: Real-time SceneGraph editing and global style overrides.
 
-## 5. Technical Architecture
-*   **Framework:** React 18 + Vite.
-*   **Language:** TypeScript.
-*   **Styling:** Tailwind CSS v3.
-*   **UI Library:** shadcn/ui + Neo-Brutalism components.
-*   **Animation Engine:** @revideo/player-react.
-*   **State Management:** React `useState` + React Query + SSE.
+---
 
-## 6. Integration Points
-*   **Trigger Endpoint:** `POST /api/trigger`
-    *   **Payload:** `{ query: string }`
-    *   **Response:** SSE Stream (`project_created`, `agent_event`, `artifact_updated`, `error`, `done`).
-*   **Database (Supabase):**
-    *   **Table:** `video_projects`
-    *   **Fields:** `status`, `research_summary`, `script`, `scenegraph`.
-*   **Real-time Updates:**
-    *   **SSE Client:** Listens for `artifact_updated` events to auto-refresh the Script and Analysis views without reloading.
+## 4. Technical Architecture
+
+### 4.1 Integration Layer
+- **ADK Runner**: Interfaces with the backend ADK `InMemoryRunner`.
+- **Session Persistence**: Sessions preserved via Supabase and local storage.
+- **Event Bus**: Global event system to sync Agent findings with Canvas updates.
+
+### 4.2 State Management
+- **TanStack Query**: For metadata and project fetching.
+- **Context API**: For managing the active SceneGraph state.
+- **Server-Sent Events (SSE)**: For progressive, multi-turn agent feedback.
+
+---
+
+## 5. Key User Flows
+
+1. **Initiate Research**: User provides a topic or URL.
+2. **Autonomous Research**: Scientist Agent performs agentic RAG (Verify Scope → Hybrid Search → Grade → Refine).
+3. **Synthesis**: Agent synthesizes findings into the **Kilig Analysis Format**.
+4. **Scene Generation**: Designer Agent maps findings to the SceneGraph JSON.
+5. **Real-time Preview**: KiligCanvas renders the data-driven visualization.
+6. **Validation**: Validator Agent performs QC on the final logic.
+
+---
+
+## 6. Success Metrics
+- **Scientific Fidelity**: Accuracy of visual representations relative to source paper metrics.
+- **Latency-to-First-Frame**: Speed of generating the initial SceneGraph from research.
+- **System Stability**: Resilience to rate limits via OpenRouter rotation.

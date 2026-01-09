@@ -1,28 +1,49 @@
-# Initial Concept
-Kilig è una piattaforma AI per trasformare paper scientifici (PDF/arXiv) in video esplicativi animati. Kilig adotta un approccio **Data-Driven puro TypeScript**: l'AI non scrive codice, ma genera strutture dati (JSON) che un motore di rendering React visualizza in tempo reale.
+# Project Kilig: Product Strategy & Vision
 
-# Product Guide: Project Kilig
+## 1. Vision Statement
+**Kilig** is an autonomous AI factory for scientific communication. Our mission is to bridge the gap between complex academic research and accessible visual storytelling. By transforming dense scientific papers into high-fidelity animated videos, we empower researchers to broadcast their work with clarity, speed, and aesthetic excellence.
 
-## Vision
-Kilig is an AI platform designed to transform scientific papers (PDF/arXiv) into animated explanatory videos. Adopting a "Data-Driven Pure TypeScript" approach, Kilig ensures extreme reliability and speed by generating structured data (JSON) that a React-based engine renders in real-time, eliminating the risks and delays of runtime code generation.
+---
 
-## Target Users
-- **Researchers and Academics:** Seeking to visualize findings for high-impact presentations and social media engagement.
-- **Science Communicators and Educators:** Creating engaging, accurate content from complex scientific literature.
-- **Students:** Utilizing visual aids to better digest and understand complex academic papers.
+## 2. Core Philosophy: "Data-Driven Scientific Rigor"
+Kilig separates **Research** from **Representation** through a structured JSON intermediary (the SceneGraph).
+- **No Hallucinations**: Every visual frame is grounded in a "Graded Document" retrieved from the OpenSearch hybrid knowledge base.
+- **Scientific Critical Thinking**: We don't just summarize; we perform agentic analysis of methodology, validity, and strengths/weaknesses.
+- **Visual-First Logic**: Our agents are trained to identify "Visualizable Data" (Flowcharts, Benchmarks, Scopes) over generic text-to-video narration.
 
-## Primary Goals
-- **End-to-End Automation:** A seamless pipeline from a paper URL to a finished animated video.
-- **Reliability & Speed:** Instant UI updates and zero runtime compilation errors via JSON SceneGraph rendering.
-- **Human-in-the-Loop:** Collaborative editing capabilities allowing users to refine AI-generated scripts and animations.
+---
 
-## Key Features
-- **Real-Time Data-Driven Rendering:** Leveraging React and Remotion to visualize SceneGraph JSON immediately.
-- **Progressive Streaming:** Utilizing the Vercel AI SDK for near-instant user feedback through progressive JSON updates.
-- **Scientific Analysis Engine:** (Inferred) LangGraph.js-driven ingestion and analysis to extract "Core Concept", "Methodology", and "Results".
+## 3. Product Architecture (The Pipeline)
+Kilig operates as a multi-stage autonomous pipeline powered by **Google ADK**:
 
-## Visual Identity
-- **Modern and Tech-Focused:** Vibrant colors, smooth transitions, and a high-end aesthetic designed for clarity and engagement.
+1.  **Ingestion & Memory**: ArXiv integration + Hybrid Indexing (OpenSearch).
+2.  **Scientific Analysis (Scientist Agent)**: Agentic RAG protocol (Scope → Search → Grade → Rewrite).
+3.  **Narrative Architecture (Scripting Agent)**: Distilling analysis into engaging, academic voiceovers.
+4.  **SceneGraph Design (Designer Agent)**: Translating scripts into structured JSON for rendering.
+5.  **QC & Validation (Validator Agent)**: Final verification of scientific accuracy and visual logic.
 
-## Success Metrics
-The success of Kilig is measured by user engagement and the viral potential of generated videos, the significant time saved by researchers in creating visualizations, and the unwavering accuracy of the AI's scientific reasoning.
+---
+
+## 4. Visual Identity: "Digital Museum"
+Our aesthetic is **Neo-Brutalist** with a refined, "Digital Museum" touch.
+- **Vibrant & Bold**: High-contrast color palettes and thick borders.
+- **Precision Typography**: Space Grotesk and Space Mono for a technical, authoritative feel.
+- **Motion with Purpose**: Narrative-driven transitions managed programmatically via Revideo and KiligCanvas.
+
+---
+
+## 5. Implementation Roadmap Highlights (Current)
+- [x] **Migration to Google ADK**: Fully autonomous multi-agent orchestration.
+- [x] **Hybrid Search Infrastructure**: OpenSearch + RRF for production-grade retrieval.
+- [x] **Agentic RAG Guardrails**: Automated scope and relevance grading.
+- [x] **KiligCanvas Engine**: Data-driven preview system (Konva-enabled).
+- [ ] **Interactive Feed**: Platform transformation into a social-media discovery engine.
+- [ ] **E2E Automation**: Weekly automated testing of the full paper-to-video pipeline.
+
+---
+
+## 6. Future-Proofing for AI Agents
+This repository is optimized for **Agentic Development**:
+- **Strictly Typed**: TypeScript end-to-end for clear contract definition.
+- **Modular Services**: Decoupled Search, Cache, and Indexing layers.
+- **Structured Artifacts**: Every agent stage produces a JSON artifact stored in Supabase for auditability.
