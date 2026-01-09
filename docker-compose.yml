@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # OpenSearch - Hybrid Search Engine
+  # ============================================================================
+  opensearch:
+    image: opensearchproject/opensearch:2.11.0
+    container_name: kilig-opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - DISABLE_SECURITY_PLUGIN=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch-data:/usr/share/opensearch/data
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\":\"green\"\\|\"status\":\"yellow\"'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # Redis - Caching Layer
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: kilig-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # Langfuse - Observability (Optional)
+  # ============================================================================
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: kilig-langfuse
+    depends_on:
+      langfuse-db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://langfuse:langfuse@langfuse-db:5432/langfuse
+      - NEXTAUTH_SECRET=mysecret
+      - SALT=mysalt
+      - NEXTAUTH_URL=http://localhost:3001
+      - TELEMETRY_ENABLED=false
+    ports:
+      - "3001:3000"
+    profiles:
+      - observability
+
+  langfuse-db:
+    image: postgres:15-alpine
+    container_name: kilig-langfuse-db
+    environment:
+      - POSTGRES_USER=langfuse
+      - POSTGRES_PASSWORD=langfuse
+      - POSTGRES_DB=langfuse
+    volumes:
+      - langfuse-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U langfuse" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    profiles:
+      - observability
+
+volumes:
+  opensearch-data:
+  redis-data:
+  langfuse-db-data:
