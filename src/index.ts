@@ -1,44 +1,87 @@
 import 'dotenv/config';
-import { Orchestrator } from './core/orchestrator.js';
-import { Task } from './types/index.js';
+import { InMemoryRunner } from '@google/adk';
+import { rootAgent } from './agents/root/index.js';
 
+/**
+ * Kilig Entry Point
+ * 
+ * Uses Google ADK InMemoryRunner for multi-agent orchestration.
+ * The rootAgent coordinates all sub-agents (scientist, narrative, designer, validator).
+ */
 async function main() {
-  const orchestrator = new Orchestrator({
-    apiKey: process.env.GEMINI_API_KEY,
-    maxAgents: 5
-  });
+  console.log('🚀 Kilig Multi-Agent Pipeline Starting...\n');
 
   try {
-    await orchestrator.start();
-    console.log('Orchestrator started successfully.');
+    // Initialize the ADK runner with root agent
+    const runner = new InMemoryRunner({
+      agent: rootAgent,
+      appName: 'kilig-pipeline'
+    });
 
-    // Example: Create a root task to generate a video
-    const rootTask: Task = {
-      id: 'task-root-1',
-      description: 'Create an educational video about "Transformers in NLP"',
-      mode: 'coordinator', // Root agent mode
-      status: 'pending',
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+    // Create a session
+    await runner.sessionService.createSession({
+      appName: 'kilig-pipeline',
+      userId: 'user-01',
+      sessionId: 'session-01'
+    });
 
-    await orchestrator.addTask(rootTask);
-    console.log('Root task added.');
+    // Example: Start a conversation to create a video about a topic
+    const topic = process.argv[2] || 'Transformers in NLP';
+    const prompt = `Create an educational animated video explaining "${topic}". 
     
-    // Note: The orchestrator runs asynchronously. In a real app, you might keep the process alive
-    // or wait for specific events. Here we'll just keep it running for a bit.
-    
-    // To properly exit in this simple script:
-    // await new Promise(resolve => setTimeout(resolve, 60000));
-    // await orchestrator.stop();
+1. First, search for relevant papers and analyze the science.
+2. Then, create a narrative script suitable for animation.
+3. Design the visual scene graph.
+4. Validate the final output.`;
+
+    console.log(`📝 Processing topic: "${topic}"\n`);
+    console.log('-'.repeat(60));
+
+    // Run the multi-agent pipeline
+    const resultGenerator = runner.runAsync({
+      userId: 'user-01',
+      sessionId: 'session-01',
+      newMessage: {
+        role: 'user',
+        parts: [{ text: prompt }]
+      } as any
+    });
+
+    // Process results
+    let lastAuthor = 'user';
+    for await (const event of resultGenerator) {
+      const author = (event as any).author || 'system';
+
+      if (author !== lastAuthor) {
+        console.log(`\n[${author}]:`);
+        lastAuthor = author;
+      }
+
+      // Log content
+      if ((event as any).content?.parts) {
+        for (const part of (event as any).content.parts) {
+          if (part.text) {
+            console.log(part.text);
+          }
+          if (part.functionCall) {
+            console.log(`🔧 Tool: ${part.functionCall.name}`);
+          }
+        }
+      }
+
+      // Log errors
+      if ((event as any).errorCode) {
+        console.error(`❌ Error: ${(event as any).errorMessage}`);
+      }
+    }
+
+    console.log('\n' + '-'.repeat(60));
+    console.log('✅ Pipeline complete');
 
   } catch (error) {
-    console.error('Failed to start orchestrator:', error);
+    console.error('❌ Pipeline failed:', error);
     process.exit(1);
   }
 }
 
-// Only run if called directly
-// if (import.meta.url === `file://${process.argv[1]}`) {
-  main();
-// }
+main();
