@@ -50,8 +50,11 @@ const claudeSkillsToolset = new MCPToolset({
 const doclingToolset = new MCPToolset({
   type: 'StdioConnectionParams',
   serverParams: {
-    command: 'uvx',
-    args: ['docling-mcp'],
+    command: 'sh',
+    args: [
+      '-c',
+      'cd /tmp && uvx --from=docling-mcp docling-mcp-server'
+    ],
   },
 });
 
