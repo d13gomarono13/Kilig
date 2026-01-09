@@ -1,4 +1,6 @@
-import fetch from 'node-fetch';
+// Using native Node.js 18+ fetch API instead of node-fetch
+// This avoids type definition issues and reduces external dependencies.
+
 
 export async function readUrlContent(url: string): Promise<string> {
     console.log(`[Utils] Reading content from: ${url}`);
