@@ -1,5 +1,6 @@
 import { ICacheProvider, CacheConfig } from './types.js';
 import { FileSystemCache } from './file-system-cache.js';
+import { RedisCache } from './redis-cache.js';
 import { CacheKeyGenerator } from './key-generator.js';
 
 class CacheManagerService {
@@ -20,9 +21,7 @@ class CacheManagerService {
       if (this.config.provider === 'file') {
         this.provider = new FileSystemCache(this.config.baseDir);
       } else if (this.config.provider === 'redis') {
-        // TODO: Implement Redis provider
-        console.warn('[CacheManager] Redis provider not implemented yet. Falling back to FileSystem.');
-        this.provider = new FileSystemCache(this.config.baseDir);
+        this.provider = new RedisCache(this.config.ttl);
       }
     } else {
       console.log('[CacheManager] Cache is DISABLED.');

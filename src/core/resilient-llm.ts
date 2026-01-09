@@ -1,4 +1,5 @@
 import { BaseLlm, LlmRequest, LlmResponse, BaseLlmConnection } from '@google/adk';
+import { Langfuse } from '../services/monitoring/langfuse.js';
 
 /**
  * ResilientLlm: OpenRouter multi-model wrapper with automatic failover.
@@ -98,6 +99,7 @@ export class ResilientLlm extends BaseLlm {
             payload.tool_choice = 'auto';
         }
 
+        const startTime = Date.now();
         const response = await fetch(this.baseUrl, {
             method: 'POST',
             headers: {
@@ -119,11 +121,58 @@ export class ResilientLlm extends BaseLlm {
             return;
         }
 
+        // Langfuse trace ID from request metadata or generated
+        const traceId = (llmRequest.config as any)?.traceId || `trace_llm_${Date.now()}`;
+
         if (stream) {
+            // For now, only non-streaming provides easy usage metadata
             yield* this.handleStream(response);
         } else {
-            yield* this.handleNonStream(response);
+            const data = await response.json();
+            const choice = data.choices?.[0];
+
+            if (choice) {
+                // Log to Langfuse
+                await Langfuse.logGeneration({
+                    traceId,
+                    name: `LLM Call: ${modelId}`,
+                    startTime,
+                    endTime: Date.now(),
+                    model: modelId,
+                    input: messages,
+                    output: choice.message,
+                    usage: data.usage ? {
+                        promptTokens: data.usage.prompt_tokens,
+                        completionTokens: data.usage.completion_tokens,
+                        totalTokens: data.usage.total_tokens
+                    } : undefined
+                }).catch(() => { }); // Don't block on logging failures
+            }
+
+            yield* this.handleNonStreamResult(data);
         }
+    }
+
+    private async *handleNonStreamResult(data: any): AsyncGenerator<LlmResponse, void, unknown> {
+        const choice = data.choices?.[0];
+
+        if (!choice) {
+            yield { errorCode: 'EMPTY_RESPONSE', errorMessage: 'No choices in response' };
+            return;
+        }
+
+        yield {
+            content: {
+                role: 'model',
+                parts: this.buildResponseParts(choice.message)
+            },
+            finishReason: (choice.finish_reason?.toUpperCase() || 'STOP') as any,
+            usageMetadata: data.usage ? {
+                promptTokenCount: data.usage.prompt_tokens,
+                candidatesTokenCount: data.usage.completion_tokens,
+                totalTokenCount: data.usage.total_tokens
+            } : undefined
+        } as LlmResponse;
     }
 
     private async *handleStream(response: Response): AsyncGenerator<LlmResponse, void, unknown> {
@@ -162,28 +211,6 @@ export class ResilientLlm extends BaseLlm {
         }
     }
 
-    private async *handleNonStream(response: Response): AsyncGenerator<LlmResponse, void, unknown> {
-        const data = await response.json();
-        const choice = data.choices?.[0];
-
-        if (!choice) {
-            yield { errorCode: 'EMPTY_RESPONSE', errorMessage: 'No choices in response' };
-            return;
-        }
-
-        yield {
-            content: {
-                role: 'model',
-                parts: this.buildResponseParts(choice.message)
-            },
-            finishReason: (choice.finish_reason?.toUpperCase() || 'STOP') as any,
-            usageMetadata: data.usage ? {
-                promptTokenCount: data.usage.prompt_tokens,
-                candidatesTokenCount: data.usage.completion_tokens,
-                totalTokenCount: data.usage.total_tokens
-            } : undefined
-        } as LlmResponse;
-    }
 
     private buildMessages(req: LlmRequest): any[] {
         const msgs: any[] = [];
