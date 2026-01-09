@@ -2,6 +2,7 @@ import Fastify, { FastifyInstance } from 'fastify';
 import cors from '@fastify/cors';
 import 'dotenv/config';
 import { agentRoutes } from './routes/agent.js';
+import { analyticsRoutes } from './routes/analytics.js';
 
 // Initialize Fastify
 const server: FastifyInstance = Fastify({
@@ -16,6 +17,7 @@ server.register(cors, {
 
 // Register Routes
 server.register(agentRoutes);
+server.register(analyticsRoutes);
 
 // Health Check
 server.get('/health', async (request, reply) => {
@@ -25,7 +27,7 @@ server.get('/health', async (request, reply) => {
 // Start Server
 const start = async () => {
   try {
-    const port = parseInt(process.env.PORT || '8080');
+    const port = parseInt(process.env.PORT || '3000');
     await server.listen({ port, host: '0.0.0.0' });
     console.log(`Server listening on http://0.0.0.0:${port}`);
   } catch (err) {

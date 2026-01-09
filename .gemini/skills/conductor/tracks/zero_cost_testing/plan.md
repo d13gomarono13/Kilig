@@ -109,6 +109,34 @@ A **layered defense** approach combining multiple cost-saving techniques:
   - [ ] Upload test results to GitHub artifacts
   - [ ] Slack/Discord notification on failure
 
+### Phase 6: Frontend Analytics Integration ✅ COMPLETED
+
+**Goal**: Visualize test results and agent performance directly in the Laboratory dashboard.
+
+- [x] **Backend API**: Created `src/routes/analytics.ts`
+  - Endpoint: `GET /api/analytics/runs`
+  - Fetches latest execution data from `pipeline_runs` Supabase table.
+  - Returns structured data including status, quality scores, and durations.
+
+- [x] **Frontend Dashboard**: Updated `web/src/pages/Laboratory.tsx`
+  - Implemented "Recent Experiments" section.
+  - Categorizes runs by STEM domain (AI, NLP, Neuroscience, etc.).
+  - Displays status badges, quality scores, and links to source papers.
+  - **Visual Verification**: Added 'View Comic' button linking to `/viewer` for immediate visual inspection.
+
+- [x] **Granular Evaluation**: Updated `scripts/sync_results_to_supabase.ts`
+  - Stores detailed Promptfoo assertions in `pipeline_steps` table.
+  - Enables "why did it fail?" drill-down in the UI.
+
+### Phase 7: Agent Output Standardization ✅ COMPLETED
+
+**Goal**: Ensure reproducible, high-quality visual outputs for every test run.
+
+- [x] **Narrative Agent Strict Mode**: Updated `src/agents/narrative/index.ts`
+  - **5-Panel Rule**: Enforced exact 5-panel structure (Intro -> Methodology -> Results -> Deep Dive -> Conclusion).
+  - **Mandatory Visuals**: Required usage of at least 2 'revideo' templates (Process Flow, Bar Chart) per comic.
+  - **Accessibility**: Optimized JSON output for consistent rendering in the Viewer.
+
 ---
 
 ## Configuration
@@ -126,6 +154,9 @@ OPENROUTER_API_KEY=sk-or-v1-your-key
 
 # Testing Mode
 TESTING_MODE=resilient  # Options: resilient | golden | mock
+
+# Backend
+VITE_API_URL=http://localhost:8080 # For frontend to fetch analytics
 ```
 
 ### Testing Modes
@@ -156,7 +187,7 @@ TESTING_MODE=resilient  # Options: resilient | golden | mock
 2. [ ] Ensure `OPENROUTER_API_KEY` is set
 3. [ ] Run `npm run test:e2e` with `PAPER_URL` env var
 4. [ ] Verify artifacts in `tests/results/`
-5. [ ] Check for rate limit rotations in logs
+5. [ ] **Verify results in Laboratory Dashboard** (http://localhost:5173/laboratory)
 6. [ ] Archive results
 
 ### Regression Test Protocol (Golden)
@@ -172,10 +203,10 @@ TESTING_MODE=resilient  # Options: resilient | golden | mock
 | File | Purpose |
 |------|---------|
 | `src/core/resilient-llm.ts` | Multi-model rotation |
-| `src/agents/config.ts` | LLM configuration |
+| `src/routes/analytics.ts` | Analytics API Endpoint |
+| `web/src/pages/Laboratory.tsx` | Analytics Dashboard UI |
 | `src/services/cache/` | Caching system |
 | `scripts/test_pipeline.ts` | E2E test runner |
-| `tests/golden/` | Golden datasets (planned) |
 
 ---
 

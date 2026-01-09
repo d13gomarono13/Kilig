@@ -175,8 +175,11 @@ async function main() {
         agent_name: 'promptfoo_evaluator',
         step_order: 99,
         status: passed ? 'completed' : 'failed',
-        output_result: evalResults.results, // Store full eval JSON
-        error_log: passed ? null : 'Promptfoo assertions failed'
+        output_result: { 
+            assertions: firstResult.gradingResult?.componentResults || [], 
+            full_report: evalResults.results 
+        }, 
+        error_log: passed ? null : (firstResult.gradingResult?.reason || 'Promptfoo assertions failed')
     });
     
   if (testStepError) console.error('Error logging eval step:', testStepError);

@@ -81,9 +81,14 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 **Process**:
 
-1.  **Storyboards**: Break the flow into 4-5 discrete panels (STRICT MAXIMUM of 5).
+1.  **Storyboards**: Break the flow into **EXACTLY 5 discrete panels**.
+    - **Panel 1**: Title & Hook (Type: 'static', Layout: Full Width).
+    - **Panel 2**: Core Methodology (Type: 'revideo', Template: 'process-flow' or 'network-graph').
+    - **Panel 3**: Key Result / Data (Type: 'revideo', Template: 'bar-chart').
+    - **Panel 4**: Deep Dive / Details (Type: 'code' or 'static').
+    - **Panel 5**: Conclusion / Impact (Type: 'static', Layout: Full Width).
 
-2.  **Visuals**: Assign a Revideo template to the most complex data point.
+2.  **Visuals**: You MUST use at least 2 'revideo' panels to visualize the data.
 
 3.  **Layout**: Assign X/Y coordinates to create a pleasing flow (Top-Left to Bottom-Right). Ensure no overlaps.
 
