@@ -102,7 +102,7 @@ export class ResilientLlm extends BaseLlm {
         stream?: boolean
     ): AsyncGenerator<LlmResponse, void, unknown> {
 
-        const messages = this.buildMessages(llmRequest);
+        const messages = this.buildMessages(llmRequest, modelId);
         const tools = this.buildTools(llmRequest);
 
         const payload: any = {
@@ -139,10 +139,6 @@ export class ResilientLlm extends BaseLlm {
         }
 
 
-
-        // ... (previous imports)
-
-        // ...
 
         // Langfuse trace ID from request metadata or generated
         const traceId = (llmRequest.config as any)?.traceId || getCurrentTraceId() || `trace_llm_${Date.now()}`;
@@ -330,15 +326,38 @@ export class ResilientLlm extends BaseLlm {
     }
 
 
-    private buildMessages(req: LlmRequest): any[] {
+    // Model-specific guidance to improve tool-calling behavior
+    private getModelSpecificGuidance(modelId: string): string | null {
+        // Verbose models that tend to chat before using tools
+        if (modelId.includes('llama-3.3') || modelId.includes('llama-4')) {
+            return `\n\n**CRITICAL INSTRUCTION**: You MUST use tools immediately when available. Do NOT write conversational text like "I'm ready to assist" or ask clarifying questions. If a tool can help accomplish the task, call it directly without any preamble.`;
+        }
+        // DeepSeek tends to be concise but can overthink
+        if (modelId.includes('deepseek')) {
+            return `\n\n**EFFICIENCY NOTE**: Act decisively. Use available tools directly without excessive planning text.`;
+        }
+        // Qwen and Gemma are generally good with tools, minimal guidance needed
+        return null;
+    }
+
+    private buildMessages(req: LlmRequest, modelId?: string): any[] {
         const msgs: any[] = [];
 
         // System instruction
         const sys = (req.config as any)?.systemInstruction;
         if (sys) {
-            const text = typeof sys === 'string'
+            let text = typeof sys === 'string'
                 ? sys
                 : sys.parts?.map((p: any) => p.text).join('\n');
+
+            // Append model-specific guidance if available
+            if (modelId) {
+                const guidance = this.getModelSpecificGuidance(modelId);
+                if (guidance && text) {
+                    text += guidance;
+                }
+            }
+
             if (text) msgs.push({ role: 'system', content: text });
         }
 

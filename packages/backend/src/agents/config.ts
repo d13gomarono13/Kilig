@@ -20,13 +20,12 @@ import { ResilientLlm } from '../core/resilient-llm.js';
 const apiKey = process.env.OPENROUTER_API_KEY;
 
 // Optimal free model stack for Kilig's multi-agent pipeline
+// Updated 2026-01-10: Using stable model IDs with model-specific guidance in ResilientLlm
+// Note: Llama 3.3 is primary because it works reliably with our tool-calling guidance
 export const FREE_MODEL_STACK = [
-    'meta-llama/llama-3.3-70b-instruct:free', // Primary: Reliable
-    'deepseek/deepseek-r1:free',             // Backup 1: Reasoning
-    'deepseek/deepseek-r1:free',             // Backup 1: Reasoning
-    'qwen/qwen-2.5-coder-32b-instruct:free',  // Backup 2: Code
-    'meta-llama/llama-4-maverick:free',       // Backup 3: Newest
-    'google/gemma-3-27b-it:free'              // Backup 4: Fast (Issue with ADK code exec)
+    'meta-llama/llama-3.3-70b-instruct:free',   // Primary: Reliable with tool guidance
+    'google/gemma-3-27b-it:free',               // Backup 1: Fast, 128k context
+    'deepseek/deepseek-chat:free',              // Backup 2: General purpose
 ];
 
 /**

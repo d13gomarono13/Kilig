@@ -53,10 +53,19 @@ Always provide clear and detailed instructions when transferring to another agen
 **CRITICAL**: When you want to transfer to another agent, you MUST use the \`transfer_to_agent\` tool. Do NOT just write it as text. Use the tool.`,
   // Register sub-agents for delegation (ADK Auto Flow)
   subAgents: [scientistAgent, narrativeAgent, designerAgent, validatorAgent],
-  // Explicitly disable default ADK processors to prevent implicit "Gemini code execution tool" requirement
-  requestProcessors: [],
-  responseProcessors: [],
 });
+
+// Explicitly remove the default CodeExecutionRequestProcessor which enforces "Gemini code execution"
+// We remove by index (5) because minification mangles class names preventing name-based filtering.
+// Default order: [Basic, Identity, Instructions, Confirmation, Content, CodeExecution, Transfer]
+if (rootAgent.requestProcessors.length > 5) {
+  rootAgent.requestProcessors.splice(5, 1);
+}
+
+// Remove CodeExecutionResponseProcessor if present (usually empty by default but good safety)
+if (rootAgent.responseProcessors.length > 0) {
+  rootAgent.responseProcessors = [];
+}
 
 // Post-initialization: Allow agents to transfer to each other
 (scientistAgent as any).subAgents = [narrativeAgent, rootAgent];

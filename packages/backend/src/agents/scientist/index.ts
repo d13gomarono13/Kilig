@@ -220,4 +220,16 @@ Extract data that can be visualized:
   ],
 });
 
+// Explicitly remove the default CodeExecutionRequestProcessor which enforces "Gemini code execution"
+// We remove by index (5) because minification mangles class names preventing name-based filtering.
+// Default order: [Basic, Identity, Instructions, Confirmation, Content, CodeExecution, Transfer]
+if (scientistAgent.requestProcessors.length > 5) {
+  scientistAgent.requestProcessors.splice(5, 1);
+}
+
+// Remove CodeExecutionResponseProcessor if present
+if (scientistAgent.responseProcessors.length > 0) {
+  scientistAgent.responseProcessors = [];
+}
+
 export default scientistAgent;
