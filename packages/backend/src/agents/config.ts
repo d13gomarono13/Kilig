@@ -20,12 +20,12 @@ import { ResilientLlm } from '../core/resilient-llm.js';
 const apiKey = process.env.OPENROUTER_API_KEY;
 
 // Optimal free model stack for Kilig's multi-agent pipeline
-// Updated 2026-01-10: Using stable model IDs with model-specific guidance in ResilientLlm
-// Note: Llama 3.3 is primary because it works reliably with our tool-calling guidance
+// All models are MIT-licensed for full commercial use
+// Updated 2026-01-10 with agentic-focused models
 export const FREE_MODEL_STACK = [
-    'meta-llama/llama-3.3-70b-instruct:free',   // Primary: Reliable with tool guidance
-    'google/gemma-3-27b-it:free',               // Backup 1: Fast, 128k context
-    'deepseek/deepseek-chat:free',              // Backup 2: General purpose
+    'xiaomi/mimo-v2-flash:free',               // Primary: MIT, 256K, 150 tok/s, agentic specialist
+    'tng/deepseek-r1t-chimera:free',           // Backup 1: MIT, R1+V3 hybrid reasoning
+    'meta-llama/llama-3.3-70b-instruct:free',  // Backup 2: Reliable fallback
 ];
 
 /**
