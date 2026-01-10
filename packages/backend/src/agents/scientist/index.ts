@@ -23,16 +23,19 @@ import { createHybridIndexer } from '../../services/indexing/index.js';
  */
 
 // ArXiv MCP Toolset Configuration (kept from original)
+// ArXiv MCP Toolset Configuration (Dockerized)
 const arxivToolset = new MCPToolset({
   type: 'StdioConnectionParams',
   serverParams: {
-    command: 'uv',
+    command: 'docker',
     args: [
+      'exec',
+      '-i',
+      'kilig-mcp-arxiv',
+      'uv',
       'tool',
       'run',
-      'arxiv-mcp-server',
-      '--storage-path',
-      './data/papers'
+      'arxiv-mcp-server'
     ],
   },
 });
@@ -41,14 +44,18 @@ const arxivToolset = new MCPToolset({
 // Skills are loaded on-demand via Gemini SKILL.md format - no MCP toolset needed
 // Agents apply skill methodologies directly from their instructions
 
-// Docling MCP Toolset Configuration (New)
+// Docling MCP Toolset Configuration (Dockerized)
 const doclingToolset = new MCPToolset({
   type: 'StdioConnectionParams',
   serverParams: {
-    command: 'sh',
+    command: 'docker',
     args: [
-      '-c',
-      'cd /tmp && uvx --from=docling-mcp docling-mcp-server'
+      'exec',
+      '-i',
+      'kilig-mcp-docling',
+      'uvx',
+      '--from=docling-mcp',
+      'docling-mcp-server'
     ],
   },
 });
