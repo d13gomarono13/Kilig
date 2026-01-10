@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
     "test:pipeline": "tsx scripts/test_pipeline.ts",
+    "test:skills": "tsx scripts/test_skills_integration.ts",
     "test:eval": "(npx promptfoo eval -o tests/results/latest.json -o tests/results/latest.html || true) && npm run artifacts:archive",
     "results:sync": "tsx scripts/sync_results_to_supabase.ts",
     "test:e2e": "npm run test:pipeline && npm run link:latest && npm run artifacts:normalize && npm run test:eval && npm run results:sync",

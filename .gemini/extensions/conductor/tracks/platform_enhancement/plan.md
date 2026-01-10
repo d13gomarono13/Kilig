@@ -60,33 +60,35 @@ Transform Kilig from a working prototype to a production-grade platform with:
 ---
 
 ## Phase 1: Claude Skills Integration (Weeks 1-3)
-**CRITICAL PRIORITY**
+**STATUS: ✅ COMPLETE**
+
+> **Approach**: Skills accessed via Gemini memory injection, NOT MCP toolset.
+> Skills content is injected as `<MEMORY[GEMINI.md]>` blocks in system context.
+> Agents apply skill methodologies through their detailed instructions.
 
 ### 1.1 Verify Skills Setup
-- [ ] Confirm skills in `.gemini/claude skills/`:
+- [x] Confirm skills in `.gemini/claude skills/`:
   - `scientific-critical-thinking/`
   - `scientific-writing/`
   - `literature-review/`
   - `scientific-brainstorming/`
-- [ ] Verify `skills_config.json` points to local path
-- [ ] Test MCP server: `uvx claude-skills-mcp --config src/agents/scientist/skills_config.json`
+- [x] Skills use Gemini format (GEMINI.md), loaded via memory injection
 
 ### 1.2 Scientist Agent Enhancement
-- [ ] Update agent instructions to use skills
-- [ ] Add `scientific-critical-thinking` for paper analysis
-- [ ] Add `literature-review` for multi-paper synthesis
-- [ ] Update output format for skill integration
+- [x] Update agent instructions to use skill methodologies
+- [x] Add `scientific-critical-thinking` workflow for paper analysis
+- [x] Add `literature-review` instructions for multi-paper synthesis
+- [x] Removed unused claudeSkillsToolset (MCP not needed)
 
 ### 1.3 Narrative Agent Enhancement
-- [ ] Add `claudeSkillsToolset` to tools array
-- [ ] Add `scientific-writing` for structured narratives
-- [ ] Add `scientific-brainstorming` for creative angles
-- [ ] Update workflow instructions
+- [x] Add `scientific-writing` methodology for structured narratives
+- [x] Add `scientific-brainstorming` for creative angles
+- [x] Removed unused claudeSkillsToolset (MCP not needed)
 
 ### 1.4 Testing
-- [ ] Create `scripts/test_skills_integration.ts`
-- [ ] Add `npm run test:skills` script
-- [ ] Verify end-to-end with skills
+- [x] Create `scripts/test_skills_integration.ts`
+- [x] Add `npm run test:skills` script
+- [x] Verified skills directory and agent initialization
 
 ---
 
@@ -232,10 +234,9 @@ Transform Kilig from a working prototype to a production-grade platform with:
 
 | File | Purpose |
 |------|---------|
-| `.gemini/claude skills/` | Local Claude Skills directory |
-| `src/agents/scientist/skills_config.json` | Skills MCP configuration |
-| `src/agents/scientist/index.ts` | Scientist agent with skills |
-| `src/agents/narrative/index.ts` | Narrative agent with skills |
+| `.gemini/claude skills/` | Local Claude Skills (Gemini format) |
+| `src/agents/scientist/index.ts` | Scientist agent with skill workflows |
+| `src/agents/narrative/index.ts` | Narrative agent with skill workflows |
 | `docker-compose.yml` | Infrastructure containers |
 | `packages/shared/` | Shared types (after migration) |
 

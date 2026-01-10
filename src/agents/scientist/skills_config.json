@@ -1,9 +1,0 @@
-{
-  "skill_sources": [
-    {
-      "type": "local",
-      "path": "src/skills/claude-scientific-skills",
-      "comment": "Local subset of K-Dense-AI scientific skills (Brainstorming, Critical Thinking, Writing, Literature Review)"
-    }
-  ]
-}

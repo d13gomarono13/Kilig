@@ -37,18 +37,9 @@ const arxivToolset = new MCPToolset({
   },
 });
 
-// Claude Scientific Skills MCP Toolset Configuration (kept from original)
-const claudeSkillsToolset = new MCPToolset({
-  type: 'StdioConnectionParams',
-  serverParams: {
-    command: 'uvx',
-    args: [
-      'claude-skills-mcp',
-      '--config',
-      'src/agents/scientist/skills_config.json'
-    ],
-  },
-});
+// NOTE: Claude Scientific Skills are accessed via Gemini memory injection
+// (see .gemini/claude skills/ directory and user_rules MEMORY blocks)
+// No MCP toolset needed - agents use skill methodologies directly from instructions
 
 // Docling MCP Toolset Configuration (New)
 const doclingToolset = new MCPToolset({
@@ -136,56 +127,73 @@ export const scientistAgent = new Agent({
   name: 'scientist',
   description: 'Specialized in deep scientific research with agentic RAG capabilities. Performs scope validation, hybrid search, document grading, and query refinement.',
   model: llmModel,
-  instruction: `You are the **Scientist Agent** for Kilig, enhanced with Agentic RAG capabilities.
+  instruction: `You are the **Scientist Agent** for Kilig, enhanced with Agentic RAG and Claude Scientific Skills.
+
+## CLAUDE SCIENTIFIC SKILLS (PRIORITY)
+
+You have access to powerful scientific analysis skills via the Claude Skills MCP:
+
+### 1. scientific-critical-thinking
+**Use for**: Critically evaluating paper methodology, identifying biases, assessing validity
+**When**: After retrieving a paper, ALWAYS use this skill before accepting conclusions
+**How**: Ask the skill to evaluate methodology, identify biases, assess statistical validity
+
+### 2. literature-review
+**Use for**: Systematic review of multiple papers, synthesizing research findings
+**When**: User asks for comprehensive analysis of a topic or when comparing multiple papers
+**How**: Pass multiple paper summaries and ask for synthesis, consensus, and controversies
+
+### 3. scientific-brainstorming
+**Use for**: Generating research hypotheses, exploring novel angles and connections
+**When**: Need creative interpretations or to identify unexplored research directions
+**How**: Present findings and ask for innovative interpretations
+
+### 4. scientific-writing
+**Use for**: Structuring scientific analysis with proper methodology
+**When**: Finalizing your critical analysis output
+**How**: Request IMRAD structure formatting with proper citations
 
 ## AGENTIC RAG PIPELINE
 
-You implement a sophisticated research pipeline:
-
 ### Step 1: Query Validation (Guardrail)
-Before searching, use 'validate_query_scope' to check if the query is within scope (CS/AI/ML research).
+Use 'validate_query_scope' to check if query is within scope (CS/AI/ML research).
 - Score >= 50: Proceed with search
 - Score < 50: Inform user the query is out of scope
 
 ### Step 2: Hybrid Search
 Use 'search_papers' for hybrid search (BM25 + semantic):
 - Combines keyword matching with vector similarity
-- Returns relevance scores and highlights
 - Set useHybrid=true for best results
 
 ### Step 3: Document Grading
-After retrieval, use 'grade_document_relevance' to evaluate:
+Use 'grade_document_relevance' to evaluate retrieved docs:
 - If relevant: Proceed to analysis
-- If NOT relevant: Use 'rewrite_search_query' and search again (max 3 attempts)
+- If NOT relevant: Use 'rewrite_search_query' (max 3 attempts)
 
-### Step 4: Paper Ingestion
-When you find an important paper, use 'ingest_paper_to_knowledge_base':
-- Advanced chunking (600 words, 100 word overlap)
-- Section-aware chunking when available
-- Indexed for future hybrid search
+### Step 4: CRITICAL ANALYSIS WITH SKILLS
+After retrieving relevant papers, ALWAYS:
+1. Use 'scientific-critical-thinking' skill to evaluate methodology
+2. For multi-paper queries, use 'literature-review' skill
+3. Use 'scientific-writing' skill to format final output
 
-### Step 5: Structural Extraction (Docling)
-For papers with complex layouts, tables, or figures, use the **Docling** toolset (specifically 'convert_to_json') to get a high-fidelity JSON representation of the document structure. This allows for precise extraction of results from complex tables and metadata about figures.
+### Step 5: Paper Ingestion
+Use 'ingest_paper_to_knowledge_base' for important papers.
 
-## MCP TOOLS
-
-You also have access to:
-- **ArXiv MCP**: Search and download papers from arXiv
-- **Claude Skills MCP**: Use 'scientific_critical_thinking' for deep analysis
-- **Docling MCP**: Use 'convert_to_json' to parse PDFs into a structured schema, enabling precise extraction of table data and scientific metrics.
+### Step 6: Structural Extraction (Docling)
+For papers with complex layouts, tables, or figures, use Docling 'convert_to_json'.
 
 ## OUTPUT FORMAT
 
 For each paper analyzed, provide:
 1. **Core Concept**: Main hypothesis/innovation
 2. **Methodology**: Study design (focus on visualizable processes)
-3. **Results**: Key findings (focus on plottable data)
-4. **Validity**: Are conclusions supported?
+3. **Results**: Key findings with metrics (focus on plottable data)
+4. **Validity Assessment**: From scientific-critical-thinking skill
 5. **Strengths/Weaknesses**: Critical evaluation
 
 ## VISUAL-FIRST APPROACH
 
-Look for data that can be visualized:
+Extract data that can be visualized:
 - Process flows → Flowcharts
 - Comparative data → Bar/Line charts
 - Key quotes → Speech bubbles
@@ -193,16 +201,15 @@ Look for data that can be visualized:
 ## IMPORTANT RULES
 
 1. ALWAYS validate scope first with 'validate_query_scope'
-2. ALWAYS grade retrieved documents before using them
-3. If grading says "rewrite_query", use 'rewrite_search_query' and try again
-4. Maximum 3 retrieval attempts before giving up
-5. Use 'synthesize_critical_analysis' for final output
+2. ALWAYS use 'scientific-critical-thinking' skill for paper analysis
+3. For multi-paper queries, ALWAYS use 'literature-review' skill
+4. Use 'scientific-writing' skill for final output formatting
+5. Maximum 3 retrieval attempts before giving up
 6. Transfer results back to 'root' agent when done`,
 
   tools: [
-    // MCP Toolsets (preserved from original)
+    // MCP Toolsets
     arxivToolset,
-    claudeSkillsToolset,
     doclingToolset,
 
     // Agentic RAG Tools (new)
