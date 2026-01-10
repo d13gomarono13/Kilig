@@ -8,6 +8,9 @@
         "build": "tsc",
         "start": "node dist/index.js",
         "dev": "tsx src/index.ts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage",
         "test:pipeline": "tsx scripts/test_pipeline.ts",
         "test:skills": "tsx scripts/test_skills_integration.ts",
         "results:sync": "tsx scripts/sync_results_to_supabase.ts",
@@ -34,7 +37,9 @@
     },
     "devDependencies": {
         "@types/node": "^20.12.7",
+        "@vitest/coverage-v8": "^4.0.16",
         "tsx": "^4.21.0",
-        "typescript": "^5.4.5"
+        "typescript": "^5.4.5",
+        "vitest": "^4.0.16"
     }
 }
