@@ -62,33 +62,27 @@ Transform Kilig from a working prototype to a production-grade platform with:
 ## Phase 1: Claude Skills Integration (Weeks 1-3)
 **STATUS: ✅ COMPLETE**
 
-> **Approach**: Skills accessed via Gemini memory injection, NOT MCP toolset.
-> Skills content is injected as `<MEMORY[GEMINI.md]>` blocks in system context.
-> Agents apply skill methodologies through their detailed instructions.
+> **Approach**: Progressive Disclosure with SKILL.md
+> Skills converted from GEMINI.md (always loaded) to SKILL.md (on-demand loading).
+> Token optimization: ~80KB → ~400 tokens (metadata only until activated).
 
-### 1.1 Verify Skills Setup
-- [x] Confirm skills in `.gemini/claude skills/`:
-  - `scientific-critical-thinking/`
-  - `scientific-writing/`
-  - `literature-review/`
-  - `scientific-brainstorming/`
-- [x] Skills use Gemini format (GEMINI.md), loaded via memory injection
+### 1.1 Convert to Gemini Skills Format
+- [x] Create `~/.gemini/skills/` directory
+- [x] Convert scientific skills to SKILL.md format:
+  - `scientific-critical-thinking/SKILL.md` (53 lines vs 564 original)
+  - `scientific-writing/SKILL.md`
+  - `literature-review/SKILL.md`
+  - `scientific-brainstorming/SKILL.md`
+- [x] Add YAML frontmatter (`name:`, `description:`) for discovery
 
-### 1.2 Scientist Agent Enhancement
-- [x] Update agent instructions to use skill methodologies
-- [x] Add `scientific-critical-thinking` workflow for paper analysis
-- [x] Add `literature-review` instructions for multi-paper synthesis
-- [x] Removed unused claudeSkillsToolset (MCP not needed)
+### 1.2 Agent Updates
+- [x] Scientist: skill methodology instructions added
+- [x] Narrative: skill methodology instructions added
+- [x] Removed unused `claudeSkillsToolset` (no MCP needed)
 
-### 1.3 Narrative Agent Enhancement
-- [x] Add `scientific-writing` methodology for structured narratives
-- [x] Add `scientific-brainstorming` for creative angles
-- [x] Removed unused claudeSkillsToolset (MCP not needed)
-
-### 1.4 Testing
+### 1.3 Testing
 - [x] Create `scripts/test_skills_integration.ts`
 - [x] Add `npm run test:skills` script
-- [x] Verified skills directory and agent initialization
 
 ---
 
