@@ -52,9 +52,9 @@ export class ResilientLlm extends BaseLlm {
             // Disable streaming for polyfill models to allow parsing
             // We use includes() to match fuzzy versions if needed, but strict string match is safer for now.
             // Using fuzzy check since model IDs might have extra tags.
-            const forceNoStream = this.POLYFILL_MODELS.some(m => modelId.includes(m.split(':')[0])); 
+            const forceNoStream = this.POLYFILL_MODELS.some(m => modelId.includes(m.split(':')[0]));
             const shouldUseStream = stream && !forceNoStream;
-            
+
             if (forceNoStream && stream) {
                 console.log(`[ResilientLlm] Disabling streaming for ${modelId} to polyfill tool calls.`);
             }
@@ -139,7 +139,7 @@ export class ResilientLlm extends BaseLlm {
         }
 
         // Langfuse trace ID from request metadata or generated
-        const traceId = (llmRequest.config as any)?.traceId || `trace_llm_${Date.now()}`;
+        const traceId = (llmRequest.config as any)?.traceId || Langfuse.getTraceId() || `trace_llm_${Date.now()}`;
 
         if (stream) {
             // For now, only non-streaming provides easy usage metadata
@@ -179,25 +179,25 @@ export class ResilientLlm extends BaseLlm {
         }
 
         const parts = this.buildResponseParts(choice.message);
-        
+
         // POLYFILL: If no native tool calls, check text content for tool-like patterns
         const hasNativeTools = parts.some(p => p.functionCall);
         if (!hasNativeTools && parts.length > 0 && parts[0].text) {
-             const polyfilled = this.parseToolCallsFromText(parts[0].text);
-             if (polyfilled.length > 0) {
-                 console.log(`[ResilientLlm] Polyfilled ${polyfilled.length} tool calls from text.`);
-                 // Append tool calls to parts
-                 for (const tc of polyfilled) {
-                     parts.push({
-                         functionCall: {
-                             name: tc.name,
-                             args: tc.args,
-                             // Use a polyfill marker ID
-                             id: `call_poly_${Date.now()}_${Math.random().toString(36).slice(2,7)}`
-                         }
-                     });
-                 }
-             }
+            const polyfilled = this.parseToolCallsFromText(parts[0].text);
+            if (polyfilled.length > 0) {
+                console.log(`[ResilientLlm] Polyfilled ${polyfilled.length} tool calls from text.`);
+                // Append tool calls to parts
+                for (const tc of polyfilled) {
+                    parts.push({
+                        functionCall: {
+                            name: tc.name,
+                            args: tc.args,
+                            // Use a polyfill marker ID
+                            id: `call_poly_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+                        }
+                    });
+                }
+            }
         }
 
         yield {
@@ -216,20 +216,20 @@ export class ResilientLlm extends BaseLlm {
 
     private parseToolCallsFromText(text: string): { name: string, args: any }[] {
         const toolCalls: { name: string, args: any }[] = [];
-        
+
         // Pattern 1: Markdown code block with tool_code or json
         // Matches ```tool_code ... ```
         const codeBlockRegex = /```(?:tool_code|json|python)?\s*([\s\S]*?)```/g;
         let match;
-        
+
         while ((match = codeBlockRegex.exec(text)) !== null) {
             const content = match[1].trim();
-            
+
             // Try 1: Direct Python-style call: name(args)
             // e.g. transfer_to_agent(agent_name='scientist', ...)
             const pythonCallRegex = /^([a-zA-Z0-9_]+)\(([\s\S]*)\)$/;
             const callMatch = pythonCallRegex.exec(content);
-            
+
             if (callMatch) {
                 const name = callMatch[1];
                 const argsStr = callMatch[2];
@@ -248,7 +248,7 @@ export class ResilientLlm extends BaseLlm {
 
                         // Normalization for common failures (Gemma prefers snake_case)
                         if (key === 'agent_name') key = 'agentName';
-                        
+
                         if (strVal !== undefined) {
                             args[key] = strVal; // Unescape if needed?
                         } else if (rawVal !== undefined) {
@@ -256,7 +256,7 @@ export class ResilientLlm extends BaseLlm {
                         }
                         foundArgs = true;
                     }
-                    
+
                     if (foundArgs) {
                         toolCalls.push({ name, args });
                         continue;
@@ -265,16 +265,16 @@ export class ResilientLlm extends BaseLlm {
                     // ignore
                 }
             }
-            
+
             // Try 2: Raw JSON?
             try {
                 // If the block is just JSON object
                 if (content.startsWith('{') && content.endsWith('}')) {
-                     // Wait, we need the tool name. 
-                     // Usually JSON tool calls are { "tool": "name", "args": ... } or similar if strictly prompted.
-                     // But Gemma output Python.
+                    // Wait, we need the tool name. 
+                    // Usually JSON tool calls are { "tool": "name", "args": ... } or similar if strictly prompted.
+                    // But Gemma output Python.
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
 
         return toolCalls;
@@ -347,8 +347,8 @@ export class ResilientLlm extends BaseLlm {
                 // but random is safer than collision if we don't have the original.
                 // Crucially, we store this ID in pendingToolCalls for the response to use.
                 const existingId = (p.functionCall as any).id;
-                const callId = existingId || `call_${(p.functionCall!.name as string).slice(0, 10)}_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
-                
+                const callId = existingId || `call_${(p.functionCall!.name as string).slice(0, 10)}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+
                 return {
                     id: callId,
                     type: 'function',
@@ -364,22 +364,27 @@ export class ResilientLlm extends BaseLlm {
                 // Usually tool calls happen in one turn, then responses in next.
                 // We append to allow for accumulation if needed, but usually we clear on new assistant turn?
                 // Actually, OpenAI expects responses to match the immediately preceding assistant message.
-                pendingToolCalls = {}; 
+                pendingToolCalls = {};
                 for (const tc of toolCalls) {
-                    if (!pendingToolCalls[tc.function.name]) pendingToolCalls[tc.function.name] = [];
-                    pendingToolCalls[tc.function.name].push(tc.id);
+                    const funcName = tc.function.name;
+                    if (funcName) {
+                        if (!pendingToolCalls[funcName]) pendingToolCalls[funcName] = [];
+                        pendingToolCalls[funcName].push(tc.id);
+                    }
                 }
             }
 
             // Tool responses
             const toolResponses = parts.filter(p => p.functionResponse).map(p => {
-                const name = p.functionResponse!.name;
+                const name = p.functionResponse!.name || 'unknown';
                 // Get the ID for this tool call
-                const callId = pendingToolCalls[name]?.shift() || `call_${name.slice(0, 10)}_unknown`;
-                
+                const callId = (name !== 'unknown' && pendingToolCalls[name])
+                    ? pendingToolCalls[name].shift()
+                    : `call_${name.slice(0, 10)}_${Date.now()}`;
+
                 return {
                     role: 'tool',
-                    tool_call_id: callId,
+                    tool_call_id: callId || `call_${name.slice(0, 10)}_fallback`,
                     name: name,
                     content: JSON.stringify(p.functionResponse!.response)
                 };

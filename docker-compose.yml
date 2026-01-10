@@ -61,8 +61,6 @@ services:
       - TELEMETRY_ENABLED=false
     ports:
       - "3001:3000"
-    profiles:
-      - observability
 
   langfuse-db:
     image: postgres:15-alpine
@@ -78,8 +76,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-    profiles:
-      - observability
 
 volumes:
   opensearch-data:

@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { InMemoryRunner } from '@google/adk';
 import { rootAgent } from './agents/root/index.js';
+import { Langfuse } from './services/monitoring/langfuse.js';
 
 /**
  * Kilig Entry Point
@@ -37,43 +38,54 @@ async function main() {
     console.log(`📝 Processing topic: "${topic}"\n`);
     console.log('-'.repeat(60));
 
-    // Run the multi-agent pipeline
-    const resultGenerator = runner.runAsync({
-      userId: 'user-01',
-      sessionId: 'session-01',
-      newMessage: {
-        role: 'user',
-        parts: [{ text: prompt }]
-      } as any
+    // Create a trace for this execution
+    const traceId = await Langfuse.createTrace({
+      name: `Kilig Pipeline: ${topic}`,
+      metadata: { topic, userId: 'user-01', sessionId: 'session-01' },
+      input: { prompt }
     });
 
-    // Process results
-    let lastAuthor = 'user';
-    for await (const event of resultGenerator) {
-      const author = (event as any).author || 'system';
+    console.log(`📡 Trace ID: ${traceId}`);
 
-      if (author !== lastAuthor) {
-        console.log(`\n[${author}]:`);
-        lastAuthor = author;
-      }
+    // Run the multi-agent pipeline within the trace context
+    await Langfuse.withTrace(traceId, async () => {
+      const resultGenerator = runner.runAsync({
+        userId: 'user-01',
+        sessionId: 'session-01',
+        newMessage: {
+          role: 'user',
+          parts: [{ text: prompt }]
+        } as any
+      });
 
-      // Log content
-      if ((event as any).content?.parts) {
-        for (const part of (event as any).content.parts) {
-          if (part.text) {
-            console.log(part.text);
-          }
-          if (part.functionCall) {
-            console.log(`🔧 Tool: ${part.functionCall.name}`);
+      // Process results
+      let lastAuthor = 'user';
+      for await (const event of resultGenerator) {
+        const author = (event as any).author || 'system';
+
+        if (author !== lastAuthor) {
+          console.log(`\n[${author}]:`);
+          lastAuthor = author;
+        }
+
+        // Log content
+        if ((event as any).content?.parts) {
+          for (const part of (event as any).content.parts) {
+            if (part.text) {
+              console.log(part.text);
+            }
+            if (part.functionCall) {
+              console.log(`🔧 Tool: ${part.functionCall.name}`);
+            }
           }
         }
-      }
 
-      // Log errors
-      if ((event as any).errorCode) {
-        console.error(`❌ Error: ${(event as any).errorMessage}`);
+        // Log errors
+        if ((event as any).errorCode) {
+          console.error(`❌ Error: ${(event as any).errorMessage}`);
+        }
       }
-    }
+    });
 
     console.log('\n' + '-'.repeat(60));
     console.log('✅ Pipeline complete');
@@ -83,5 +95,6 @@ async function main() {
     process.exit(1);
   }
 }
+
 
 main();

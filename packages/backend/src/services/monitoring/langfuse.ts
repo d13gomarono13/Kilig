@@ -1,4 +1,5 @@
 import { getSettings } from '../../config/index.js';
+import { AsyncLocalStorage } from 'node:async_hooks';
 
 export interface LangfuseTrace {
     name: string;
@@ -28,6 +29,8 @@ export interface LangfuseObservation {
 class LangfuseLogger {
     private settings = getSettings().langfuse;
     private enabled = false;
+
+    private asyncContext = new AsyncLocalStorage<string>();
 
     constructor() {
         this.enabled = this.settings.enabled && !!this.settings.publicKey && !!this.settings.secretKey;
@@ -60,6 +63,14 @@ class LangfuseLogger {
         }
     }
 
+    getTraceId(): string | undefined {
+        return this.asyncContext.getStore();
+    }
+
+    async withTrace<T>(traceId: string, fn: () => Promise<T>): Promise<T> {
+        return this.asyncContext.run(traceId, fn);
+    }
+
     async createTrace(trace: LangfuseTrace) {
         const id = trace.id || `trace_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
         await this.send('traces', {
@@ -74,11 +85,14 @@ class LangfuseLogger {
     }
 
     async logGeneration(obs: Omit<LangfuseObservation, 'type'>) {
+        const traceId = obs.traceId || this.getTraceId();
+        if (!traceId) return; // Cannot log without trace ID
+
         await this.send('ingestion', {
             batch: [{
                 type: 'generation',
                 id: `gen_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-                traceId: obs.traceId,
+                traceId: traceId,
                 name: obs.name,
                 startTime: new Date(obs.startTime).toISOString(),
                 endTime: obs.endTime ? new Date(obs.endTime).toISOString() : undefined,
@@ -96,11 +110,14 @@ class LangfuseLogger {
     }
 
     async logSpan(obs: Omit<LangfuseObservation, 'type'>) {
+        const traceId = obs.traceId || this.getTraceId();
+        if (!traceId) return;
+
         await this.send('ingestion', {
             batch: [{
                 type: 'span',
                 id: `span_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-                traceId: obs.traceId,
+                traceId: traceId,
                 name: obs.name,
                 startTime: new Date(obs.startTime).toISOString(),
                 endTime: obs.endTime ? new Date(obs.endTime).toISOString() : undefined,

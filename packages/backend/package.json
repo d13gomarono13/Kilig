@@ -1,0 +1,42 @@
+{
+    "name": "@kilig/backend",
+    "version": "1.0.0",
+    "description": "Kilig Agent Orchestration Backend",
+    "main": "dist/index.js",
+    "type": "module",
+    "scripts": {
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "dev": "tsx src/index.ts",
+        "test:pipeline": "tsx scripts/test_pipeline.ts",
+        "test:skills": "tsx scripts/test_skills_integration.ts",
+        "test:eval": "(npx promptfoo eval -o tests/results/latest.json -o tests/results/latest.html || true) && pnpm run artifacts:archive",
+        "results:sync": "tsx scripts/sync_results_to_supabase.ts",
+        "test:e2e": "pnpm run test:pipeline && pnpm run link:latest && pnpm run artifacts:normalize && pnpm run test:eval && pnpm run results:sync",
+        "test:view": "npx promptfoo view",
+        "link:latest": "tsx scripts/link_latest_artifacts.ts",
+        "artifacts:normalize": "tsx scripts/normalize_artifacts.ts",
+        "artifacts:archive": "tsx scripts/archive_results.ts",
+        "cache:clear": "tsx scripts/clear-cache.ts"
+    },
+    "dependencies": {
+        "@fastify/cors": "^11.2.0",
+        "@google/adk": "^0.2.1",
+        "@google/adk-devtools": "^0.2.1",
+        "@google/genai": "^1.34.0",
+        "@kilig/shared": "workspace:*",
+        "@opensearch-project/opensearch": "^3.5.1",
+        "@supabase/supabase-js": "^2.89.0",
+        "chalk": "^5.3.0",
+        "dotenv": "^16.6.1",
+        "fastify": "^5.6.2",
+        "ora": "^8.0.1",
+        "redis": "^5.10.0",
+        "zod": "^3.25.76"
+    },
+    "devDependencies": {
+        "@types/node": "^20.12.7",
+        "tsx": "^4.21.0",
+        "typescript": "^5.4.5"
+    }
+}
