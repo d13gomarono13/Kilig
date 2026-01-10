@@ -10,7 +10,7 @@ describe('SimpleJobQueue', () => {
 
     beforeEach(() => {
         mockProcessor = vi.fn().mockResolvedValue({ success: true });
-        queue = new SimpleJobQueue(mockProcessor);
+        queue = new SimpleJobQueue(mockProcessor as any);
     });
 
     describe('constructor', () => {

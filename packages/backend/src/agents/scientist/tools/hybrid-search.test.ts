@@ -90,7 +90,7 @@ describe('Hybrid Search Tool', () => {
 
     describe('hybridSearchTool (ADK FunctionTool)', () => {
         it('should return formatted results on success', async () => {
-            const response = await hybridSearchTool.execute({
+            const response = await (hybridSearchTool as any).execute({
                 query: 'transformer architecture',
                 limit: 5
             });
@@ -106,7 +106,7 @@ describe('Hybrid Search Tool', () => {
         });
 
         it('should include paper metadata in results', async () => {
-            const response = await hybridSearchTool.execute({
+            const response = await (hybridSearchTool as any).execute({
                 query: 'attention mechanism'
             });
             const parsed = JSON.parse(response as string);
@@ -117,7 +117,7 @@ describe('Hybrid Search Tool', () => {
         });
 
         it('should format scores as strings with 3 decimals', async () => {
-            const response = await hybridSearchTool.execute({
+            const response = await (hybridSearchTool as any).execute({
                 query: 'test query'
             });
             const parsed = JSON.parse(response as string);
@@ -126,7 +126,7 @@ describe('Hybrid Search Tool', () => {
         });
 
         it('should concatenate fullContext from all hits', async () => {
-            const response = await hybridSearchTool.execute({
+            const response = await (hybridSearchTool as any).execute({
                 query: 'test query'
             });
             const parsed = JSON.parse(response as string);
@@ -151,7 +151,7 @@ describe('Hybrid Search Tool', () => {
                 }]
             });
 
-            const response = await hybridSearchTool.execute({ query: 'test' });
+            const response = await (hybridSearchTool as any).execute({ query: 'test' });
             const parsed = JSON.parse(response as string);
 
             expect(parsed.hits[0].excerpt.length).toBeLessThanOrEqual(303); // 300 + '...'

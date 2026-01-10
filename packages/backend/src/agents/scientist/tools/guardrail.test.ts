@@ -7,7 +7,7 @@ import { evaluateGuardrail, guardrailTool, GuardrailResult } from './guardrail.j
 describe('Guardrail Tool', () => {
     describe('FunctionTool (heuristic mode)', () => {
         it('should return high score for queries with multiple academic keywords', async () => {
-            const result = await guardrailTool.execute({
+            const result = await (guardrailTool as any).execute({
                 query: 'transformer neural network research paper on NLP',
                 threshold: 50
             });
@@ -19,7 +19,7 @@ describe('Guardrail Tool', () => {
         });
 
         it('should return medium score for queries with some academic relevance', async () => {
-            const result = await guardrailTool.execute({
+            const result = await (guardrailTool as any).execute({
                 query: 'latest AI developments',
                 threshold: 50
             });
@@ -30,7 +30,7 @@ describe('Guardrail Tool', () => {
         });
 
         it('should return medium score for question queries without keywords', async () => {
-            const result = await guardrailTool.execute({
+            const result = await (guardrailTool as any).execute({
                 query: 'How does this work?',
                 threshold: 50
             });
@@ -41,7 +41,7 @@ describe('Guardrail Tool', () => {
         });
 
         it('should return low score for off-topic queries', async () => {
-            const result = await guardrailTool.execute({
+            const result = await (guardrailTool as any).execute({
                 query: 'best pizza places near me',
                 threshold: 50
             });
@@ -53,7 +53,7 @@ describe('Guardrail Tool', () => {
         });
 
         it('should respect custom threshold', async () => {
-            const result = await guardrailTool.execute({
+            const result = await (guardrailTool as any).execute({
                 query: 'machine learning',
                 threshold: 80
             });

@@ -17,7 +17,8 @@
     "test:pipeline": "pnpm --filter @kilig/backend test:pipeline",
     "test:skills": "pnpm --filter @kilig/backend test:skills",
     "lint": "pnpm -r lint",
-    "clean": "pnpm -r exec rm -rf dist node_modules"
+    "clean": "pnpm -r exec rm -rf dist node_modules",
+    "type-check": "pnpm -r exec tsc --noEmit"
   },
   "devDependencies": {
     "typescript": "^5.4.5"

@@ -19,7 +19,7 @@ describe('validateComicManifestTool', () => {
 
     describe('valid input', () => {
         it('should return VALID for correct manifest', async () => {
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(validManifest)
             });
 
@@ -35,7 +35,7 @@ describe('validateComicManifestTool', () => {
                 ]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -55,7 +55,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -65,7 +65,7 @@ describe('validateComicManifestTool', () => {
 
     describe('JSON parsing', () => {
         it('should fail for invalid JSON', async () => {
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: '{ invalid }'
             });
 
@@ -80,7 +80,7 @@ describe('validateComicManifestTool', () => {
                 pages: [{ id: 'p1', panels: [] }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -91,7 +91,7 @@ describe('validateComicManifestTool', () => {
         it('should fail for missing pages array', async () => {
             const manifest = { title: 'Comic' };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -105,7 +105,7 @@ describe('validateComicManifestTool', () => {
                 pages: [{ panels: [] }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -119,7 +119,7 @@ describe('validateComicManifestTool', () => {
                 pages: [{ id: 'page-1' }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -138,7 +138,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -155,7 +155,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -174,7 +174,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -191,7 +191,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -208,7 +208,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -225,7 +225,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -242,7 +242,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -264,7 +264,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -288,7 +288,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 
@@ -310,7 +310,7 @@ describe('validateComicManifestTool', () => {
                 }]
             };
 
-            const result = await validateComicManifestTool.execute({
+            const result = await (validateComicManifestTool as any).execute({
                 manifest_json: JSON.stringify(manifest)
             });
 

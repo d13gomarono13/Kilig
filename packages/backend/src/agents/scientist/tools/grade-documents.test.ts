@@ -7,7 +7,7 @@ import { gradeDocuments, gradeDocumentsTool } from './grade-documents.js';
 describe('Document Grader Tool', () => {
     describe('FunctionTool (heuristic mode)', () => {
         it('should return high score when context contains question keywords', async () => {
-            const result = await gradeDocumentsTool.execute({
+            const result = await (gradeDocumentsTool as any).execute({
                 context: 'The transformer architecture revolutionized natural language processing by introducing self-attention mechanisms.',
                 question: 'What is the transformer architecture in NLP?'
             });
@@ -19,7 +19,7 @@ describe('Document Grader Tool', () => {
         });
 
         it('should return low score when context has no keyword overlap', async () => {
-            const result = await gradeDocumentsTool.execute({
+            const result = await (gradeDocumentsTool as any).execute({
                 context: 'This paper discusses advancements in semiconductor manufacturing processes for chip fabrication.',
                 question: 'How do neural networks learn patterns?'
             });
@@ -30,7 +30,7 @@ describe('Document Grader Tool', () => {
         });
 
         it('should handle empty context', async () => {
-            const result = await gradeDocumentsTool.execute({
+            const result = await (gradeDocumentsTool as any).execute({
                 context: '',
                 question: 'What is deep learning?'
             });
@@ -43,7 +43,7 @@ describe('Document Grader Tool', () => {
         });
 
         it('should handle partial keyword matches', async () => {
-            const result = await gradeDocumentsTool.execute({
+            const result = await (gradeDocumentsTool as any).execute({
                 context: 'Machine learning models can be trained on large datasets to recognize patterns in images.',
                 question: 'How does machine learning work with datasets?'
             });

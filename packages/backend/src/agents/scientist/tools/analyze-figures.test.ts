@@ -13,7 +13,7 @@ import { analyzeFiguresTool } from './analyze-figures.js';
 describe('analyzeFiguresTool', () => {
     describe('file path validation', () => {
         it('should reject relative file paths', async () => {
-            const result = await analyzeFiguresTool.execute({
+            const result = await (analyzeFiguresTool as any).execute({
                 file_path: 'relative/path/paper.pdf'
             }) as string;
 
@@ -23,7 +23,7 @@ describe('analyzeFiguresTool', () => {
         });
 
         it('should reject paths without leading slash', async () => {
-            const result = await analyzeFiguresTool.execute({
+            const result = await (analyzeFiguresTool as any).execute({
                 file_path: 'paper.pdf'
             }) as string;
 

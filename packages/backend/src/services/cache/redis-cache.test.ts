@@ -62,9 +62,9 @@ describe('RedisCache', () => {
     });
 
     const triggerConnect = () => {
-        const connectCall = onSpy.mock.calls.find(call => call[0] === 'connect');
+        const connectCall = onSpy.mock.calls.find((call: [string, (...args: any[]) => void]) => call[0] === 'connect');
         if (connectCall) {
-            const handler = connectCall[1] as Function;
+            const handler = connectCall[1];
             handler();
         }
     };

@@ -7,7 +7,7 @@ import { rewriteQuery, rewriteQueryTool, RewriteResult } from './rewrite-query.j
 describe('Query Rewriter Tool', () => {
     describe('FunctionTool (heuristic mode)', () => {
         it('should expand LLM abbreviation', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'how do llm work',
                 attemptNumber: 1
             });
@@ -18,7 +18,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should expand NLP abbreviation', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'nlp techniques for text'
             });
             const parsed = JSON.parse(result as string);
@@ -27,7 +27,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should expand multiple abbreviations', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'using cnn for cv tasks'
             });
             const parsed = JSON.parse(result as string);
@@ -37,7 +37,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should add generic academic terms when no abbreviations found', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'how to improve image classification'
             });
             const parsed = JSON.parse(result as string);
@@ -48,7 +48,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should add arxiv context when missing paper reference', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'transformer attention mechanism'
             });
             const parsed = JSON.parse(result as string);
@@ -57,7 +57,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should not duplicate arxiv if already present', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'transformer paper from arxiv'
             });
             const parsed = JSON.parse(result as string);
@@ -68,7 +68,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should not expand if full term already in query', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'natural language processing with llm'
             });
             const parsed = JSON.parse(result as string);
@@ -81,7 +81,7 @@ describe('Query Rewriter Tool', () => {
         });
 
         it('should track attempt number', async () => {
-            const result = await rewriteQueryTool.execute({
+            const result = await (rewriteQueryTool as any).execute({
                 originalQuery: 'test query',
                 attemptNumber: 3
             });

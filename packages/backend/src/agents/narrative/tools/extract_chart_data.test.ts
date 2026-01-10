@@ -32,7 +32,7 @@ describe('extractChartDataTool', () => {
                 ]
             });
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'ImageNet accuracy',
                 chartType: 'bar-chart'
             }) as any;
@@ -49,7 +49,7 @@ describe('extractChartDataTool', () => {
                 ]
             });
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'accuracy results',
                 chartType: 'bar-chart'
             }) as any;
@@ -64,7 +64,7 @@ describe('extractChartDataTool', () => {
                 hits: []
             });
 
-            await extractChartDataTool.execute({
+            await (extractChartDataTool as any).execute({
                 query: 'test',
                 chartType: 'line-chart',
                 maxResults: 10
@@ -78,7 +78,7 @@ describe('extractChartDataTool', () => {
                 hits: []
             });
 
-            await extractChartDataTool.execute({
+            await (extractChartDataTool as any).execute({
                 query: 'test',
                 chartType: 'comparison'
             });
@@ -93,7 +93,7 @@ describe('extractChartDataTool', () => {
                 ]
             });
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'test',
                 chartType: 'bar-chart'
             }) as any;
@@ -109,7 +109,7 @@ describe('extractChartDataTool', () => {
                 hits: []
             });
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'nonexistent data',
                 chartType: 'bar-chart'
             }) as any;
@@ -124,7 +124,7 @@ describe('extractChartDataTool', () => {
         it('should handle search errors gracefully', async () => {
             mockSearchBM25.mockRejectedValue(new Error('OpenSearch connection failed'));
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'test',
                 chartType: 'line-chart'
             }) as any;
@@ -143,7 +143,7 @@ describe('extractChartDataTool', () => {
                 ]
             });
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'model comparison',
                 chartType: 'bar-chart'
             }) as any;
@@ -160,7 +160,7 @@ describe('extractChartDataTool', () => {
                 ]
             });
 
-            const result = await extractChartDataTool.execute({
+            const result = await (extractChartDataTool as any).execute({
                 query: 'performance',
                 chartType: 'comparison'
             }) as any;

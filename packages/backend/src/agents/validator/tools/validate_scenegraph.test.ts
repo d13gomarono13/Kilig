@@ -25,7 +25,7 @@ describe('validateSceneGraphTool', () => {
 
     describe('valid input', () => {
         it('should return VALID for correct scene graph', async () => {
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(validSceneGraph)
             });
 
@@ -47,7 +47,7 @@ describe('validateSceneGraphTool', () => {
                     }]
                 };
 
-                const result = await validateSceneGraphTool.execute({
+                const result = await (validateSceneGraphTool as any).execute({
                     json_content: JSON.stringify(sceneGraph)
                 });
 
@@ -76,7 +76,7 @@ describe('validateSceneGraphTool', () => {
                     }]
                 };
 
-                const result = await validateSceneGraphTool.execute({
+                const result = await (validateSceneGraphTool as any).execute({
                     json_content: JSON.stringify(sceneGraph)
                 });
 
@@ -87,7 +87,7 @@ describe('validateSceneGraphTool', () => {
 
     describe('JSON parsing errors', () => {
         it('should return error for invalid JSON syntax', async () => {
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: '{ invalid json }'
             });
 
@@ -96,7 +96,7 @@ describe('validateSceneGraphTool', () => {
         });
 
         it('should handle empty string', async () => {
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: ''
             });
 
@@ -106,7 +106,7 @@ describe('validateSceneGraphTool', () => {
 
     describe('schema validation errors', () => {
         it('should reject empty scenes array', async () => {
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify({ scenes: [] })
             });
 
@@ -122,7 +122,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -138,7 +138,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -156,7 +156,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -173,7 +173,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -198,7 +198,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -223,7 +223,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -241,7 +241,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
@@ -257,7 +257,7 @@ describe('validateSceneGraphTool', () => {
                 }]
             };
 
-            const result = await validateSceneGraphTool.execute({
+            const result = await (validateSceneGraphTool as any).execute({
                 json_content: JSON.stringify(sceneGraph)
             });
 
