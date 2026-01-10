@@ -37,9 +37,9 @@ const arxivToolset = new MCPToolset({
   },
 });
 
-// NOTE: Claude Scientific Skills are accessed via Gemini memory injection
-// (see .gemini/claude skills/ directory and user_rules MEMORY blocks)
-// No MCP toolset needed - agents use skill methodologies directly from instructions
+// NOTE: Claude Scientific Skills are in .gemini/skills/ directory (progressive disclosure)
+// Skills are loaded on-demand via Gemini SKILL.md format - no MCP toolset needed
+// Agents apply skill methodologies directly from their instructions
 
 // Docling MCP Toolset Configuration (New)
 const doclingToolset = new MCPToolset({
@@ -131,27 +131,27 @@ export const scientistAgent = new Agent({
 
 ## CLAUDE SCIENTIFIC SKILLS (PRIORITY)
 
-You have access to powerful scientific analysis skills via the Claude Skills MCP:
+You have access to powerful scientific analysis skills in \`.gemini/skills/\`:
 
-### 1. scientific-critical-thinking
+### 1. scientific-critical-thinking (.gemini/skills/scientific-critical-thinking/SKILL.md)
 **Use for**: Critically evaluating paper methodology, identifying biases, assessing validity
-**When**: After retrieving a paper, ALWAYS use this skill before accepting conclusions
-**How**: Ask the skill to evaluate methodology, identify biases, assess statistical validity
+**When**: After retrieving a paper, ALWAYS apply this methodology before accepting conclusions
+**How**: Follow the 7-step framework (Methodology Critique → Bias Detection → Statistical Evaluation → Evidence Quality → Logical Fallacy ID → Research Design → Claim Evaluation)
 
-### 2. literature-review
+### 2. literature-review (.gemini/skills/literature-review/SKILL.md)
 **Use for**: Systematic review of multiple papers, synthesizing research findings
 **When**: User asks for comprehensive analysis of a topic or when comparing multiple papers
-**How**: Pass multiple paper summaries and ask for synthesis, consensus, and controversies
+**How**: Follow 6-phase workflow: Planning → Search → Screening → Extraction → Synthesis → Verification
 
-### 3. scientific-brainstorming
+### 3. scientific-brainstorming (.gemini/skills/scientific-brainstorming/SKILL.md)
 **Use for**: Generating research hypotheses, exploring novel angles and connections
 **When**: Need creative interpretations or to identify unexplored research directions
-**How**: Present findings and ask for innovative interpretations
+**How**: Use 5-phase process: Understanding → Divergent Exploration → Connection Making → Critical Evaluation → Synthesis
 
-### 4. scientific-writing
+### 4. scientific-writing (.gemini/skills/scientific-writing/SKILL.md)
 **Use for**: Structuring scientific analysis with proper methodology
 **When**: Finalizing your critical analysis output
-**How**: Request IMRAD structure formatting with proper citations
+**How**: Apply IMRAD structure, proper citations, flowing prose (never bullet points in output)
 
 ## AGENTIC RAG PIPELINE
 

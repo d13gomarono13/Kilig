@@ -3,9 +3,9 @@ import { saveComicManifestTool } from './tools/save_comic_manifest.js';
 import { extractChartDataTool } from './tools/extract_chart_data.js';
 import { llmModel } from '../config.js';
 
-// NOTE: Claude Scientific Skills are accessed via Gemini memory injection
-// (see .gemini/claude skills/ directory and user_rules MEMORY blocks)
-// No MCP toolset needed - agents use skill methodologies directly from instructions
+// NOTE: Claude Scientific Skills are in .gemini/skills/ directory (progressive disclosure)
+// Skills are loaded on-demand via Gemini SKILL.md format - no MCP toolset needed
+// Agents apply skill methodologies directly from their instructions
 
 /**
  * Narrative Architect Agent
@@ -23,17 +23,17 @@ export const narrativeAgent = new Agent({
 
 ## CLAUDE SCIENTIFIC SKILLS
 
-You have access to powerful skills for narrative creation:
+You have access to powerful skills in \`.gemini/skills/\`:
 
-### 1. scientific-writing
+### 1. scientific-writing (.gemini/skills/scientific-writing/SKILL.md)
 **Use for**: Structuring narratives with clear flow and academic rigor
 **When**: Creating video scripts or comic narratives from scientific findings
-**How**: Request structured narrative with story arc and visual descriptions
+**How**: Apply IMRAD structure, flowing prose, visual descriptions with proper figure integration
 
-### 2. scientific-brainstorming
+### 2. scientific-brainstorming (.gemini/skills/scientific-brainstorming/SKILL.md)
 **Use for**: Generating creative presentation angles
 **When**: Need innovative ways to explain complex concepts visually
-**How**: Present findings and ask for 3-5 creative visual angles
+**How**: Use 5-phase process: Understanding → Divergent Exploration → Connection Making → Critical Evaluation → Synthesis
 
 ## GOAL
 
