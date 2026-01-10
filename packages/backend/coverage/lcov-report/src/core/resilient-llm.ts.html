@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">4.83% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/186</span>
+                <span class='fraction'>9/186</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">3.93% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/127</span>
+                <span class='fraction'>5/127</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">9.52% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>2/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">5.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/169</span>
+                <span class='fraction'>9/169</span>
             </div>
         
             
@@ -569,21 +569,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1030,7 +1030,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { BaseLlm, LlmRequest, LlmResponse, BaseLlmConnection } from '@google/adk';
@@ -1054,21 +1054,21 @@ import { langfuse, getCurrentTraceId } from '../services/monitoring/langfuse.js'
 export class ResilientLlm extends BaseLlm {
     private apiKey: string;
     private modelStack: string[];
-    private currentModelIndex: number = <span class="cstat-no" title="statement not covered" >0;</span>
-    private baseUrl = <span class="cstat-no" title="statement not covered" >'https://openrouter.ai/api/v1/chat/completions';</span>
+    private currentModelIndex: number = 0;
+    private baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
 &nbsp;
-<span class="fstat-no" title="function not covered" >    constructor(p</span>arams: { models: string[]; apiKey?: string }) {
-<span class="cstat-no" title="statement not covered" >        super({ model: params.models[0] });</span>
-<span class="cstat-no" title="statement not covered" >        this.modelStack = params.models;</span>
-<span class="cstat-no" title="statement not covered" >        this.apiKey = params.apiKey || process.env.OPENROUTER_API_KEY || '';</span>
+    constructor(params: { models: string[]; apiKey?: string }) {
+        super({ model: params.models[0] });
+        this.modelStack = params.models;
+        this.apiKey = params.apiKey || process.env.OPENROUTER_API_KEY || '';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        if (!this.apiKey) {</span>
-<span class="cstat-no" title="statement not covered" >            console.warn('[ResilientLlm] No OPENROUTER_API_KEY found. Add it to .env');</span>
+        if (!this.apiKey) {
+            console.warn('[ResilientLlm] No OPENROUTER_API_KEY found. Add it to .env');
         }
     }
 &nbsp;
     // Models that are known to return text instead of native tool calls
-    private POLYFILL_MODELS = <span class="cstat-no" title="statement not covered" >[</span>
+    private POLYFILL_MODELS = [
         'google/gemma-3-27b-it:free',
         'meta-llama/llama-3.3-70b-instruct:free',
         'qwen/qwen-2.5-coder-32b-instruct:free'
@@ -1514,8 +1514,8 @@ export class ResilientLlm extends BaseLlm {
 <span class="cstat-no" title="statement not covered" >        return parts;</span>
     }
 &nbsp;
-    async <span class="fstat-no" title="function not covered" >connect(l</span>lmRequest: LlmRequest): Promise&lt;BaseLlmConnection&gt; {
-<span class="cstat-no" title="statement not covered" >        throw new Error('ResilientLlm does not support live connections.');</span>
+    async connect(llmRequest: LlmRequest): Promise&lt;BaseLlmConnection&gt; {
+        throw new Error('ResilientLlm does not support live connections.');
     }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -1525,7 +1525,7 @@ export class ResilientLlm extends BaseLlm {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-10T19:09:21.771Z
+                at 2026-01-10T19:46:18.425Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

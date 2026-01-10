@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/6</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/10</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -96,61 +96,61 @@
 <a name='L31'></a><a href='#L31'>31</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { AgentMode } from '../types/index.js';
 &nbsp;
 export class ValidationError extends Error {
-<span class="fstat-no" title="function not covered" >  constructor(m</span>essage: string, public <span class="cstat-no" title="statement not covered" >field?: string) {</span>
-<span class="cstat-no" title="statement not covered" >    super(message);</span>
-<span class="cstat-no" title="statement not covered" >    this.name = 'ValidationError';</span>
+  constructor(message: string, public field?: string) {
+    super(message);
+    this.name = 'ValidationError';
   }
 }
 &nbsp;
 export class Validator {
-  static <span class="fstat-no" title="function not covered" >validateTaskDescription(d</span>escription: string): string {
-<span class="cstat-no" title="statement not covered" >    if (!description || description.trim().length === 0) {</span>
-<span class="cstat-no" title="statement not covered" >      throw new ValidationError('Description cannot be empty');</span>
+  static validateTaskDescription(description: string): string {
+    if (!description || description.trim().length === 0) {
+      throw new ValidationError('Description cannot be empty');
     }
-<span class="cstat-no" title="statement not covered" >    return description.trim();</span>
+    return description.trim();
   }
 &nbsp;
-  static <span class="fstat-no" title="function not covered" >validateAgentMode(m</span>ode: string): AgentMode {
-    const validModes: AgentMode[] = <span class="cstat-no" title="statement not covered" >[</span>
+  static validateAgentMode(mode: string): AgentMode {
+    const validModes: AgentMode[] = [
       'architect', 'coder', 'tester', 'debugger', 'security', 
       'documentation', 'ingestor', 'analyzer', 'narrative', 
       'designer', 'validator', 'coordinator'
     ];
     
-<span class="cstat-no" title="statement not covered" >    if (!validModes.includes(mode as AgentMode)) {</span>
-<span class="cstat-no" title="statement not covered" >      throw new ValidationError(`Invalid agent mode: ${mode}`);</span>
+    if (!validModes.includes(mode as AgentMode)) {
+      throw new ValidationError(`Invalid agent mode: ${mode}`);
     }
-<span class="cstat-no" title="statement not covered" >    return mode as AgentMode;</span>
+    return mode as AgentMode;
   }
 }
 &nbsp;</pre></td></tr></table></pre>
@@ -160,7 +160,7 @@ export class Validator {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-10T19:09:21.748Z
+                at 2026-01-10T19:46:18.401Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
