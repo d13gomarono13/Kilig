@@ -53,6 +53,9 @@ Always provide clear and detailed instructions when transferring to another agen
 **CRITICAL**: When you want to transfer to another agent, you MUST use the \`transfer_to_agent\` tool. Do NOT just write it as text. Use the tool.`,
   // Register sub-agents for delegation (ADK Auto Flow)
   subAgents: [scientistAgent, narrativeAgent, designerAgent, validatorAgent],
+  // Explicitly disable default ADK processors to prevent implicit "Gemini code execution tool" requirement
+  requestProcessors: [],
+  responseProcessors: [],
 });
 
 // Post-initialization: Allow agents to transfer to each other

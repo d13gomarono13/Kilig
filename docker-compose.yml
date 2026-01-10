@@ -82,7 +82,7 @@ services:
   # ============================================================================
   mcp-arxiv:
     build:
-      context: ./docker/arxiv-mcp
+      context: ./packages/backend/docker/arxiv-mcp
       dockerfile: Dockerfile
     container_name: kilig-mcp-arxiv
     volumes:
@@ -92,9 +92,11 @@ services:
 
   mcp-docling:
     build:
-      context: ./docker/docling-mcp
+      context: ./packages/backend/docker/docling-mcp
       dockerfile: Dockerfile
     container_name: kilig-mcp-docling
+    volumes:
+      - arxiv-papers:/app/data/papers
     # Keep container running for exec
     tty: true
 

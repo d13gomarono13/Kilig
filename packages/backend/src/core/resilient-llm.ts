@@ -1,5 +1,5 @@
 import { BaseLlm, LlmRequest, LlmResponse, BaseLlmConnection } from '@google/adk';
-import { Langfuse } from '../services/monitoring/langfuse.js';
+import { langfuse, getCurrentTraceId } from '../services/monitoring/langfuse.js';
 
 /**
  * ResilientLlm: OpenRouter multi-model wrapper with automatic failover.
@@ -138,8 +138,14 @@ export class ResilientLlm extends BaseLlm {
             return;
         }
 
+
+
+        // ... (previous imports)
+
+        // ...
+
         // Langfuse trace ID from request metadata or generated
-        const traceId = (llmRequest.config as any)?.traceId || Langfuse.getTraceId() || `trace_llm_${Date.now()}`;
+        const traceId = (llmRequest.config as any)?.traceId || getCurrentTraceId() || `trace_llm_${Date.now()}`;
 
         if (stream) {
             // For now, only non-streaming provides easy usage metadata
@@ -150,20 +156,27 @@ export class ResilientLlm extends BaseLlm {
 
             if (choice) {
                 // Log to Langfuse
-                await Langfuse.logGeneration({
-                    traceId,
-                    name: `LLM Call: ${modelId}`,
-                    startTime,
-                    endTime: Date.now(),
-                    model: modelId,
-                    input: messages,
-                    output: choice.message,
-                    usage: data.usage ? {
-                        promptTokens: data.usage.prompt_tokens,
-                        completionTokens: data.usage.completion_tokens,
-                        totalTokens: data.usage.total_tokens
-                    } : undefined
-                }).catch(() => { }); // Don't block on logging failures
+                try {
+                    await langfuse.generation({
+                        traceId,
+                        name: `LLM Call: ${modelId}`,
+                        startTime: new Date(startTime),
+                        endTime: new Date(),
+                        model: modelId,
+                        modelParameters: {
+                            temperature: 0.7
+                        },
+                        input: messages,
+                        output: choice.message,
+                        usage: data.usage ? {
+                            promptTokens: data.usage.prompt_tokens,
+                            completionTokens: data.usage.completion_tokens,
+                            totalTokens: data.usage.total_tokens
+                        } : undefined
+                    });
+                } catch (e) {
+                    console.warn('[ResilientLlm] Failed to log generation to Langfuse:', e);
+                }
             }
 
             yield* this.handleNonStreamResult(data);

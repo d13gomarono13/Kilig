@@ -1,7 +1,8 @@
 import 'dotenv/config';
+import { env } from './config/env.js'; // Validates env vars on startup
 import { InMemoryRunner } from '@google/adk';
 import { rootAgent } from './agents/root/index.js';
-import { Langfuse } from './services/monitoring/langfuse.js';
+import { langfuse, withTrace } from './services/monitoring/langfuse.js';
 
 /**
  * Kilig Entry Point
@@ -39,16 +40,17 @@ async function main() {
     console.log('-'.repeat(60));
 
     // Create a trace for this execution
-    const traceId = await Langfuse.createTrace({
+    const trace = langfuse.trace({
       name: `Kilig Pipeline: ${topic}`,
       metadata: { topic, userId: 'user-01', sessionId: 'session-01' },
       input: { prompt }
     });
+    const traceId = trace.id;
 
     console.log(`📡 Trace ID: ${traceId}`);
 
     // Run the multi-agent pipeline within the trace context
-    await Langfuse.withTrace(traceId, async () => {
+    await withTrace(traceId, async () => {
       const resultGenerator = runner.runAsync({
         userId: 'user-01',
         sessionId: 'session-01',

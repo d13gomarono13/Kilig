@@ -7,10 +7,13 @@ import { guardrailTool } from './tools/guardrail.js';
 import { gradeDocumentsTool } from './tools/grade-documents.js';
 import { rewriteQueryTool } from './tools/rewrite-query.js';
 import { hybridSearchTool } from './tools/hybrid-search.js';
+import { analyzeFiguresTool } from './tools/analyze-figures.js'; // New Tool
 
 // Indexing tools
 import { createHybridIndexer } from '../../services/indexing/index.js';
 import { createAgentTrace } from '../../services/monitoring/langfuse.js';
+
+import { arxivToolset, doclingToolset } from './toolsets.js';
 
 /**
  * Scientist Agent - Enhanced with Agentic RAG
@@ -23,43 +26,9 @@ import { createAgentTrace } from '../../services/monitoring/langfuse.js';
  * 5. MCP tools for ArXiv and Claude Skills
  */
 
-// ArXiv MCP Toolset Configuration (kept from original)
-// ArXiv MCP Toolset Configuration (Dockerized)
-const arxivToolset = new MCPToolset({
-  type: 'StdioConnectionParams',
-  serverParams: {
-    command: 'docker',
-    args: [
-      'exec',
-      '-i',
-      'kilig-mcp-arxiv',
-      'uv',
-      'tool',
-      'run',
-      'arxiv-mcp-server'
-    ],
-  },
-});
-
 // NOTE: Claude Scientific Skills are in .gemini/skills/ directory (progressive disclosure)
 // Skills are loaded on-demand via Gemini SKILL.md format - no MCP toolset needed
 // Agents apply skill methodologies directly from their instructions
-
-// Docling MCP Toolset Configuration (Dockerized)
-const doclingToolset = new MCPToolset({
-  type: 'StdioConnectionParams',
-  serverParams: {
-    command: 'docker',
-    args: [
-      'exec',
-      '-i',
-      'kilig-mcp-docling',
-      'uvx',
-      '--from=docling-mcp',
-      'docling-mcp-server'
-    ],
-  },
-});
 
 /**
  * Synthesize Analysis Tool - Structures research findings
@@ -196,11 +165,17 @@ After retrieving relevant papers, ALWAYS:
 2. For multi-paper queries, use 'literature-review' skill
 3. Use 'scientific-writing' skill to format final output
 
-### Step 5: Paper Ingestion
+## PAPER INGESTION & FIGURE ANALYSIS
 Use 'ingest_paper_to_knowledge_base' for important papers.
 
 ### Step 6: Structural Extraction (Docling)
-For papers with complex layouts, tables, or figures, use Docling 'convert_to_json'.
+For papers with complex layouts, tables, or figures, use:
+1. \`analyze_paper_figures\` to extract:
+   - Charts and graphs (for data trends)
+   - Tables (for precise metrics)
+   - Diagrams (for process flows)
+2. Integrate extracted data into your analysis
+3. Highlight visualizable data for Narrative Agent
 
 ## OUTPUT FORMAT
 
@@ -231,6 +206,7 @@ Extract data that can be visualized:
     // MCP Toolsets
     arxivToolset,
     doclingToolset,
+    analyzeFiguresTool,
 
     // Agentic RAG Tools (new)
     guardrailTool,

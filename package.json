@@ -26,5 +26,10 @@
     "node": ">=18.0.0",
     "pnpm": ">=9.0.0"
   },
-  "packageManager": "pnpm@10.27.0"
+  "packageManager": "pnpm@10.27.0",
+  "pnpm": {
+    "overrides": {
+      "lodash": "npm:lodash-es@^4.17.21"
+    }
+  }
 }

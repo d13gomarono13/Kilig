@@ -21,11 +21,12 @@ const apiKey = process.env.OPENROUTER_API_KEY;
 
 // Optimal free model stack for Kilig's multi-agent pipeline
 export const FREE_MODEL_STACK = [
-    'google/gemma-3-27b-it:free',           // Primary: Fast, 128k context
-    'deepseek/deepseek-r1:free',             // Backup 1: Best reasoning
-    'meta-llama/llama-3.3-70b-instruct:free', // Backup 2: Large, reliable
-    'qwen/qwen-2.5-coder-32b-instruct:free',  // Backup 3: Code/JSON specialist
-    'meta-llama/llama-4-maverick:free'        // Backup 4: Newest model
+    'meta-llama/llama-3.3-70b-instruct:free', // Primary: Reliable
+    'deepseek/deepseek-r1:free',             // Backup 1: Reasoning
+    'deepseek/deepseek-r1:free',             // Backup 1: Reasoning
+    'qwen/qwen-2.5-coder-32b-instruct:free',  // Backup 2: Code
+    'meta-llama/llama-4-maverick:free',       // Backup 3: Newest
+    'google/gemma-3-27b-it:free'              // Backup 4: Fast (Issue with ADK code exec)
 ];
 
 /**
