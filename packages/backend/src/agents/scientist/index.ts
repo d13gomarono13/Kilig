@@ -10,6 +10,7 @@ import { hybridSearchTool } from './tools/hybrid-search.js';
 
 // Indexing tools
 import { createHybridIndexer } from '../../services/indexing/index.js';
+import { createAgentTrace } from '../../services/monitoring/langfuse.js';
 
 /**
  * Scientist Agent - Enhanced with Agentic RAG
@@ -91,6 +92,13 @@ const ingestPaperTool = new FunctionTool({
   execute: async ({ content, title, abstract = '', arxivId, categories }) => {
     console.log(`[Scientist] Ingesting paper: ${title}`);
 
+    // Start Langfuse trace
+    const trace = createAgentTrace('scientist', 'user-01', 'session-01');
+    const span = trace.span({
+      name: 'ingest_paper',
+      input: { title, arxivId, abstract, categories }
+    });
+
     try {
       const indexer = createHybridIndexer();
       const paperId = arxivId || `paper_${Date.now()}`;
@@ -105,22 +113,27 @@ const ingestPaperTool = new FunctionTool({
       });
 
       if (result.success) {
-        return JSON.stringify({
+        const output = {
           success: true,
           message: `Successfully ingested paper "${title}" with ${result.chunksIndexed} chunks`,
           chunksCreated: result.chunksCreated,
           chunksIndexed: result.chunksIndexed,
-        });
+        };
+        span.end({ output });
+        return JSON.stringify(output);
       } else {
-        return JSON.stringify({
+        const output = {
           success: false,
           message: `Ingestion partially failed: ${result.errors.join(', ')}`,
           chunksCreated: result.chunksCreated,
           chunksIndexed: result.chunksIndexed,
-        });
+        };
+        span.end({ output });
+        return JSON.stringify(output);
       }
     } catch (error) {
       console.error('[Scientist] Ingestion error:', error);
+      span.end({ output: { error: String(error) } });
       return JSON.stringify({
         success: false,
         error: String(error),
