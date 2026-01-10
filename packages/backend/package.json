@@ -10,13 +10,10 @@
         "dev": "tsx src/index.ts",
         "test:pipeline": "tsx scripts/test_pipeline.ts",
         "test:skills": "tsx scripts/test_skills_integration.ts",
-        "test:eval": "(npx promptfoo eval -o tests/results/latest.json -o tests/results/latest.html || true) && pnpm run artifacts:archive",
         "results:sync": "tsx scripts/sync_results_to_supabase.ts",
-        "test:e2e": "pnpm run test:pipeline && pnpm run link:latest && pnpm run artifacts:normalize && pnpm run test:eval && pnpm run results:sync",
-        "test:view": "npx promptfoo view",
+        "test:e2e": "pnpm run test:pipeline && pnpm run link:latest && pnpm run artifacts:normalize && pnpm run results:sync",
         "link:latest": "tsx scripts/link_latest_artifacts.ts",
         "artifacts:normalize": "tsx scripts/normalize_artifacts.ts",
-        "artifacts:archive": "tsx scripts/archive_results.ts",
         "cache:clear": "tsx scripts/clear-cache.ts"
     },
     "dependencies": {

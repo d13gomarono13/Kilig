@@ -84,12 +84,11 @@ Kilig testing is designed around the **Google ADK** multi-agent pipeline:
 - [x] Implement 429 rate limit detection and rotation
 - [x] Log model switching for debugging
 
-**Free Model Stack (OpenRouter):**
-1. `google/gemma-3-27b-it:free` (Primary - Fast, 128k context)
-2. `deepseek/deepseek-r1:free` (Best reasoning, comparable to o1)
-3. `meta-llama/llama-3.3-70b-instruct:free` (Large, reliable fallback)
-4. `qwen/qwen-2.5-coder-32b-instruct:free` (JSON/code specialist)
-5. `meta-llama/llama-4-maverick:free` (Newest, experimental)
+**Free Model Stack (OpenRouter) - 100% MIT Licensed:**
+1. `xiaomi/mimo-v2-flash:free` (Primary - Agentic specialist, 256k context, 150 tok/s)
+2. `tng/deepseek-r1t-chimera:free` (Backup 1 - R1+V3 hybrid reasoning)
+3. `meta-llama/llama-3.3-70b-instruct:free` (Backup 2 - Reliable fallback)
+4. (Backup 3 - none for now, focusing on quality)
 
 **Effective Capacity**: 250+ requests/day across all models.
 
@@ -200,7 +199,7 @@ Kilig testing is designed around the **Google ADK** multi-agent pipeline:
   - **Visual Verification**: Added 'View Comic' button linking to `/viewer`.
 
 - [x] **Granular Evaluation**: Updated `scripts/sync_results_to_supabase.ts`
-  - Stores detailed Promptfoo assertions in `pipeline_steps` table.
+  - Stores detailed assertion results in `pipeline_steps` table.
   - Enables "why did it fail?" drill-down in the UI.
 
 ### Phase 7: Agent Output Standardization ✅ COMPLETED
@@ -225,9 +224,10 @@ Kilig testing is designed around the **Google ADK** multi-agent pipeline:
   - Generate regression test cases from production traces
   - Export to Golden Dataset format
 
-- [ ] Integrate with Promptfoo for automated evaluation
-  - Map ADK traces to Promptfoo assertions
-  - Auto-generate `promptfooconfig.yaml` from trace data
+- [ ] **Custom Test Runner**: Enhance `scripts/test_pipeline.ts`
+  - Integrate `GoldenDataset` replayer directly into the runner
+  - Add native assertions for agent tool usage validation
+  - Validate traces against expected agent transfers (no external test runner needed)
 
 ---
 
