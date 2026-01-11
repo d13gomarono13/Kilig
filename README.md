@@ -1,193 +1,146 @@
-# 🎬 Kilig: Autonomous Scientific Media Generation
+# Kilig: The "Paper-First" Scientific Creative Platform
 
-**Kilig** is an advanced **Agentic AI Platform** that transforms complex scientific papers into professional, educational animated videos. By orchestrating a specialized pipeline of autonomous agents, Kilig automates the entire media production lifecycle: from deep-dive research and critical analysis to narrative scripting, storyboarding, and final programmatic video rendering.
+> **AI-powered social media for scientific disseminators.** 
+> Where research papers come to life as interactive comic strips.
 
-<div align="center">
+## 🌟 Vision
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6.svg)
-![React](https://img.shields.io/badge/React-18-61DAFB.svg)
-![Google ADK](https://img.shields.io/badge/Google%20ADK-Agentic-4285F4.svg)
-![OpenSearch](https://img.shields.io/badge/OpenSearch-Vector%20Store-005EB8.svg)
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)
+Kilig is a **professional workbench for scientific disseminators**—a platform where the user and AI agents collaborate to transform dense academic papers into accessible, visually stunning narratives.
 
-</div>
+Our core philosophy is **"Paper-First"**:
+- Every content piece is anchored to a specific scientific paper.
+- The "source of truth" is always one click away.
+- We don't aim for fully automated "black magic". We empower the creator with intelligent tools at every step of the illustration process.
 
----
+## 🧩 The "Comic" Metaphor
 
-## 🧠 System Architecture
+Current scientific communication is either too dense (the paper) or too shallow (a 15-second TikTok). Kilig finds the bridge in the **Comic Strip**.
 
-Kilig operates on a robust **Multi-Agent Orchestration Layer** implemented with the **Google Agent Development Kit (ADK)**. It leverages a microservices-style architecture for scalability, observability, and specialized processing.
+We map the structure of a scientific paper to a **5-Panel Comic Layout**:
+1.  **Panel 1 (Abstract/Hook)**: The core question or problem statement.
+2.  **Panel 2 (Methodology)**: The "Design" or setup of the experiment.
+3.  **Panel 3 (Data/Results)**: Interactive visualization of key findings.
+4.  **Panel 4 (Discussion)**: Interpretation and nuances.
+5.  **Panel 5 (Conclusion)**: The takeaway and link to the source.
 
-### The Agentic Team
-Kilig is not a single model, but a collaborative team of specialized autonomous agents:
-
-1.  **👑 Root Agent (Orchestrator)**
-    *   **Role**: Project Manager & Workflow Coordinator.
-    *   **Function**: Manages the task queue, delegates work to specialist agents, and maintains global state in Supabase.
-    *   **Key Capability**: Stateful execution with crash recovery.
-
-2.  **🔬 Scientist Agent (Researcher)**
-    *   **Role**: Academic Expert & Critical Analyst.
-    *   **Function**: Scours ArXiv/PubMed, ingests papers via Docling, and performs standard-deviating critical analysis.
-    *   **Key Capability**: **Self-RAG Pipeline** (see below) for hallucination-free research.
-
-3.  **✍️ Narrative Agent (Scriptwriter)**
-    *   **Role**: Science Communicator & Storyteller.
-    *   **Function**: Transforms dense technical findings into engaging scripts (Video, Comic, Thread).
-    *   **Key Capability**: Utilizes **Persistent Memory** (Mem0) to learn user preferences and avoid past mistakes.
-
-4.  **🎨 Designer Agent (Visualizer)**
-    *   **Role**: Art Director & Scene Architect.
-    *   **Function**: Converts narrative scripts into `SceneGraph` JSON definitions for the rendering engine.
-    *   **Key Capability**: Generates asset manifests and component-level layouts.
-
-5.  **✅ Validator Agent (QC)**
-    *   **Role**: Quality Control Specialist.
-    *   **Function**: Validates outputs against schema schemas, style guides, and safety guardrails.
-    *   **Key Capability**: Rejects low-quality work with specific feedback loops.
+Each panel is an interactive canvas where agents help "script", "layout", and "refine" the scientific accuracy.
 
 ---
 
-## ⚡️ The Self-RAG Pipeline
+## 🧠 Agentic Architecture
 
-The **Scientist Agent** utilizes a cutting-edge **Self-Reflective Retrieval-Augmented Generation (Self-RAG)** pipeline to ensure maximum accuracy:
+Kilig uses a sophisticated multi-agent system powered by the **Google Agent Development Kit (ADK)** and **Gemini 2.0**.
 
-1.  **🚦 Retrieval Decision**: Dynamic LLM evaluation to decide if external retrieval is necessary (e.g., skips search for "2+2").
-2.  **🛡 Query Guardrail**: Scope validation to reject non-scientific queries before wasting compute.
-3.  **🔍 Hybrid Search**: Semantic (Vector) + Keyword (BM25) search via OpenSearch.
-4.  **📉 Relevance Filtering**: Automated grading of retrieved docs to remove noise.
-5.  **📝 Response Generation**: Drafting the answer based on filtered context.
-6.  **⚖️ Support Assessment**: Verifying every claim is grounded in the retrieved documents (Faithfulness check).
-7.  **⭐ Utility Rating**: Final quality score before delivery.
+### 🤖 The Agent Team
+| Agent | Role | Capabilities |
+|-------|------|--------------|
+| **Root Agent** | **The Conductor** | Stateful orchestration, task delegation, session management, crash recovery. |
+| **Scientist** | **The Researcher** | **Self-RAG Pipeline**: 6-step retrieval process (Decision → Guardrail → Search → Filter → Grade → Support Check). Uses pure deep research skills. |
+| **Narrative** | **The Scripter** | semantic layout generation, "Comic Manifest" creation, pacing control, memory-aware adaptation. |
+| **Validator** | **The Reviewer** | Scientific accuracy checks, "red-teaming" for hallucinations, ensuring the paper-first promise is kept. |
 
-> **Feedback Loop**: User feedback (👍/👎) is collected and used to fine-tune relevance scores for future queries (+10%/-10% weighting).
+### 🧠 Cognitive Engine
+- **Persistent Memory (Mem0)**: Agents "remember" your preferences ("I prefer concise explanations", "Use this color palette") across sessions using OpenSearch vector storage.
+- **Self-Reflective RAG**: The system critiques its own retrieval quality using DeepEval metrics (Correctness, Faithfulness, Contextual Relevancy).
+- **Feedback Loop**: A built-in reinforcement learning loop where user interaction (thumbs up/down) fine-tunes the search relevance in real-time.
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Technology Stack
 
-### Backend & AI Core
-*   **Runtime**: Node.js (v20+) with TypeScript
-*   **Framework**: Fastify (API) + Google ADK (Agents)
-*   **LLM**: Gemini 2.0 (Flash/Pro)
-*   **Vector Store**: OpenSearch (KNN/HNSW indices)
-*   **Database**: Supabase (PostgreSQL) for state & feedback
-*   **Caching**: Redis
-*   **Memory**: Mem0 (Custom Implementation)
+### Backend (`packages/backend`)
+- **Runtime**: Node.js / TypeScript
+- **Framework**: Fastify
+- **AI Core**: Google ADK, LangChain, Vercel AI SDK
+- **Database**: Supabase (PostgreSQL)
+- **Vector Store**: OpenSearch
+- **Caching**: Redis
+- **Orchestration**: Apache Airflow
 
-### Frontend (Kilig Canvas)
-*   **Framework**: React 18 + Vite
-*   **Canvas Engine**: Konva.js (High-performance 2D)
-*   **UI Library**: Shadcn/UI + Tailwind CSS 4
-*   **State**: Zustand
+### Frontend (`packages/frontend`)
+- **Framework**: React + Vite
+- **Canvas Engine**: **Konva.js** (The heart of the "Smart Panel")
+- **Styling**: TailwindCSS + Custom "RetroUI" System
+- **Layout**: "Comic" Component System (`ComicEditor`, `SmartPanel`)
 
-### Infrastructure & Ops
-*   **Orchestration**: Apache Airflow (Workflow DAGs)
-*   **Containerization**: Docker & Docker Compose
-*   **Monitoring**: Prometheus (Metrics) + Grafana (Dashboards) + Langfuse (Traces)
-*   **Tools**: MCP Servers (ArXiv, Docling)
+### DevOps & Quality
+- **Monitoring**: Grafana + Prometheus
+- **Evaluation**: DeepEval (LLM-as-a-Judge)
+- **Containerization**: Docker Compose
+
+---
+
+## 📂 Repository Structure
+
+```
+Kilig/
+├── packages/
+│   ├── backend/        # The Agentic Brain
+│   │   ├── src/agents/       # Role-based Agent Definitions
+│   │   ├── src/services/     # Memory, RAG, Indexing, Feedback
+│   │   └── data/             # Evaluation Datasets (Gold Standards)
+│   ├── frontend/       # The Creative Interface
+│   │   ├── src/components/comic/  # The Comic Engine
+│   │   ├── src/pages/Studio.tsx   # The User-in-the-Loop Workbench
+│   │   └── src/pages/Gallery.tsx  # The Social Feed
+│   └── shared/         # Shared Types (ComicManifest, etc.)
+├── airflow/            # Data Pipelines (Ingestion, Cleanup)
+├── monitoring/         # Observability Stack
+└── supabase/           # Database Migrations
+```
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   Node.js v20+
-*   Docker & Docker Compose
-*   PNPM (`npm install -g pnpm`)
-*   Supabase Account (or local setup)
+- Node.js 20+
+- Docker & Docker Compose
+- pnpm
 
-### 1. Environment Setup
-Create a `.env` file in the root (see `.env.example`):
-```env
-# AI Models
-GEMINI_API_KEY=your_key_here
-GOOGLE_API_KEY=your_key_here (optional backup)
+### Environment Setup
+1. Copy the example env file:
+   ```bash
+   cp .env.example .env
+   ```
+2. Populate keys for `GEMINI_API_KEY`, `SUPABASE_URL`, `OPENSEARCH_HOST`.
 
-# Database
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_key
-
-# Infrastructure
-OPENSEARCH_HOST=http://localhost:9200
-REDIS_HOST=localhost
-```
-
-### 2. Infrastructure Launch
-Start the supporting services (OpenSearch, Redis, Airflow, Observability):
+### Running the Platform
 ```bash
+# Start Infrastructure (DB, Search, Redis, Airflow)
 docker-compose up -d
-```
 
-### 3. Database Migration
-Run the SQL migrations in Supabase (found in `packages/backend/supabase/migrations/`) to create:
-*   `workflow_states` (Agent State)
-*   `feedback` (RAG Improvement)
-
-### 4. Install & Run
-```bash
-# Install dependencies
+# Install Dependencies
 pnpm install
 
-# Start Backend (Port 3000)
-pnpm dev:backend
+# Start Backend (Agents)
+cd packages/backend && pnpm dev
 
-# Start Frontend (Port 5173)
-pnpm dev:frontend
+# Start Frontend (Studio)
+cd packages/frontend && pnpm dev
 ```
 
----
-
-## 🧪 Evaluation & Testing
-
-Kilig includes a rigorous **Agent Evaluation Framework** to ensure reliability.
-
-### Agent Evaluation (LLM-as-a-Judge)
-Run the automated test harness against 11+ scenarios (Core + Red Team):
+### Running Evaluations
+Validate the "Scientist" agent's IQ:
 ```bash
 cd packages/backend
+# Run Agent Functionality Tests
 pnpm exec tsx scripts/evaluate_agents.ts
-```
-*   **Checks**: Tool usage, Content correctness, Safety guardrails.
-*   **Output**: JSON report with pass/fail rates.
-
-### RAG Quality Metrics
-Measure the accuracy of the Scientist agent:
-```bash
-cd packages/backend
+# Run RAG Quality Metrics
 pnpm exec tsx scripts/evaluate_rag.ts
 ```
-*   **Metrics**: Correctness (Answers matching ground truth), Faithfulness (Hallucination check), Contextual Relevancy.
-
-### Feedback Table Verification
-Verify the user feedback loop integration:
-```bash
-cd packages/backend
-pnpm exec tsx scripts/test_feedback_table.ts
-```
 
 ---
 
-## 📁 Repository Structure
+## 🤝 "User-in-the-Loop"
 
-```text
-/
-├── packages/
-│   ├── backend/                 # Agentic Orchestrator & API
-│   │   ├── src/agents/          # Agent Definitions
-│   │   ├── src/services/        # Core Services (Memory, Search, etc.)
-│   │   └── data/                # Evaluation Datasets
-│   └── frontend/                # React Studio App
-├── docker-compose.yml           # Infrastructure Stack
-├── airflow/                     # Workflow Orchestration DAGs
-├── monitoring/                  # Prometheus/Grafana Configs
-└── .gemini/skills/              # Scientific Skill Definitions
-```
+We believe AI should propose, not impose. 
+1. **Selection**: The user selects the paper.
+2. **Review**: The Scientist presents findings; the user approves the "Angle".
+3. **Refinement**: The Narrative agent drafts the comic; the user tweaks the layout in the **Studio**.
+4. **Publication**: The user publishes to the **Gallery**, building their portfolio as a scientific communicator.
 
 ---
 
-## 📜 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+**License**: MIT
+**Status**: Active Development (Pre-Alpha)
