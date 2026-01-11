@@ -29,7 +29,7 @@ Each panel is an interactive canvas where agents help "script", "layout", and "r
 
 ## 🧠 Agentic Architecture
 
-Kilig uses a sophisticated multi-agent system powered by the **Google Agent Development Kit (ADK)** and **Gemini 2.0**.
+Kilig uses a sophisticated multi-agent system powered by the **Google Agent Development Kit (ADK)**.
 
 ### 🤖 The Agent Team
 | Agent | Role | Capabilities |
