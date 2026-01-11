@@ -17,7 +17,7 @@ import { Button, Card, Badge, Tabs, TabsPanels, TabsTrigger, TabsContent, TabsTr
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { runPipeline, AgentType, LogEntry } from "@/lib/pipeline";
 import { Player } from "@revideo/player-react";
-import DynamicScene from "@/components/video/DynamicScene";
+
 import { useProject } from "@/hooks/use-project";
 
 const agentConfig: Record<AgentType, { name: string; icon: any; color: string }> = {
@@ -285,20 +285,13 @@ export default function Studio() {
           <div className="flex-1 flex items-center justify-center p-8">
             <div className="w-full aspect-video flex items-center justify-center bg-black text-white overflow-hidden relative border-8 border-black shadow-xl">
               {sceneGraph || true ? (
-                // Placeholder for Player (requires server)
-                <div className="w-full h-full flex flex-col items-center justify-center bg-gray-900 text-white p-6 text-center border-4 border-dashed border-gray-700">
-                  <div className="bg-neo-pink p-3 rounded-full mb-4">
-                    <Play className="w-8 h-8 text-black ml-1" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">Video Preview Unavailable</h3>
-                  <p className="max-w-md text-sm text-gray-400">
-                    The ReVideo Player requires a running project server URL.
-                    <br />
-                    <span className="font-mono text-xs bg-black/50 p-1 mt-2 inline-block rounded">
-                      src="http://localhost:4000/player"
-                    </span>
-                  </p>
-                </div>
+                <Player
+                  // @ts-ignore
+                  src="/player"
+                  inputProps={{ sceneGraph }}
+                  style={{ width: '100%', height: '100%' }}
+                  controls
+                />
               ) : (
                 <div className="text-center p-8">
                   <div className="w-20 h-20 bg-neo-green border-4 border-white shadow-[8px_8px_0px_white] flex items-center justify-center mx-auto mb-6 animate-pulse">

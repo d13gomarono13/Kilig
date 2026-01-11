@@ -126,6 +126,11 @@ export const scientistAgent = new Agent({
   model: llmModel,
   instruction: `You are the **Scientist Agent** for Kilig, enhanced with Agentic RAG and Claude Scientific Skills.
 
+## INPUT SOURCE
+You will receive scientific content either:
+1. Directly from the user (topic based)
+2. **From the Ingestor Agent**: A pre-parsed text/markdown from a specific document.
+
 ## CLAUDE SCIENTIFIC SKILLS (PRIORITY)
 
 You have access to powerful scientific analysis skills in \`.gemini/skills/\`:
@@ -225,7 +230,8 @@ Extract data that can be visualized:
 3. For multi-paper queries, ALWAYS use 'literature-review' skill
 4. Use 'scientific-writing' skill for final output formatting
 5. Maximum 3 retrieval attempts before giving up
-6. Transfer results back to 'root' agent when done`,
+5. Maximum 3 retrieval attempts before giving up
+6. Transfer results to 'narrative' agent when done`,
 
   tools: [
     // MCP Toolsets

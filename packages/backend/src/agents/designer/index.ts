@@ -35,7 +35,7 @@ const generateSceneGraphTool = new FunctionTool({
       background: z.string().optional().describe('Hex color or gradient.'),
       root_nodes: z.array(z.object({
         type: z.enum(['Circle', 'Rect', 'Line', 'Text', 'Layout', 'Img', 'Latex', 'Grid', 'Spline']).describe('Revideo component type.'),
-        props: z.record(z.any()).describe('Component properties (x, y, width, height, fill, stroke, etc.).'),
+        props: z.any().describe('Component properties (x, y, width, height, fill, stroke, etc.).'),
         children: z.array(z.any()).optional().describe('Child nodes (recursive).'),
         animations: z.array(z.object({
           prop: z.string().describe('Property to animate (e.g., "position.x", "opacity").'),
@@ -92,7 +92,7 @@ export const designerAgent = new Agent({
 - Use \`<Latex>\` for formulas.
 - Animations: Prefer 'easeInOutCubic' for natural movement.
 
-**IMPORTANT**: Once you have generated the SceneGraph using 'generate_scenegraph', you MUST use 'transfer_to_agent' to send the JSON back to 'root'.
+**IMPORTANT**: Once you have generated the SceneGraph using 'generate_scenegraph', you MUST use 'transfer_to_agent' to send the JSON to the **QC & Validator Agent** ('validator').
 
 **Constraint**: Return ONLY the JSON data structure via the tool. Do not write raw TSX code blocks; we are generating the *data* that drives the renderer.`,
   tools: [claudeSkillsToolset, generateSceneGraphTool],

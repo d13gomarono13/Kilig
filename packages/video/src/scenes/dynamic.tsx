@@ -17,8 +17,8 @@ const ComponentMap: Record<string, any> = {
 export default makeScene2D('dynamic', function* (view) {
     // Access the sceneGraph passed via inputProps (variables)
     // ReVideo variables are signals, so we call them to get value
-    const sceneGraphSignal = useScene().variables.get('sceneGraph');
-    const sceneGraph = sceneGraphSignal ? sceneGraphSignal() : null;
+    const sceneGraphSignal = useScene().variables.get('sceneGraph', (): any => null);
+    const sceneGraph = (sceneGraphSignal ? sceneGraphSignal() : null) as any;
 
     if (!sceneGraph || !sceneGraph.scenes) {
         view.add(

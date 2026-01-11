@@ -162,7 +162,7 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 
 
-**IMPORTANT**: Once you have saved the manifest, use 'transfer_to_agent' to send the result back to 'root'.
+**IMPORTANT**: Once you have saved the manifest, use 'transfer_to_agent' to send the result to the **SceneGraph Designer Agent** ('designer').
 
 ## MEMORY-AWARE WORKFLOW
 Before generating ANY manifest:

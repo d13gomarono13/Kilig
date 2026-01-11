@@ -3,6 +3,7 @@ import { scientistAgent } from '../scientist/index.js';
 import { narrativeAgent } from '../narrative/index.js';
 import { designerAgent } from '../designer/index.js';
 import { validatorAgent } from '../validator/index.js';
+import { ingestorAgent } from '../ingestor/index.js';
 import { llmModel } from '../config.js';
 import { toolCallRepairProcessor } from '../../utils/tool_repair_processor.js';
 
@@ -13,10 +14,11 @@ import { toolCallRepairProcessor } from '../../utils/tool_repair_processor.js';
  * 
  * Flow:
  * 1. Receives user request (e.g., "Create a video about X").
- * 2. Delegates research to **Scientist Agent**.
- * 3. Delegates scripting to **Narrative Architect Agent**.
- * 4. Delegates design to **SceneGraph Designer Agent**.
- * 5. Delegates validation to **QC & Validator Agent**.
+ * 2. Delegates to **Ingestor Agent** to parse the content.
+ * 3. Delegates research to **Scientist Agent**.
+ * 4. Delegates scripting to **Narrative Architect Agent**.
+ * 5. Delegates design to **SceneGraph Designer Agent**.
+ * 6. Delegates validation to **QC & Validator Agent**.
  */
 
 export const rootAgent = new Agent({
@@ -32,15 +34,17 @@ Your goal is to manage the lifecycle of transforming a scientific topic into eit
 **Pipelines**:
 
 ### 1. The Video Pipeline (Target: Revideo SceneGraph)
-1.  **Research**: Transfer to 'scientist'.
-2.  **Scripting**: Once research is done, transfer findings to 'narrative' for a video script.
-3.  **Design**: Transfer script to 'designer' for a SceneGraph.
-4.  **Validation**: Transfer SceneGraph to 'validator'.
+1.  **Ingestion**: Transfer to 'ingestor' to parse the source.
+2.  **Research**: Transfer to 'scientist'.
+3.  **Scripting**: Once research is done, transfer findings to 'narrative' for a video script.
+4.  **Design**: Transfer script to 'designer' for a SceneGraph.
+5.  **Validation**: Transfer SceneGraph to 'validator'.
 
 ### 2. The Comic Pipeline (Target: Scientific Comic Manifest)
-1.  **Research**: Transfer to 'scientist'.
-2.  **Comic Layout**: Once research is done, transfer findings to 'narrative' to generate a **Comic Manifest** using 'save_comic_manifest'.
-3.  **Validation**: Transfer Comic Manifest to 'validator'.
+1.  **Ingestion**: Transfer to 'ingestor' to parse the source.
+2.  **Research**: Transfer to 'scientist'.
+3.  **Comic Layout**: Once research is done, transfer findings to 'narrative' to generate a **Comic Manifest** using 'save_comic_manifest'.
+4.  **Validation**: Transfer Comic Manifest to 'validator'.
 
 **Decision Logic**:
 - If the user asks for a "video", "animation", or "Revideo", use the **Video Pipeline**.
@@ -51,7 +55,7 @@ Always provide clear and detailed instructions when transferring to another agen
 
 **CRITICAL**: When you want to transfer to another agent, you MUST use the \`transfer_to_agent\` tool. Do NOT just write it as text. Use the tool.`,
   // Register sub-agents for delegation (ADK Auto Flow)
-  subAgents: [scientistAgent, narrativeAgent, designerAgent, validatorAgent],
+  subAgents: [ingestorAgent, scientistAgent, narrativeAgent, designerAgent, validatorAgent],
 });
 
 // Explicitly remove the default CodeExecutionRequestProcessor which enforces "Gemini code execution"
@@ -67,6 +71,7 @@ if (rootAgent.responseProcessors.length > 0) {
 }
 
 // Post-initialization: Allow agents to transfer to each other
+(ingestorAgent as any).subAgents = [scientistAgent, rootAgent];
 (scientistAgent as any).subAgents = [narrativeAgent, rootAgent];
 (narrativeAgent as any).subAgents = [designerAgent, rootAgent];
 (designerAgent as any).subAgents = [validatorAgent, rootAgent];
@@ -74,7 +79,7 @@ if (rootAgent.responseProcessors.length > 0) {
 
 // Register the tool repair processor for ALL agents to support OpenRouter free models
 // This intercepts text-based JSON outputs and converts them to native function calls
-const allPipelineAgents = [rootAgent, scientistAgent, narrativeAgent, designerAgent, validatorAgent];
+const allPipelineAgents = [rootAgent, ingestorAgent, scientistAgent, narrativeAgent, designerAgent, validatorAgent];
 for (const agent of allPipelineAgents) {
   agent.responseProcessors.unshift(toolCallRepairProcessor as any);
 }

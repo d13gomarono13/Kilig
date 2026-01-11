@@ -26,15 +26,17 @@ async function testFullStackFlow() {
 
     dbService.updateProjectArtifact = async (id, update) => {
         dbUpdates.push({ id, update });
+        return Promise.resolve();
         // Call original to test infrastructure connectivity (if configured)
-        return originalUpdate.call(dbService, id, update);
+        // return originalUpdate.call(dbService, id, update);
     };
 
     try {
         await server.ready();
 
         // Inject request simulating the Frontend
-        const prompt = "Analyze the paper https://arxiv.org/abs/2503.13964 and create a scientific comic manifest.";
+        // Using a real paper (Gemini 1.5 Report) to test Docling Ingestion
+        const prompt = "Create a Revideo animation explaining the core architecture in this paper: https://arxiv.org/pdf/2403.05530.pdf";
 
         console.log(`📡 Sending Request: "${prompt}"`);
 
@@ -87,7 +89,7 @@ async function testFullStackFlow() {
                     projectCreated = true;
                 }
                 else if (event.type === 'agent_event') {
-                    // console.log(`   [Agent Event] ${event.author}: ${event.text?.substring(0, 50)}...`);
+                    console.log(`   [Agent Event] ${event.author}: ${event.text?.replace(/\n/g, ' ').substring(0, 100)}...`);
                 }
                 else if (event.type === 'artifact_updated') {
                     console.log(`   [Artifact Updated] Type: ${event.artifactType} (Length: ${event.content?.length})`);

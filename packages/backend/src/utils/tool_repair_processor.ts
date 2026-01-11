@@ -30,7 +30,55 @@ export const toolCallRepairProcessor = {
                     // console.log(`[ToolRepair] Sample: ${text.slice(0, 50).replace(/\n/g, ' ')}...`);
                 }
 
-                // Check for JSON-like tool call patterns
+                // Check for explicit <tool_call> tag (XML-style)
+                // Lenient regex: allows missing closing tag if model stops early
+                const toolCallMatch = text.match(/<tool_call>([\s\S]*?)(<\/tool_call>|$)/);
+                if (toolCallMatch) {
+                    const jsonContent = toolCallMatch[1].trim();
+                    console.log(`[ToolRepair] Found <tool_call> tag. Content: ${jsonContent}`);
+                    try {
+                        const json = JSON.parse(jsonContent);
+                        if (json.agent_name) {
+                            console.log(`[ToolRepair] Converting <tool_call> to ToolCall: transfer_to_agent("${json.agent_name}")`);
+                            candidate.content.parts = [{
+                                functionCall: {
+                                    name: 'transfer_to_agent',
+                                    args: { agentName: json.agent_name }
+                                }
+                            }];
+                            return;
+                        }
+
+                        // Generic tool call repair
+                        // Search for name/tool/function property
+                        const toolName = json.name || json.tool || json.function || json.tool_name;
+                        const toolArgs = json.args || json.arguments || json.parameters || json.input || json; // fallback to root object if no args key
+
+                        // If fallback to root, remove the name key to avoid passing it as arg
+                        if (toolArgs === json && toolName) {
+                            // clean up known name keys
+                            delete toolArgs.name;
+                            delete toolArgs.tool;
+                            delete toolArgs.function;
+                            delete toolArgs.tool_name;
+                        }
+
+                        if (toolName) {
+                            console.log(`[ToolRepair] Converting <tool_call> to Generic ToolCall: ${toolName}(${JSON.stringify(toolArgs)})`);
+                            candidate.content.parts = [{
+                                functionCall: {
+                                    name: toolName,
+                                    args: toolArgs
+                                }
+                            }];
+                            return;
+                        }
+                    } catch (e) {
+                        console.error('[ToolRepair] Failed to parse JSON in <tool_call>:', e);
+                    }
+                }
+
+                // Check for loose JSON-like tool call patterns
                 if (text && (text.includes('```json') || text.includes('{')) && text.includes('agent_name')) {
 
                     // Regex to find the JSON object containing agent_name
@@ -53,7 +101,7 @@ export const toolCallRepairProcessor = {
                                 return; // Stop processing after first fix
                             }
                         } catch (parseError) {
-                            // JSON parse failed
+                            console.warn('[ToolRepair] JSON parse failed for loose match:', parseError);
                         }
                     }
                 }

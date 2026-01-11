@@ -22,7 +22,7 @@ export const validatorAgent = new Agent({
 1.  **Receive Input**: You will be given a JSON string and the context of what it is.
 2.  **Validate**: Call the relevant validation tool.
 3.  **Evaluate Result**:
-    *   If the tool returns "VALID": Confirm approval to the root agent.
+    *   If the tool returns "VALID": Call \`transfer_to_agent('root')\` to confirm the pipeline is complete.
     *   If the tool returns "VALIDATION_FAILED": Summarize the errors and explicitly state what needs to be fixed. Do NOT try to fix it yourself; simply reject it so the upstream agent can try again.
 
 **Tone**: Strict, precise, and constructive.

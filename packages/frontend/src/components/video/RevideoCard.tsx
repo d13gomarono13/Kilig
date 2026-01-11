@@ -28,7 +28,7 @@ const RevideoCard: React.FC<RevideoCardProps> = ({ scene, isActive }) => {
             <Player
                 // @ts-ignore
                 ref={playerRef}
-                src="http://localhost:4000/player"
+                src="/player"
                 inputProps={{ sceneGraph: miniSceneGraph }}
                 style={{ width: '100%', height: '100%' }}
                 controls={isActive}
