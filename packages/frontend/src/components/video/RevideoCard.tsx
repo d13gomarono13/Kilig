@@ -28,11 +28,7 @@ const RevideoCard: React.FC<RevideoCardProps> = ({ scene, isActive }) => {
             <Player
                 // @ts-ignore
                 ref={playerRef}
-                component={DynamicScene}
-                durationInFrames={Math.round((scene.duration || 5) * 30)}
-                compositionWidth={1920}
-                compositionHeight={1080}
-                fps={30}
+                src="http://localhost:4000/player"
                 inputProps={{ sceneGraph: miniSceneGraph }}
                 style={{ width: '100%', height: '100%' }}
                 controls={isActive}

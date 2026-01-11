@@ -62,26 +62,38 @@ export async function agentRoutes(server: FastifyInstance) {
         reply.raw.write(`data: ${payload}\n\n`);
 
         // Capture artifacts based on author
-        if (isFinal && projectId) {
-          const responseText = event.content?.parts?.[0]?.text;
-          if (event.author === 'scientist') {
-            await dbService.updateProjectArtifact(projectId, {
-              status: 'scripting',
-              research_summary: responseText
-            });
-            reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'analysis', content: responseText })}\n\n`);
-          } else if (event.author === 'narrative_architect') {
-            await dbService.updateProjectArtifact(projectId, {
-              status: 'designing',
-              script: responseText
-            });
-            reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'script', content: responseText })}\n\n`);
-          } else if (event.author === 'designer') {
-            await dbService.updateProjectArtifact(projectId, {
-              status: 'completed',
-              scenegraph: responseText
-            });
-            reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'scenegraph', content: responseText })}\n\n`);
+        // We save on EITHER:
+        // 1. isFinal (The agent is actually done)
+        // 2. transfer_to_agent (The agent is handing off work, implying its part is done)
+        // 2. transfer_to_agent (The agent is handing off work, implying its part is done)
+        const isHandoff = toolCalls?.some((tc: any) => (tc.name === 'transfer_to_agent' || tc.function?.name === 'transfer_to_agent'));
+
+        if ((isFinal || isHandoff) && projectId) {
+          const responseText = event.content?.parts?.[0]?.text || "";
+
+          // Only save if we actually have content to save
+          if (responseText.length > 10) {
+            if (event.author === 'scientist') {
+              await dbService.updateProjectArtifact(projectId, {
+                status: 'scripting',
+                research_summary: responseText
+              });
+              reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'analysis', content: responseText })}\n\n`);
+            } else if (event.author === 'narrative') {
+              await dbService.updateProjectArtifact(projectId, {
+                status: 'designing',
+                script: responseText
+              });
+              reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'script', content: responseText })}\n\n`);
+            } else if (event.author === 'designer') {
+              // Designer might output JSON in the text block OR as a tool argument. 
+              // Usually it's in the text block for 'generate_scenegraph' tool but let's capture text for now.
+              await dbService.updateProjectArtifact(projectId, {
+                status: 'completed',
+                scenegraph: responseText
+              });
+              reply.raw.write(`data: ${JSON.stringify({ type: 'artifact_updated', artifactType: 'scenegraph', content: responseText })}\n\n`);
+            }
           }
         }
       }

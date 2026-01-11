@@ -34,7 +34,7 @@ async function testFullStackFlow() {
         await server.ready();
 
         // Inject request simulating the Frontend
-        const prompt = "Analyze the paper arXiv:2503.13964 and create a scientific comic manifest.";
+        const prompt = "Analyze the paper https://arxiv.org/abs/2503.13964 and create a scientific comic manifest.";
 
         console.log(`📡 Sending Request: "${prompt}"`);
 
@@ -64,36 +64,46 @@ async function testFullStackFlow() {
 
         console.log('\n📜 Event Stream Analysis:');
 
+        // Robust SSE Parsing
+        let buffer = '';
         for (const line of lines) {
-            if (line.startsWith('data: ')) {
-                const jsonStr = line.substring(6);
-                try {
-                    const event = JSON.parse(jsonStr);
+            if (line.trim() === '') continue; // skip empty lines between events
 
-                    if (event.type === 'project_created') {
-                        console.log(`   [Project Created] ID: ${event.projectId}`);
-                        projectCreated = true;
-                    }
-                    else if (event.type === 'agent_event') {
-                        // Verbose, maybe skip or show summary
-                        // console.log(`   [Agent Event] ${event.author}`);
-                    }
-                    else if (event.type === 'artifact_updated') {
-                        console.log(`   [Artifact Updated] Type: ${event.artifactType} (Length: ${event.content?.length})`);
-                        if (event.artifactType === 'analysis') artifactAnalysis = true;
-                        if (event.artifactType === 'scenegraph') artifactManifest = true; // mapped to scenegraph in endpoint logic
-                        if (event.artifactType === 'script') artifactManifest = true; // Check this
-                    }
-                    else if (event.type === 'done') {
-                        console.log(`   [Done] Pipeline Completed`);
-                        done = true;
-                    }
-                    else if (event.type === 'error') {
-                        console.error(`   [Error] ${event.message}`);
-                    }
-                } catch (e) {
-                    // ignore parse errors for non-json lines
+            if (line.startsWith('data: ')) {
+                // New event start
+                buffer = line.substring(6);
+            } else {
+                // Continuations (if any, though JSON.stringify usually escapes newlines)
+                buffer += line;
+            }
+
+            try {
+                const event = JSON.parse(buffer);
+                // Clear buffer if successful (meaning we got a full object)
+                // buffer = ''; // actually we process it now
+
+                if (event.type === 'project_created') {
+                    console.log(`   [Project Created] ID: ${event.projectId}`);
+                    projectCreated = true;
                 }
+                else if (event.type === 'agent_event') {
+                    // console.log(`   [Agent Event] ${event.author}: ${event.text?.substring(0, 50)}...`);
+                }
+                else if (event.type === 'artifact_updated') {
+                    console.log(`   [Artifact Updated] Type: ${event.artifactType} (Length: ${event.content?.length})`);
+                    if (event.artifactType === 'analysis') artifactAnalysis = true;
+                    if (event.artifactType === 'scenegraph') artifactManifest = true;
+                    if (event.artifactType === 'script') artifactManifest = true;
+                }
+                else if (event.type === 'done') {
+                    console.log(`   [Done] Pipeline Completed`);
+                    done = true;
+                }
+                else if (event.type === 'error') {
+                    console.error(`   [Error] ${event.message}`);
+                }
+            } catch (e) {
+                // Partial JSON, continue buffering
             }
         }
 
