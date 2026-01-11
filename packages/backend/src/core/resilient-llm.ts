@@ -36,7 +36,9 @@ export class ResilientLlm extends BaseLlm {
     private POLYFILL_MODELS = [
         'google/gemma-3-27b-it:free',
         'meta-llama/llama-3.3-70b-instruct:free',
-        'qwen/qwen-2.5-coder-32b-instruct:free'
+        'qwen/qwen-2.5-coder-32b-instruct:free',
+        'xiaomi/mimo-v2-flash:free',
+        'tng/deepseek-r1t-chimera:free'
     ];
 
     async *generateContentAsync(
@@ -279,9 +281,19 @@ export class ResilientLlm extends BaseLlm {
             try {
                 // If the block is just JSON object
                 if (content.startsWith('{') && content.endsWith('}')) {
-                    // Wait, we need the tool name. 
-                    // Usually JSON tool calls are { "tool": "name", "args": ... } or similar if strictly prompted.
-                    // But Gemma output Python.
+                    const json = JSON.parse(content);
+                    
+                    // HEURISTIC: Check for transfer_to_agent patterns common in free models
+                    if (json.recipient || json.agent_name || json.agentName) {
+                        const agentName = json.recipient || json.agent_name || json.agentName;
+                        console.log(`[ResilientLlm] Inferred transfer_to_agent('${agentName}') from JSON`);
+                        
+                        toolCalls.push({
+                            name: 'transfer_to_agent',
+                            args: { agentName }
+                        });
+                        continue;
+                    }
                 }
             } catch (e) { }
         }
