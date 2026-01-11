@@ -5,6 +5,10 @@ import { agentRoutes } from './routes/agent.js';
 import { analyticsRoutes } from './routes/analytics.js';
 import { voiceoverRoutes } from './routes/voiceover.js';
 
+import { rateLimitMiddleware } from './middleware/rate-limit.js';
+import { sanitizerMiddleware } from './middleware/sanitizer.js';
+import { adminAuthMiddleware } from './middleware/auth.js';
+
 // Initialize Fastify
 const server: FastifyInstance = Fastify({
   logger: true
@@ -16,10 +20,21 @@ server.register(cors, {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 });
 
+// Global Rate Limit
+server.addHook('onRequest', rateLimitMiddleware);
+
+// Global Input Sanitization
+server.addHook('preValidation', sanitizerMiddleware);
+
 // Register Routes
 server.register(agentRoutes);
-server.register(analyticsRoutes);
 server.register(voiceoverRoutes);
+
+// Protected Analytics Routes
+server.register(async (instance) => {
+  instance.addHook('preHandler', adminAuthMiddleware);
+  instance.register(analyticsRoutes);
+});
 
 // Health Check
 server.get('/health', async (request, reply) => {
@@ -27,7 +42,7 @@ server.get('/health', async (request, reply) => {
 });
 
 // Start Server
-const start = async () => {
+export const start = async () => {
   try {
     const port = parseInt(process.env.PORT || '3000');
     await server.listen({ port, host: '0.0.0.0' });
@@ -38,4 +53,10 @@ const start = async () => {
   }
 };
 
-start();
+// Only run if executed directly
+import { fileURLToPath } from 'url';
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  start();
+}
+
+export { server };

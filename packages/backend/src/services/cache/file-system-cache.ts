@@ -37,14 +37,14 @@ export class FileSystemCache implements ICacheProvider {
 
     // Check memory first (optimization)
     if (this.memoryCache.has(key)) {
-        const entry = this.memoryCache.get(key) as CacheEntry<T>;
-        if (entry.expiresAt && Date.now() > entry.expiresAt) {
-            this.memoryCache.delete(key);
-            // Also delete file async
-            this.delete(key).catch(() => {}); 
-            return null;
-        }
-        return entry.value;
+      const entry = this.memoryCache.get(key) as CacheEntry<T>;
+      if (entry.expiresAt && Date.now() > entry.expiresAt) {
+        this.memoryCache.delete(key);
+        // Also delete file async
+        this.delete(key).catch(() => { });
+        return null;
+      }
+      return entry.value;
     }
 
     try {
@@ -63,7 +63,7 @@ export class FileSystemCache implements ICacheProvider {
 
     } catch (error: any) {
       if (error.code !== 'ENOENT') {
-         console.warn(`[FileSystemCache] Read error for key ${key}:`, error);
+        console.warn(`[FileSystemCache] Read error for key ${key}:`, error);
       }
       return null;
     }
@@ -96,12 +96,12 @@ export class FileSystemCache implements ICacheProvider {
     await this.init();
     this.memoryCache.delete(key);
     try {
-        const filePath = this.getFilePath(key);
-        await fs.unlink(filePath);
+      const filePath = this.getFilePath(key);
+      await fs.unlink(filePath);
     } catch (error: any) {
-        if (error.code !== 'ENOENT') {
-             console.warn(`[FileSystemCache] Delete error for key ${key}:`, error);
-        }
+      if (error.code !== 'ENOENT') {
+        console.warn(`[FileSystemCache] Delete error for key ${key}:`, error);
+      }
     }
   }
 
@@ -109,10 +109,20 @@ export class FileSystemCache implements ICacheProvider {
     await this.init();
     this.memoryCache.clear();
     try {
-        const files = await fs.readdir(this.baseDir);
-        await Promise.all(files.map(file => fs.unlink(path.join(this.baseDir, file))));
+      const files = await fs.readdir(this.baseDir);
+      await Promise.all(files.map(file => fs.unlink(path.join(this.baseDir, file))));
     } catch (error) {
-        console.error(`[FileSystemCache] Clear error:`, error);
+      console.error(`[FileSystemCache] Clear error:`, error);
     }
+  }
+
+  async increment(key: string, ttlSeconds?: number): Promise<number> {
+    // Not truly atomic across processes, but sufficient for single instance local dev
+    // or if this cache is just a fallback.
+    let val = await this.get<number>(key) || 0;
+    if (typeof val !== 'number') val = 0;
+    val++;
+    await this.set(key, val, ttlSeconds);
+    return val;
   }
 }

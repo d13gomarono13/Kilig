@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.44% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/36</span>
+                <span class='fraction'>0/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.55% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/18</span>
+                <span class='fraction'>0/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>0/4</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">19.44% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/36</span>
+                <span class='fraction'>0/36</span>
             </div>
         
             
@@ -178,7 +178,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -186,11 +186,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,10 +214,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -289,19 +289,19 @@
 import { z } from 'zod';
 import { doclingToolset } from '../toolsets.js';
 &nbsp;
-export const analyzeFiguresTool = new FunctionTool({
+export const analyzeFiguresTool = <span class="cstat-no" title="statement not covered" >new FunctionTool({</span>
     name: 'analyze_paper_figures',
     description: 'Extract and interpret figures, charts, tables, and diagrams from scientific papers using Docling. Returns structured data about visual elements.',
     parameters: z.object({
         file_path: z.string().describe('Absolute path to the paper inside the Docling container (e.g. /app/data/papers/file.pdf)'),
         pages: z.array(z.number()).optional().describe('Specific pages to analyze (not fully supported by CLI yet, analyzes all)')
     }),
-    execute: async ({ file_path, pages }) =&gt; {
-        console.log(`[Scientist] Analyzing figures in paper: ${file_path}`);
+    execute: <span class="fstat-no" title="function not covered" >async ({</span> file_path, pages }) =&gt; {
+<span class="cstat-no" title="statement not covered" >        console.log(`[Scientist] Analyzing figures in paper: ${file_path}`);</span>
 &nbsp;
         // Validate path (must be absolute structure inside container)
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (!file_path.startsWith('/')) {
-            return JSON.stringify({
+<span class="cstat-no" title="statement not covered" >        if (!file_path.startsWith('/')) {</span>
+<span class="cstat-no" title="statement not covered" >            return JSON.stringify({</span>
                 success: false,
                 error: "File path must be absolute path inside the Docling container (e.g. /app/data/papers/...)"
             });
@@ -325,10 +325,10 @@ export const analyzeFiguresTool = new FunctionTool({
             // 2. Read the result file
             // Docling names output file same as input basename but .json
             const basename = <span class="cstat-no" title="statement not covered" >file_path.split('/').pop()?.replace(/\.[^/.]+$/, "") || "document";</span>
-            const jsonPath = `${outputDir}/${basename}.json`;
+            const jsonPath = <span class="cstat-no" title="statement not covered" >`${outputDir}/${basename}.json`;</span>
 &nbsp;
-            const readCmd = `docker exec kilig-mcp-docling cat "${jsonPath}"`;
-            const { stdout } = await execAsync(readCmd);
+            const readCmd = <span class="cstat-no" title="statement not covered" >`docker exec kilig-mcp-docling cat "${jsonPath}"`;</span>
+            const { stdout } = <span class="cstat-no" title="statement not covered" >await execAsync(readCmd);</span>
 &nbsp;
             // 3. Cleanup
 <span class="cstat-no" title="statement not covered" >            try {</span>
@@ -403,7 +403,7 @@ function <span class="fstat-no" title="function not covered" >extractMetricsFrom
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-10T20:51:39.170Z
+                at 2026-01-11T07:19:49.018Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

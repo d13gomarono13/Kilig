@@ -58,7 +58,7 @@ const RedisSettingsSchema = z.object({
 
     // Cache settings
     ttlHours: z.number().default(6),
-    enabled: z.boolean().default(false),
+    enabled: z.boolean().default(true),
 });
 
 const LangfuseSettingsSchema = z.object({

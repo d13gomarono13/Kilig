@@ -98,4 +98,22 @@ export class RedisCache implements ICacheProvider {
             this.isConnected = false;
         }
     }
+
+    async increment(key: string, ttlSeconds?: number): Promise<number> {
+        try {
+            await this.ensureConnected();
+            const val = await this.client.incr(key);
+
+            if (ttlSeconds) {
+                // Set TTL only if provided (or maybe if key was new? Redis incr doesn't tell us easily if new without script)
+                // Common pattern: expire if new. 
+                // But simplified: 
+                await this.client.expire(key, ttlSeconds);
+            }
+            return val;
+        } catch (error) {
+            console.error(`[RedisCache] Increment failed for key ${key}:`, error);
+            return 0;
+        }
+    }
 }

@@ -27,9 +27,18 @@ export interface ICacheProvider {
   delete(key: string): Promise<void>;
 
   /**
+  /**
    * Clear the entire cache.
    */
   clear(): Promise<void>;
+
+  /**
+   * Atomically increment a value.
+   * @param key The unique key.
+   * @param ttlSeconds Optional TTL to set if key is new.
+   * @returns The new value.
+   */
+  increment(key: string, ttlSeconds?: number): Promise<number>;
 }
 
 export interface CacheConfig {
