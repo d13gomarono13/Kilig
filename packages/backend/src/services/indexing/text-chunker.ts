@@ -301,14 +301,12 @@ export class TextChunker {
 
             // Skip duplicate abstracts
             if (this.isDuplicateAbstract(contentStr, abstract, abstractWords)) {
-                console.debug(`[TextChunker] Skipping duplicate abstract section: ${sectionTitle}`);
-                continue;
+                                continue;
             }
 
             // Skip small metadata-only sections
             if (contentStr.split(/\s+/).length < 20 && this.isMetadataContent(contentStr)) {
-                console.debug(`[TextChunker] Skipping metadata section: ${sectionTitle}`);
-                continue;
+                                continue;
             }
 
             filtered[sectionTitle] = contentStr;

@@ -16,4 +16,4 @@ tests/artifacts/
 tests/results/
 
 # Supabase
-supabase/
+supabase/migrations

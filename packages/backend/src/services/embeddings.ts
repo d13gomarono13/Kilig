@@ -21,7 +21,6 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   // Check Cache
   const cached = await CacheManager.get<number[]>(cacheKey);
   if (cached) {
-    // console.log(`[Embeddings] Cache HIT (${cacheKey.substring(0, 8)}...)`);
     return cached;
   }
 
@@ -39,8 +38,6 @@ export async function generateEmbedding(text: string): Promise<number[]> {
         throw new Error('No embedding returned from API');
     }
 
-    // console.log(`[DEBUG] Generated embedding with dimension: ${values.length}`);
-    
     // Save to Cache
     await CacheManager.set(cacheKey, values);
     
@@ -60,7 +57,6 @@ export async function generateEmbeddingsBatch(texts: string[]): Promise<number[]
   
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
-    console.log(`[DEBUG] Processing embedding batch ${i / BATCH_SIZE + 1}/${Math.ceil(texts.length / BATCH_SIZE)}`);
     const batchResults = await Promise.all(batch.map(t => generateEmbedding(t)));
     results.push(...batchResults);
   }
