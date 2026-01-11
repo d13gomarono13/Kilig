@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import 'dotenv/config.js';
 import { env } from '../packages/backend/src/config/env.js';
 import { InMemoryRunner } from '@google/adk';
 import { rootAgent } from '../packages/backend/src/agents/root/index.js';

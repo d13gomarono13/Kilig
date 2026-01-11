@@ -11,6 +11,12 @@ importers:
 
   .:
     devDependencies:
+      '@google/adk':
+        specifier: ^0.2.2
+        version: 0.2.2(82a31885c3be603afcd2dd7bcd106639)
+      dotenv:
+        specifier: ^16.6.1
+        version: 16.6.1
       typescript:
         specifier: ^5.4.5
         version: 5.9.3
