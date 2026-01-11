@@ -1,5 +1,6 @@
 import { makeScene2D, Rect, Circle, Txt, Layout, Img, Line, Latex, Grid, Spline } from '@revideo/2d';
 import { createRef, all, waitFor, useScene, Reference } from '@revideo/core';
+import { validateSceneGraph } from '@kilig/shared';
 
 // Map schema types to Revideo components
 const ComponentMap: Record<string, any> = {
@@ -41,6 +42,43 @@ export default makeScene2D('dynamic', function* (view) {
             </Layout>
         );
         yield* waitFor(5);
+        return;
+    }
+
+    // Runtime validation of SceneGraph
+    const validation = validateSceneGraph(sceneGraph);
+    if (!validation.success) {
+        view.add(
+            <Layout layout direction="column" alignItems="center" justifyContent="center" width="100%" height="100%" padding={40}>
+                <Txt
+                    text="❌ Invalid SceneGraph"
+                    fill="#ff4444"
+                    fontFamily="Space Grotesk"
+                    fontWeight={700}
+                    fontSize={48}
+                    marginBottom={30}
+                />
+                <Txt
+                    text="Schema Validation Errors:"
+                    fill="#ffffff"
+                    fontFamily="Space Mono"
+                    fontSize={24}
+                    marginBottom={20}
+                />
+                {validation.errors?.map((error: string, i: number) => (
+                    <Txt
+                        key={`error-${i}`}
+                        text={`• ${error}`}
+                        fill="#ffaaaa"
+                        fontFamily="Space Mono"
+                        fontSize={18}
+                        marginBottom={10}
+                        textAlign="left"
+                    />
+                ))}
+            </Layout>
+        );
+        yield* waitFor(10);
         return;
     }
 

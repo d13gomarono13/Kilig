@@ -1,5 +1,5 @@
 import { LlmAgent as Agent, FunctionTool, MCPToolset } from '@google/adk';
-import { z } from 'zod';
+import { SceneGraphSchema } from '@kilig/shared';
 import fs from 'fs/promises';
 import path from 'path';
 import { llmModel } from '../config.js';
@@ -28,24 +28,7 @@ const claudeSkillsToolset = new MCPToolset({
 const generateSceneGraphTool = new FunctionTool({
   name: 'generate_scenegraph',
   description: 'Generate the final Revideo SceneGraph JSON. This is the blueprint for the React renderer.',
-  parameters: z.object({
-    scenes: z.array(z.object({
-      id: z.string(),
-      duration: z.number(),
-      background: z.string().optional().describe('Hex color or gradient.'),
-      root_nodes: z.array(z.object({
-        type: z.enum(['Circle', 'Rect', 'Line', 'Text', 'Layout', 'Img', 'Latex', 'Grid', 'Spline']).describe('Revideo component type.'),
-        props: z.any().describe('Component properties (x, y, width, height, fill, stroke, etc.).'),
-        children: z.array(z.any()).optional().describe('Child nodes (recursive).'),
-        animations: z.array(z.object({
-          prop: z.string().describe('Property to animate (e.g., "position.x", "opacity").'),
-          target: z.any().describe('Target value.'),
-          duration: z.number().describe('Duration in seconds.'),
-          easing: z.string().optional().describe('Easing function name (e.g., "easeInOutCubic").'),
-        })).optional(),
-      })),
-    })),
-  }),
+  parameters: SceneGraphSchema,
   execute: async (scenegraph) => {
     console.log(`[Designer] Generated SceneGraph with ${scenegraph.scenes.length} scenes.`);
 
