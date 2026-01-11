@@ -1,0 +1,9 @@
+{
+  "paperUrl": "https://arxiv.org/abs/2510.18234",
+  "paperTitle": "DeepSeek-OCR: Contexts Optical Compression",
+  "prompt": "Create a Scientific Comic about the paper at https://arxiv.org/abs/2510.18234.\n\nPaper Title: \"DeepSeek-OCR: Contexts Optical Compression\"\n\nThe comic should explain:\n1. The core problem: How to compress long contexts efficiently\n2. The solution: DeepEncoder + DeepSeek3B-MoE as decoder for optical 2D mapping\n3. Key results: 97% OCR accuracy at <10x compression, 60% at 20x compression\n4. Practical value: Outperforms GOT-OCR2.0 and MinerU2.0\n\nPlease follow the Comic Pipeline:\n1. Transfer to 'scientist' agent to research and ingest the paper\n2. Transfer to 'narrative' agent to generate the Comic Manifest\n3. Transfer to 'validator' agent to validate the manifest\n\nIMPORTANT: You MUST use the 'save_comic_manifest' tool at the end to generate the final JSON.",
+  "timestamp": "2026-01-11T16-11-27-603Z",
+  "startedAt": "2026-01-11T16:11:27.742Z",
+  "userId": "e2e-user-1768147887741",
+  "sessionId": "e2e-session-1768147887741"
+}

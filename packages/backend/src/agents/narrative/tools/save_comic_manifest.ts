@@ -42,7 +42,7 @@ export const saveComicManifestTool = new FunctionTool({
 
     // Persistence: Save to local file for frontend usage
     try {
-      const outputPath = path.join(process.cwd(), 'web/src/data/comic-manifest.json');
+      const outputPath = path.resolve(process.cwd(), '../../packages/frontend/src/data/comic-manifest.json');
       await fs.mkdir(path.dirname(outputPath), { recursive: true });
       await fs.writeFile(outputPath, JSON.stringify(manifest, null, 2));
       console.log(`[Narrative Agent] Manifest saved to: ${outputPath}`);

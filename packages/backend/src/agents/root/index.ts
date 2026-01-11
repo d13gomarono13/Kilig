@@ -4,6 +4,7 @@ import { narrativeAgent } from '../narrative/index.js';
 import { designerAgent } from '../designer/index.js';
 import { validatorAgent } from '../validator/index.js';
 import { llmModel } from '../config.js';
+import { toolCallRepairProcessor } from '../../utils/tool_repair_processor.js';
 
 /**
  * Root Agent (Coordinator)
@@ -70,3 +71,10 @@ if (rootAgent.responseProcessors.length > 0) {
 (narrativeAgent as any).subAgents = [designerAgent, rootAgent];
 (designerAgent as any).subAgents = [validatorAgent, rootAgent];
 (validatorAgent as any).subAgents = [rootAgent];
+
+// Register the tool repair processor for ALL agents to support OpenRouter free models
+// This intercepts text-based JSON outputs and converts them to native function calls
+const allPipelineAgents = [rootAgent, scientistAgent, narrativeAgent, designerAgent, validatorAgent];
+for (const agent of allPipelineAgents) {
+  agent.responseProcessors.unshift(toolCallRepairProcessor as any);
+}
