@@ -9,15 +9,22 @@ import { rateLimitMiddleware } from './middleware/rate-limit.js';
 import { sanitizerMiddleware } from './middleware/sanitizer.js';
 import { adminAuthMiddleware } from './middleware/auth.js';
 
+import { securityPlugin } from './plugins/security.js';
+
 // Initialize Fastify
 const server: FastifyInstance = Fastify({
   logger: true
 });
 
-// Register Middleware
+// Register Security Plugin (Helmet)
+server.register(securityPlugin);
+
+// Register CORS (Restrictive in Production)
+const isProd = process.env.NODE_ENV === 'production';
 server.register(cors, {
-  origin: '*', // Allow all origins for dev, lock down in prod
+  origin: isProd ? (process.env.FRONTEND_URL || 'https://kilig.app') : '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
 });
 
 // Global Rate Limit

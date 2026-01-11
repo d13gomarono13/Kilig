@@ -1,0 +1,50 @@
+services:
+  # ----------------------------------------
+  # Backend API (Production)
+  # ----------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile.prod
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - LANGFUSE_HOST=http://langfuse:3000
+    depends_on:
+      - redis
+      - langfuse
+    restart: always
+    networks:
+      - kilig-network
+
+  # ----------------------------------------
+  # Infrastructure
+  # ----------------------------------------
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - kilig-network
+    command: redis-server --appendonly yes
+
+  langfuse:
+    image: langfuse/langfuse:latest
+    ports:
+      - "3001:3000"
+    environment:
+      - DATABASE_URL=${LANGFUSE_DATABASE_URL}
+      - NEXTAUTH_URL=http://localhost:3001
+      - NEXTAUTH_SECRET=${LANGFUSE_NEXTAUTH_SECRET}
+      - SALT=${LANGFUSE_SALT}
+    restart: always
+    networks:
+      - kilig-network
+
+networks:
+  kilig-network:
+    driver: bridge
