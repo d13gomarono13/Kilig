@@ -10,6 +10,9 @@ import type { OpenSearchSettings } from '../../config/index.js';
 import { getSettings } from '../../config/index.js';
 import { QueryBuilder } from './query-builder.js';
 import { ARXIV_PAPERS_CHUNKS_MAPPING, HYBRID_RRF_PIPELINE } from './index-config.js';
+import { getLogger } from '../../utils/logger.js';
+
+const log = getLogger('OpenSearch');
 
 export interface SearchResult {
     total: number;
@@ -61,7 +64,7 @@ export class OpenSearchClient {
             ssl: { rejectUnauthorized: false },
         });
 
-        console.log(`[OpenSearch] Client initialized with host: ${hostUrl}, index: ${this.indexName}`);
+        log.info('Client initialized', { host: hostUrl, index: this.indexName });
     }
 
     // ===========================================================================
@@ -73,7 +76,7 @@ export class OpenSearchClient {
             const health = await this.client.cluster.health({});
             return ['green', 'yellow'].includes(health.body.status);
         } catch (error) {
-            console.error('[OpenSearch] Health check failed:', error);
+            log.error('Health check failed', error as Error);
             return false;
         }
     }
@@ -100,7 +103,7 @@ export class OpenSearchClient {
                 sizeInBytes: indexStats?.store?.size_in_bytes,
             };
         } catch (error) {
-            console.error('[OpenSearch] Error getting index stats:', error);
+            log.error('Error getting index stats', error as Error);
             return { indexName: this.indexName, exists: false, documentCount: 0 };
         }
     }
@@ -121,7 +124,7 @@ export class OpenSearchClient {
 
             if (force && exists.body) {
                 await this.client.indices.delete({ index: this.indexName });
-                console.log(`[OpenSearch] Deleted existing hybrid index: ${this.indexName}`);
+                log.info('Deleted existing hybrid index', { index: this.indexName });
             }
 
             if (!exists.body || force) {
@@ -133,14 +136,14 @@ export class OpenSearchClient {
                     index: this.indexName,
                     body: mapping,
                 });
-                console.log(`[OpenSearch] Created hybrid index: ${this.indexName}`);
+                log.info('Created hybrid index', { index: this.indexName });
                 return true;
             }
 
-            console.log(`[OpenSearch] Hybrid index already exists: ${this.indexName}`);
+            log.debug('Hybrid index already exists', { index: this.indexName });
             return false;
         } catch (error) {
-            console.error('[OpenSearch] Error creating hybrid index:', error);
+            log.error('Error creating hybrid index', error as Error);
             throw error;
         }
     }
@@ -155,7 +158,7 @@ export class OpenSearchClient {
                         method: 'DELETE',
                         path: `/_search/pipeline/${pipelineId}`,
                     });
-                    console.log(`[OpenSearch] Deleted existing RRF pipeline: ${pipelineId}`);
+                    log.info('Deleted existing RRF pipeline', { pipelineId });
                 } catch {
                     // Pipeline doesn't exist, ignore
                 }
@@ -167,7 +170,7 @@ export class OpenSearchClient {
                     method: 'GET',
                     path: `/_search/pipeline/${pipelineId}`,
                 });
-                console.log(`[OpenSearch] RRF pipeline already exists: ${pipelineId}`);
+                log.debug('RRF pipeline already exists', { pipelineId });
                 return false;
             } catch {
                 // Pipeline doesn't exist, create it
@@ -182,10 +185,10 @@ export class OpenSearchClient {
                 },
             });
 
-            console.log(`[OpenSearch] Created RRF search pipeline: ${pipelineId}`);
+            log.info('Created RRF search pipeline', { pipelineId });
             return true;
         } catch (error) {
-            console.error('[OpenSearch] Error creating RRF pipeline:', error);
+            log.error('Error creating RRF pipeline', error as Error);
             throw error;
         }
     }
@@ -227,7 +230,7 @@ export class OpenSearchClient {
 
             return this.parseSearchResponse(response.body);
         } catch (error) {
-            console.error('[OpenSearch] BM25 search error:', error);
+            log.error('BM25 search error', error as Error);
             return { total: 0, hits: [] };
         }
     }
@@ -274,7 +277,7 @@ export class OpenSearchClient {
 
             return this.parseSearchResponse(response.body);
         } catch (error) {
-            console.error('[OpenSearch] Vector search error:', error);
+            log.error('Vector search error', error as Error);
             return { total: 0, hits: [] };
         }
     }
@@ -345,10 +348,10 @@ export class OpenSearchClient {
                 result.total = result.hits.length;
             }
 
-            console.log(`[OpenSearch] Hybrid search for '${query.slice(0, 50)}...' returned ${result.total} results`);
+            log.debug('Hybrid search completed', { query: query.slice(0, 50), results: result.total });
             return result;
         } catch (error) {
-            console.error('[OpenSearch] Hybrid search error:', error);
+            log.error('Hybrid search error', error as Error);
             return { total: 0, hits: [] };
         }
     }
@@ -409,7 +412,7 @@ export class OpenSearchClient {
 
             return ['created', 'updated'].includes(response.body.result);
         } catch (error) {
-            console.error('[OpenSearch] Error indexing chunk:', error);
+            log.error('Error indexing chunk', error as Error);
             return false;
         }
     }
@@ -447,10 +450,10 @@ export class OpenSearchClient {
             const failed = response.body.items.filter((item: any) => item.index?.error).length;
             const success = chunks.length - failed;
 
-            console.log(`[OpenSearch] Bulk indexed ${success} chunks, ${failed} failed`);
+            log.info('Bulk indexed chunks', { success, failed });
             return { success, failed };
         } catch (error) {
-            console.error('[OpenSearch] Bulk indexing error:', error);
+            log.error('Bulk indexing error', error as Error);
             throw error;
         }
     }
@@ -469,10 +472,10 @@ export class OpenSearchClient {
             });
 
             const deleted = (response.body as any)?.deleted || 0;
-            console.log(`[OpenSearch] Deleted ${deleted} chunks for paper ${arxivId}`);
+            log.info('Deleted chunks', { arxivId, count: deleted });
             return deleted > 0;
         } catch (error) {
-            console.error('[OpenSearch] Error deleting chunks:', error);
+            log.error('Error deleting chunks', error as Error);
             return false;
         }
     }
@@ -494,7 +497,7 @@ export class OpenSearchClient {
 
             return this.parseSearchResponse(response.body).hits;
         } catch (error) {
-            console.error('[OpenSearch] Error getting chunks:', error);
+            log.error('Error getting chunks', error as Error);
             return [];
         }
     }

@@ -1,11 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import { voiceoverService } from '../services/audio/voiceover.js';
-
-interface VoiceoverBody {
-    text: string;
-    voice?: string;
-    speed?: number;
-}
+import { VoiceoverBodySchema, validateBody } from './schemas.js';
 
 /**
  * Voiceover API routes for Kokoro TTS synthesis
@@ -16,15 +11,9 @@ export async function voiceoverRoutes(server: FastifyInstance) {
      * POST /api/voiceover
      * Generate audio from text using Kokoro TTS
      */
-    server.post<{ Body: VoiceoverBody }>('/api/voiceover', async (request, reply) => {
-        const { text, voice, speed } = request.body;
-
-        if (!text || text.trim().length === 0) {
-            return reply.status(400).send({
-                success: false,
-                error: 'Text is required',
-            });
-        }
+    server.post('/api/voiceover', async (request, reply) => {
+        // Validate input
+        const { text, voice, speed } = validateBody(VoiceoverBodySchema, request.body);
 
         try {
             const audioBase64 = await voiceoverService.generateVoiceover(

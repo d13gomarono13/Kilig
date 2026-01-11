@@ -7,6 +7,9 @@
 import { TextChunker, createTextChunker, TextChunk, Section } from './text-chunker.js';
 import { OpenSearchClient, createOpenSearchClient, ChunkData } from '../opensearch/index.js';
 import { generateEmbeddingsBatch } from '../embeddings.js';
+import { getLogger } from '../../utils/logger.js';
+
+const log = getLogger('HybridIndexer');
 
 export interface PaperInput {
     title: string;
@@ -42,7 +45,7 @@ export class HybridIndexer {
     async indexPaper(paper: PaperInput): Promise<IndexingResult> {
         const errors: string[] = [];
 
-        console.log(`[HybridIndexer] Starting indexing for paper: ${paper.arxivId}`);
+        log.info('Starting indexing', { arxivId: paper.arxivId });
 
         // Step 1: Chunk the paper
         let chunks: TextChunk[];
@@ -57,17 +60,17 @@ export class HybridIndexer {
             );
         } catch (error) {
             const msg = `Chunking failed: ${error}`;
-            console.error(`[HybridIndexer] ${msg}`);
+            log.error('Chunking failed', error as Error);
             return { success: false, chunksCreated: 0, chunksIndexed: 0, errors: [msg] };
         }
 
         if (chunks.length === 0) {
             const msg = 'No chunks created from paper content';
-            console.warn(`[HybridIndexer] ${msg}`);
+            log.warn('No chunks created', { arxivId: paper.arxivId });
             return { success: false, chunksCreated: 0, chunksIndexed: 0, errors: [msg] };
         }
 
-        console.log(`[HybridIndexer] Created ${chunks.length} chunks`);
+        log.info('Created chunks', { count: chunks.length });
 
         // Step 2: Generate embeddings
         let embeddings: number[][];
@@ -76,11 +79,11 @@ export class HybridIndexer {
             embeddings = await generateEmbeddingsBatch(texts);
         } catch (error) {
             const msg = `Embedding generation failed: ${error}`;
-            console.error(`[HybridIndexer] ${msg}`);
+            log.error('Embedding generation failed', error as Error);
             return { success: false, chunksCreated: chunks.length, chunksIndexed: 0, errors: [msg] };
         }
 
-        console.log(`[HybridIndexer] Generated ${embeddings.length} embeddings`);
+        log.info('Generated embeddings', { count: embeddings.length });
 
         // Step 3: Prepare chunk data
         const chunkDataList: Array<{ chunkData: ChunkData; embedding: number[] }> = chunks.map((chunk, i) => ({
@@ -114,7 +117,7 @@ export class HybridIndexer {
                 errors.push(`${result.failed} chunks failed to index`);
             }
 
-            console.log(`[HybridIndexer] Indexed ${result.success}/${chunks.length} chunks for ${paper.arxivId}`);
+            log.info('Indexed chunks', { success: result.success, total: chunks.length, arxivId: paper.arxivId });
 
             return {
                 success: result.failed === 0,
@@ -124,7 +127,7 @@ export class HybridIndexer {
             };
         } catch (error) {
             const msg = `Bulk indexing failed: ${error}`;
-            console.error(`[HybridIndexer] ${msg}`);
+            log.error('Bulk indexing failed', error as Error);
             return { success: false, chunksCreated: chunks.length, chunksIndexed: 0, errors: [msg] };
         }
     }
@@ -133,7 +136,7 @@ export class HybridIndexer {
      * Re-index a paper (delete old chunks first)
      */
     async reindexPaper(paper: PaperInput): Promise<IndexingResult> {
-        console.log(`[HybridIndexer] Re-indexing paper: ${paper.arxivId}`);
+        log.info('Re-indexing paper', { arxivId: paper.arxivId });
 
         // Delete existing chunks
         await this.searchClient.deletePaperChunks(paper.arxivId);

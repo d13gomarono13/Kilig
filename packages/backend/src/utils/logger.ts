@@ -1,6 +1,10 @@
 /**
- * Logger utility for Gemini Code Flow
- * Adapted from Claude Code Flow by ruvnet
+ * Logger utility for Kilig
+ * 
+ * Usage:
+ *   import { createLogger } from '../utils/logger.js';
+ *   const log = createLogger('HybridIndexer');
+ *   log.info('Starting indexing', { paperId });
  */
 
 import chalk from 'chalk';
@@ -12,41 +16,88 @@ export enum LogLevel {
   ERROR = 3,
 }
 
+function getLogLevelFromEnv(): LogLevel {
+  const envLevel = process.env.LOG_LEVEL?.toUpperCase();
+  if (envLevel && envLevel in LogLevel) {
+    return LogLevel[envLevel as keyof typeof LogLevel];
+  }
+  return LogLevel.INFO;
+}
+
 export class Logger {
   private context: string;
-  private level: LogLevel = LogLevel.INFO;
+  private level: LogLevel;
 
-  constructor(context: string) {
+  constructor(context: string, level?: LogLevel) {
     this.context = context;
-    
-    // Set log level from environment
-    const envLevel = process.env.LOG_LEVEL?.toUpperCase();
-    if (envLevel && envLevel in LogLevel) {
-      this.level = LogLevel[envLevel as keyof typeof LogLevel];
-    }
+    // Read from env each time to support test mocking
+    this.level = level ?? getLogLevelFromEnv();
   }
 
-  debug(message: string, ...args: unknown[]): void {
+  debug(message: string, data?: Record<string, unknown>): void {
     if (this.level <= LogLevel.DEBUG) {
-      console.log(chalk.gray(`[DEBUG] [${this.context}] ${message}`), ...args);
+      const formatted = this.format('DEBUG', message, data);
+      console.log(chalk.gray(formatted));
     }
   }
 
-  info(message: string, ...args: unknown[]): void {
+  info(message: string, data?: Record<string, unknown>): void {
     if (this.level <= LogLevel.INFO) {
-      console.log(chalk.blue(`[INFO] [${this.context}] ${message}`), ...args);
+      const formatted = this.format('INFO', message, data);
+      console.log(chalk.blue(formatted));
     }
   }
 
-  warn(message: string, ...args: unknown[]): void {
+  warn(message: string, data?: Record<string, unknown>): void {
     if (this.level <= LogLevel.WARN) {
-      console.warn(chalk.yellow(`[WARN] [${this.context}] ${message}`), ...args);
+      const formatted = this.format('WARN', message, data);
+      console.warn(chalk.yellow(formatted));
     }
   }
 
-  error(message: string, ...args: unknown[]): void {
+  error(message: string, error?: Error | Record<string, unknown>): void {
     if (this.level <= LogLevel.ERROR) {
-      console.error(chalk.red(`[ERROR] [${this.context}] ${message}`), ...args);
+      const data = error instanceof Error
+        ? { error: error.message }
+        : error;
+      const formatted = this.format('ERROR', message, data);
+      console.error(chalk.red(formatted));
     }
   }
+
+  private format(level: string, message: string, data?: Record<string, unknown>): string {
+    const base = `[${level}] [${this.context}] ${message}`;
+    if (data && Object.keys(data).length > 0) {
+      return `${base} ${JSON.stringify(data)}`;
+    }
+    return base;
+  }
+}
+
+/**
+ * Factory function for creating loggers.
+ * 
+ * @example
+ * const log = createLogger('OpenSearchClient');
+ * log.info('Connected', { host });
+ * log.error('Failed to connect', err);
+ */
+export function createLogger(context: string): Logger {
+  return new Logger(context);
+}
+
+// Logger cache to avoid creating multiple instances for same context
+const loggerCache: Map<string, Logger> = new Map();
+
+/**
+ * Get or create a cached logger for a context.
+ * 
+ * @example
+ * const log = getLogger('HybridIndexer');
+ */
+export function getLogger(context: string): Logger {
+  if (!loggerCache.has(context)) {
+    loggerCache.set(context, new Logger(context));
+  }
+  return loggerCache.get(context)!;
 }

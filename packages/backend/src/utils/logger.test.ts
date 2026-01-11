@@ -69,9 +69,9 @@ describe('Logger', () => {
 
             logger.info('Message with data', { key: 'value' });
 
+            // New API includes data in the message string
             expect(console.log).toHaveBeenCalledWith(
-                expect.any(String),
-                { key: 'value' }
+                expect.stringContaining('{"key":"value"}'),
             );
         });
     });

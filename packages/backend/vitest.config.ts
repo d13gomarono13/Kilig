@@ -13,15 +13,13 @@ export default defineConfig({
                 'src/**/*.test.ts',
                 'src/**/index.ts', // Entry points
                 'node_modules/**'
-            ]
-            // Thresholds commented out during incremental development
-            // Will be re-enabled when targeting >60% coverage
-            // thresholds: {
-            //     statements: 60,
-            //     branches: 60,
-            //     functions: 60,
-            //     lines: 60
-            // }
+            ],
+            thresholds: {
+                statements: 50,
+                branches: 40,
+                functions: 50,
+                lines: 50
+            }
         },
         setupFiles: ['./tests/setup.ts']
     }
