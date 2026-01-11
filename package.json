@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@google/adk": "^0.2.2",
+    "@supabase/supabase-js": "^2.90.1",
     "dotenv": "^16.6.1",
     "typescript": "^5.4.5"
   },

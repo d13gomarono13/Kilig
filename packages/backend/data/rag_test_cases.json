@@ -1,0 +1,47 @@
+[
+    {
+        "id": "attention_mechanism",
+        "question": "What is the attention mechanism in transformers?",
+        "expected_answer": "The attention mechanism allows the model to dynamically focus on different parts of the input sequence when producing each output element. It computes weighted sums of values based on the similarity between queries and keys, enabling the model to capture long-range dependencies.",
+        "golden_documents": [
+            "transformer_attention",
+            "self_attention"
+        ]
+    },
+    {
+        "id": "diffusion_models",
+        "question": "How do diffusion models generate images?",
+        "expected_answer": "Diffusion models generate images by learning to reverse a gradual noising process. They start with random noise and iteratively denoise it to produce high-quality images, using a neural network trained to predict and remove noise at each step.",
+        "golden_documents": [
+            "ddpm",
+            "score_matching"
+        ]
+    },
+    {
+        "id": "rag_retrieval",
+        "question": "What is retrieval-augmented generation?",
+        "expected_answer": "Retrieval-augmented generation (RAG) combines a retrieval system with a language model. It first retrieves relevant documents from a knowledge base, then uses those documents as context for the language model to generate more accurate and grounded responses.",
+        "golden_documents": [
+            "rag_original",
+            "dense_retrieval"
+        ]
+    },
+    {
+        "id": "chain_of_thought",
+        "question": "What is chain-of-thought prompting?",
+        "expected_answer": "Chain-of-thought prompting is a technique where the model is encouraged to show its reasoning step-by-step before giving a final answer. This intermediate reasoning helps improve accuracy on complex tasks like math problems and multi-step reasoning.",
+        "golden_documents": [
+            "cot_prompting",
+            "reasoning_llm"
+        ]
+    },
+    {
+        "id": "lora_finetuning",
+        "question": "What is LoRA for model fine-tuning?",
+        "expected_answer": "LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning method that freezes the pre-trained model weights and injects trainable low-rank matrices into transformer layers. This significantly reduces the number of trainable parameters while maintaining performance.",
+        "golden_documents": [
+            "lora_paper",
+            "peft_methods"
+        ]
+    }
+]

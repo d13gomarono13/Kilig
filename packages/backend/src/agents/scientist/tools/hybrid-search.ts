@@ -10,6 +10,7 @@ import { z } from 'zod';
 import { createOpenSearchClient, OpenSearchClient, SearchResult, ChunkHit } from '../../../services/opensearch/index.js';
 import { generateEmbedding } from '../../../services/embeddings.js';
 import { getSettings } from '../../../config/index.js';
+import { feedbackService } from '../../../services/feedback/feedback-service.js';
 
 let searchClient: OpenSearchClient | null = null;
 
@@ -33,10 +34,12 @@ export interface HybridSearchResult {
         highlights?: string[];
     }>;
     searchType: 'hybrid' | 'bm25' | 'vector';
+    feedbackAdjusted?: boolean;
 }
 
 /**
  * Perform hybrid search combining BM25 and vector similarity
+ * Optionally applies feedback-based score adjustments
  */
 export async function hybridSearch(
     query: string,
@@ -45,9 +48,10 @@ export async function hybridSearch(
         useHybrid?: boolean;
         categories?: string[];
         minScore?: number;
+        applyFeedback?: boolean;
     } = {}
 ): Promise<HybridSearchResult> {
-    const { limit = 5, useHybrid = true, categories, minScore = 0.0 } = options;
+    const { limit = 5, useHybrid = true, categories, minScore = 0.0, applyFeedback = true } = options;
     const settings = getSettings();
 
     console.log(`[HybridSearch] Searching: "${query.slice(0, 50)}..." (hybrid=${useHybrid})`);
@@ -79,19 +83,39 @@ export async function hybridSearch(
 
         console.log(`[HybridSearch] Found ${result.total} results`);
 
+        // Transform hits to output format
+        let hits = result.hits.map(hit => ({
+            chunkId: hit.chunkId,
+            documentId: hit.chunkId, // Alias for feedback service compatibility
+            content: hit.chunkText,
+            title: hit.title,
+            arxivId: hit.arxivId,
+            score: hit.score,
+            sectionTitle: hit.sectionTitle,
+            highlights: hit.highlights ? Object.values(hit.highlights).flat() : undefined,
+        }));
+
+        // Apply feedback-based score adjustments if enabled
+        let feedbackAdjusted = false;
+        if (applyFeedback && hits.length > 0) {
+            try {
+                const adjustedHits = await feedbackService.adjustRelevanceScores(query, hits);
+                if (adjustedHits.some((h: any) => h.feedbackAdjusted)) {
+                    hits = adjustedHits;
+                    feedbackAdjusted = true;
+                    console.log(`[HybridSearch] Applied feedback adjustments`);
+                }
+            } catch (err: any) {
+                console.warn('[HybridSearch] Feedback adjustment failed:', err.message);
+            }
+        }
+
         return {
             query,
             totalHits: result.total,
-            hits: result.hits.map(hit => ({
-                chunkId: hit.chunkId,
-                content: hit.chunkText,
-                title: hit.title,
-                arxivId: hit.arxivId,
-                score: hit.score,
-                sectionTitle: hit.sectionTitle,
-                highlights: hit.highlights ? Object.values(hit.highlights).flat() : undefined,
-            })),
+            hits,
             searchType,
+            feedbackAdjusted,
         };
     } catch (error) {
         console.error('[HybridSearch] Search failed:', error);

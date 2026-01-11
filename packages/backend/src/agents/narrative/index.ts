@@ -1,6 +1,7 @@
 import { LlmAgent as Agent } from '@google/adk';
 import { saveComicManifestTool } from './tools/save_comic_manifest.js';
 import { extractChartDataTool } from './tools/extract_chart_data.js';
+import { loadContextMemoriesTool, saveValidatorLearningTool, saveUserPreferenceTool } from './tools/memory-tools.js';
 import { llmModel } from '../config.js';
 
 // NOTE: Claude Scientific Skills are in .gemini/skills/ directory (progressive disclosure)
@@ -163,8 +164,18 @@ You MUST use the 'save_comic_manifest' tool to generate the final JSON.
 
 **IMPORTANT**: Once you have saved the manifest, use 'transfer_to_agent' to send the result back to 'root'.
 
+## MEMORY-AWARE WORKFLOW
+Before generating ANY manifest:
+1. Call 'load_context_memories' with the user's ID and current topic
+2. Review past learnings (especially 'validator_learning' type)
+3. Apply those learnings to avoid repeating mistakes
+
+When Validator rejects your manifest:
+1. Call 'save_validator_learning' with the specific lesson learned
+2. This will be retrieved in future sessions to improve quality
+
 `,
-  tools: [saveComicManifestTool, extractChartDataTool],
+  tools: [saveComicManifestTool, extractChartDataTool, loadContextMemoriesTool, saveValidatorLearningTool, saveUserPreferenceTool],
 });
 
 export default narrativeAgent;

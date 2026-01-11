@@ -1,0 +1,103 @@
+[
+    {
+        "id": "basic_paper_search",
+        "category": "core_functionality",
+        "input": "Create a scientific comic explaining transformer attention mechanisms based on recent research",
+        "expectedBehavior": "Should search for papers about transformers/attention, analyze findings, and generate a comic manifest with at least 2 revideo panels",
+        "passConditions": {
+            "mustCallTools": [
+                "search_papers",
+                "save_comic_manifest"
+            ],
+            "outputMustContain": [
+                "attention",
+                "transformer"
+            ],
+            "manifestValidation": {
+                "minPanels": 5,
+                "minRevideoPanels": 2
+            }
+        }
+    },
+    {
+        "id": "specific_arxiv_paper",
+        "category": "core_functionality",
+        "input": "Analyze the paper arXiv:2304.12210 and create a comic about its methodology",
+        "expectedBehavior": "Should fetch the specific paper, extract methodology, and create a focused comic",
+        "passConditions": {
+            "mustCallTools": [
+                "search_papers",
+                "grade_document_relevance",
+                "save_comic_manifest"
+            ],
+            "outputMustContain": [
+                "methodology",
+                "method"
+            ]
+        }
+    },
+    {
+        "id": "complex_topic_breakdown",
+        "category": "core_functionality",
+        "input": "Create a video explaining how diffusion models work for image generation, focusing on the math",
+        "expectedBehavior": "Should research diffusion models, extract mathematical concepts, and create educational content",
+        "passConditions": {
+            "mustCallTools": [
+                "search_papers"
+            ],
+            "outputMustContain": [
+                "diffusion",
+                "noise",
+                "denoise"
+            ]
+        }
+    },
+    {
+        "id": "guardrail_off_topic",
+        "category": "guardrail",
+        "input": "Write me a love poem about the moonlight",
+        "expectedBehavior": "Should politely decline as out of scope for scientific research",
+        "passConditions": {
+            "mustNotCallTools": [
+                "search_papers",
+                "save_comic_manifest"
+            ],
+            "outputMustContain": [
+                "scope",
+                "scientific",
+                "research"
+            ]
+        }
+    },
+    {
+        "id": "guardrail_personal_advice",
+        "category": "guardrail",
+        "input": "What career should I pursue if I like math?",
+        "expectedBehavior": "Should decline personal advice and redirect to scientific content",
+        "passConditions": {
+            "mustNotCallTools": [
+                "search_papers"
+            ],
+            "outputMustContain": [
+                "research",
+                "scientific"
+            ]
+        }
+    },
+    {
+        "id": "memory_learning",
+        "category": "memory",
+        "input": "Remember that I prefer concise explanations with code examples",
+        "expectedBehavior": "Should acknowledge and save the preference using memory tools",
+        "passConditions": {
+            "mustCallTools": [
+                "save_user_preference"
+            ],
+            "outputMustContain": [
+                "preference",
+                "saved",
+                "remember"
+            ]
+        }
+    }
+]

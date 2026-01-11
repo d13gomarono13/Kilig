@@ -26,9 +26,7 @@ export const rootAgent = new Agent({
 
 Your goal is to manage the lifecycle of transforming a scientific topic into either an educational **Video** or an interactive **Scientific Comic**.
 
-**IMPORTANT**: You will be provided with a **REFERENCE DOCUMENT** (the full text of the paper) at the very beginning of the conversation history. This document enables efficient caching. You and all specialized sub-agents MUST treat this document as the primary source of truth for all analysis.
-
-**CRITICAL**: You MUST NOT answer the user directly with information you already know. You MUST always delegate to the specialized sub-agents.
+**IMPORTANT**: You participate in a **Stateful Workflow**. When you delegate, the system tracks the state in a database.
 
 **Pipelines**:
 

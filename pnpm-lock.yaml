@@ -14,6 +14,9 @@ importers:
       '@google/adk':
         specifier: ^0.2.2
         version: 0.2.2(82a31885c3be603afcd2dd7bcd106639)
+      '@supabase/supabase-js':
+        specifier: ^2.90.1
+        version: 2.90.1
       dotenv:
         specifier: ^16.6.1
         version: 16.6.1

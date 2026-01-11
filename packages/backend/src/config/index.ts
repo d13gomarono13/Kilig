@@ -112,6 +112,10 @@ const SettingsSchema = z.object({
     langfuse: LangfuseSettingsSchema.default({}),
     embeddings: EmbeddingsSettingsSchema.default({}),
     agenticRag: AgenticRagSettingsSchema.default({}),
+
+    // Supabase
+    supabaseUrl: z.string().default(''),
+    supabaseKey: z.string().default(''),
 });
 
 // ============================================================================
@@ -221,6 +225,9 @@ function loadSettingsFromEnv(): Settings {
             relevanceThreshold: parseEnvNumber(process.env.AGENTIC_RAG_RELEVANCE_THRESHOLD, 0.5),
             temperature: parseEnvNumber(process.env.AGENTIC_RAG_TEMPERATURE, 0.0),
         },
+
+        supabaseUrl: process.env.SUPABASE_URL,
+        supabaseKey: process.env.SUPABASE_KEY,
     };
 
     // Parse and validate with defaults

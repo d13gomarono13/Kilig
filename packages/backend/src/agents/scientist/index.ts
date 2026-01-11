@@ -7,7 +7,15 @@ import { guardrailTool } from './tools/guardrail.js';
 import { gradeDocumentsTool } from './tools/grade-documents.js';
 import { rewriteQueryTool } from './tools/rewrite-query.js';
 import { hybridSearchTool } from './tools/hybrid-search.js';
-import { analyzeFiguresTool } from './tools/analyze-figures.js'; // New Tool
+import { analyzeFiguresTool } from './tools/analyze-figures.js';
+
+// Self-RAG tools
+import {
+  retrievalDecisionTool,
+  filterRelevantDocsTool,
+  assessSupportTool,
+  rateUtilityTool
+} from './tools/self-rag-evaluator.js';
 
 // Indexing tools
 import { createHybridIndexer } from '../../services/indexing/index.js';
@@ -142,24 +150,41 @@ You have access to powerful scientific analysis skills in \`.gemini/skills/\`:
 **When**: Finalizing your critical analysis output
 **How**: Apply IMRAD structure, proper citations, flowing prose (never bullet points in output)
 
-## AGENTIC RAG PIPELINE
+## SELF-RAG PIPELINE (6-Step Workflow)
 
-### Step 1: Query Validation (Guardrail)
+Follow this enhanced Self-RAG workflow for every research query:
+
+### Step 1: Retrieval Decision
+Use 'decide_retrieval' FIRST to check if document retrieval is needed.
+- "retrieve": Proceed to Step 2
+- "no_retrieval": Answer directly from your knowledge (for simple math, common knowledge)
+
+### Step 2: Query Validation (Guardrail)
 Use 'validate_query_scope' to check if query is within scope (CS/AI/ML research).
 - Score >= 50: Proceed with search
 - Score < 50: Inform user the query is out of scope
 
-### Step 2: Hybrid Search
-Use 'search_papers' for hybrid search (BM25 + semantic):
-- Combines keyword matching with vector similarity
-- Set useHybrid=true for best results
+### Step 3: Hybrid Search + Relevance Filtering
+Use 'search_papers' for hybrid search, then 'filter_relevant_documents' to keep only relevant docs.
+- This removes noise and improves response quality
+- If all docs filtered out: Use 'rewrite_search_query' (max 3 attempts)
 
-### Step 3: Document Grading
-Use 'grade_document_relevance' to evaluate retrieved docs:
+### Step 4: Document Grading
+Use 'grade_document_relevance' to score the filtered documents.
 - If relevant: Proceed to analysis
-- If NOT relevant: Use 'rewrite_search_query' (max 3 attempts)
+- If NOT relevant: Rewrite query and retry
 
-### Step 4: CRITICAL ANALYSIS WITH SKILLS
+### Step 5: Response Generation + Support Assessment
+Generate your analysis, then use 'assess_response_support' to verify grounding.
+- "fully_supported" or "partially_supported": Proceed
+- "not_supported": Regenerate with stricter adherence to context
+
+### Step 6: Utility Rating
+Before finalizing, use 'rate_response_utility' to score your response.
+- Score 3+: Deliver the response
+- Score < 3: Improve and regenerate
+
+## CRITICAL ANALYSIS WITH SKILLS
 After retrieving relevant papers, ALWAYS:
 1. Use 'scientific-critical-thinking' skill to evaluate methodology
 2. For multi-paper queries, use 'literature-review' skill
@@ -208,7 +233,13 @@ Extract data that can be visualized:
     doclingToolset,
     analyzeFiguresTool,
 
-    // Agentic RAG Tools (new)
+    // Self-RAG Tools
+    retrievalDecisionTool,
+    filterRelevantDocsTool,
+    assessSupportTool,
+    rateUtilityTool,
+
+    // Agentic RAG Tools
     guardrailTool,
     hybridSearchTool,
     gradeDocumentsTool,
