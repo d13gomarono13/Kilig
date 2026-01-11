@@ -31,8 +31,8 @@ export interface PipelineOptions {
 
 export function runPipeline({ query, onEvent, onError, onDone }: PipelineOptions) {
   const controller = new AbortController();
-  
-  fetch('http://localhost:8080/api/trigger', {
+
+  fetch('/api/trigger', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export function runPipeline({ query, onEvent, onError, onDone }: PipelineOptions
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const reader = response.body?.getReader();
     if (!reader) {
       throw new Error('ReadableStream not supported');
@@ -69,8 +69,8 @@ export function runPipeline({ query, onEvent, onError, onDone }: PipelineOptions
               const data = JSON.parse(line.slice(6)) as PipelineEvent;
               onEvent(data);
               if (data.type === 'done') {
-                 onDone();
-                 return;
+                onDone();
+                return;
               }
             } catch (e) {
               console.error('Error parsing SSE data:', e);

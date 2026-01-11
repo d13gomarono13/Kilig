@@ -20,10 +20,10 @@ const queryClient = new QueryClient();
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
-  
+
   if (isLoading) return <div className="h-screen w-screen flex items-center justify-center bg-yellow-400 font-black text-2xl uppercase">Loading Library...</div>;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  
+
   return <>{children}</>;
 };
 
@@ -56,6 +56,7 @@ const App = () => (
                 <Gallery />
               </ProtectedRoute>
             } />
+            <Route path="/studio" element={<Navigate to="/laboratory" replace />} />
             <Route path="/studio/:id" element={
               <ProtectedRoute>
                 <Studio />
@@ -76,7 +77,7 @@ const App = () => (
                 <Profile />
               </ProtectedRoute>
             } />
-            
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
