@@ -9,9 +9,9 @@
  */
 export const toolCallRepairProcessor = {
     async *runAsync(arg1: any, arg2: any) {
+        // console.log('[ToolRepair] Processor INVOKED');
         try {
             // Heuristic to find response object (it has candidates)
-            // ADK 0.2+ processors receive (context) or (response, context) depending on invocation
             let response = arg1;
             if (!response?.candidates && arg2?.candidates) {
                 response = arg2;
@@ -20,10 +20,15 @@ export const toolCallRepairProcessor = {
             const candidate = response?.candidates?.[0];
             if (!candidate?.content?.parts) return;
 
-            // Iterate all parts to find the JSON logic
-            // Some models output thinking/reasoning in one part and JSON in another
+            // Iterate all parts
             for (let i = 0; i < candidate.content.parts.length; i++) {
                 const text = candidate.content.parts[i].text;
+
+                // Debug to trace match logic
+                if (text && text.includes('agent_name')) {
+                    console.log(`[ToolRepair] Found agent_name in Part ${i}`);
+                    // console.log(`[ToolRepair] Sample: ${text.slice(0, 50).replace(/\n/g, ' ')}...`);
+                }
 
                 // Check for JSON-like tool call patterns
                 if (text && (text.includes('```json') || text.includes('{')) && text.includes('agent_name')) {
@@ -39,7 +44,6 @@ export const toolCallRepairProcessor = {
                                 console.log(`[ToolRepair] Converting text intent to ToolCall: transfer_to_agent("${json.agent_name}")`);
 
                                 // Mutate the *entire* parts array to be just the function call
-                                // This prevents the chat text from being processed further
                                 candidate.content.parts = [{
                                     functionCall: {
                                         name: 'transfer_to_agent',
@@ -49,7 +53,7 @@ export const toolCallRepairProcessor = {
                                 return; // Stop processing after first fix
                             }
                         } catch (parseError) {
-                            // JSON parse failed, likely incomplete. Ignore.
+                            // JSON parse failed
                         }
                     }
                 }
