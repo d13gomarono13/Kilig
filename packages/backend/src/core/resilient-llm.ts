@@ -282,12 +282,12 @@ export class ResilientLlm extends BaseLlm {
                 // If the block is just JSON object
                 if (content.startsWith('{') && content.endsWith('}')) {
                     const json = JSON.parse(content);
-                    
+
                     // HEURISTIC: Check for transfer_to_agent patterns common in free models
                     if (json.recipient || json.agent_name || json.agentName) {
                         const agentName = json.recipient || json.agent_name || json.agentName;
                         console.log(`[ResilientLlm] Inferred transfer_to_agent('${agentName}') from JSON`);
-                        
+
                         toolCalls.push({
                             name: 'transfer_to_agent',
                             args: { agentName }
@@ -349,6 +349,11 @@ export class ResilientLlm extends BaseLlm {
             return `\n\n**EFFICIENCY NOTE**: Act decisively. Use available tools directly without excessive planning text.`;
         }
         // Qwen and Gemma are generally good with tools, minimal guidance needed
+        // Xiaomi/Mimo needs explicit JSON instruction for reliable polyfill
+        if (modelId.includes('xiaomi') || modelId.includes('mimo')) {
+            return `\n\n**CRITICAL**: You are a function-calling agent. To transfer control, you MUST output a JSON block: \`\`\`json\n{"agent_name": "scientist"}\n\`\`\`. Do NOT just narrate your plan.`;
+        }
+
         return null;
     }
 

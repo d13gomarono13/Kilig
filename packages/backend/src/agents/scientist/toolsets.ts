@@ -31,6 +31,8 @@ export const doclingToolset = new MCPToolset({
             'uv',
             'tool',
             'run',
+            '--from',
+            'docling-mcp',
             'docling-mcp-server'
         ],
     },

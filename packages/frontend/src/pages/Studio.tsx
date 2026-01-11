@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useLocation } from "react-router-dom";
-import { 
-  ArrowLeft, 
-  Bot, 
-  Brain, 
-  Palette, 
-  Play, 
+import {
+  ArrowLeft,
+  Bot,
+  Brain,
+  Palette,
+  Play,
   FileText,
   Code,
   ChevronRight,
@@ -18,6 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { runPipeline, AgentType, LogEntry } from "@/lib/pipeline";
 import { Player } from "@revideo/player-react";
 import DynamicScene from "@/components/video/DynamicScene";
+import { useProject } from "@/hooks/use-project";
 
 const agentConfig: Record<AgentType, { name: string; icon: any; color: string }> = {
   scientist: { name: "Scientist", icon: Brain, color: "bg-neo-blue" },
@@ -32,18 +33,35 @@ export default function Studio() {
   const queryParams = new URLSearchParams(location.search);
   const initialQuery = queryParams.get("query");
 
+  // Fetch existing project if ID is present
+  const { data: projectData } = useProject(id);
+
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [activeAgent, setActiveAgent] = useState<AgentType | null>(null);
   const [progress, setProgress] = useState(0);
-  
+
   const [analysis, setAnalysis] = useState<string>("");
   const [script, setScript] = useState<string>("");
   const [sceneGraph, setSceneGraph] = useState<any>(null);
   const [realProjectId, setRealProjectId] = useState<string | null>(null);
 
-  // Trigger real pipeline
+  // Hydrate state from fetched project
   useEffect(() => {
-    if (!initialQuery) return;
+    if (projectData) {
+      if (projectData.research_summary) setAnalysis(projectData.research_summary);
+      if (projectData.script) setScript(projectData.script);
+      if (projectData.scenegraph) setSceneGraph(projectData.scenegraph);
+      setRealProjectId(projectData.id);
+
+      // If completed, set progress to 100
+      if (projectData.status === 'completed') setProgress(100);
+    }
+  }, [projectData]);
+
+  // Trigger real pipeline (only if fresh query)
+  useEffect(() => {
+    // Only run pipeline if we have a query AND we haven't loaded an existing project yet
+    if (!initialQuery || projectData) return;
 
     const stopPipeline = runPipeline({
       query: initialQuery,
@@ -52,7 +70,7 @@ export default function Studio() {
           setRealProjectId(event.projectId || null);
         } else if (event.type === 'agent_event') {
           if (event.author) setActiveAgent(event.author);
-          
+
           setLogs(prev => [...prev, {
             id: Date.now().toString() + Math.random(),
             timestamp: event.timestamp || new Date().toISOString(),
@@ -141,9 +159,8 @@ export default function Studio() {
               return (
                 <div
                   key={key}
-                  className={`flex items-center gap-2 px-3 py-2 border-2 border-black transition-all ${
-                    isActive ? `${agent.color} shadow-sm translate-y-[-2px]` : "bg-gray-100 opacity-50"
-                  }`}
+                  className={`flex items-center gap-2 px-3 py-2 border-2 border-black transition-all ${isActive ? `${agent.color} shadow-sm translate-y-[-2px]` : "bg-gray-100 opacity-50"
+                    }`}
                 >
                   <AgentIcon className={`w-4 h-4 ${isActive ? "animate-bounce" : ""}`} />
                   <span className="text-xs font-bold uppercase hidden sm:inline">
@@ -194,66 +211,65 @@ export default function Studio() {
             </TabsTriggerList>
 
             <TabsPanels className="flex-1 overflow-hidden p-0">
-                <TabsContent className="h-full p-0 border-0 mt-0">
-                    <ScrollArea className="h-full">
-                        <div className="p-4 space-y-3">
-                        {logs.map((log) => (
-                            <div
-                            key={log.id}
-                            className={`p-3 border-2 border-black text-sm shadow-sm ${
-                                log.level === "error"
-                                ? "bg-neo-red text-white"
-                                : log.level === "success"
-                                ? "bg-neo-green"
-                                : log.agent
-                                ? agentConfig[log.agent as AgentType]?.color
-                                : "bg-white"
-                            }`}
-                            >
-                            <div className="flex items-center gap-2 mb-1 border-b-2 border-black/10 pb-1">
-                                <span className="font-mono text-xs font-bold opacity-70">
-                                {formatTime(log.timestamp)}
-                                </span>
-                                {log.agent && (
-                                <Badge className="text-[10px] bg-white text-black border border-black h-5">
-                                    {agentConfig[log.agent as AgentType]?.name}
-                                </Badge>
-                                )}
-                                {log.level === "success" && <CheckCircle className="w-4 h-4" />}
-                                {log.level === "error" && <AlertCircle className="w-4 h-4" />}
-                            </div>
-                            <p className="font-medium">{log.message}</p>
-                            </div>
-                        ))}
-                        {logs.length === 0 && (
-                            <div className="text-center py-12 text-muted-foreground flex flex-col items-center">
-                            <Loader2 className="w-10 h-10 mb-4 animate-spin text-black" />
-                            <p className="font-bold uppercase tracking-widest">Initializing pipeline...</p>
-                            </div>
-                        )}
+              <TabsContent className="h-full p-0 border-0 mt-0">
+                <ScrollArea className="h-full">
+                  <div className="p-4 space-y-3">
+                    {logs.map((log) => (
+                      <div
+                        key={log.id}
+                        className={`p-3 border-2 border-black text-sm shadow-sm ${log.level === "error"
+                          ? "bg-neo-red text-white"
+                          : log.level === "success"
+                            ? "bg-neo-green"
+                            : log.agent
+                              ? agentConfig[log.agent as AgentType]?.color
+                              : "bg-white"
+                          }`}
+                      >
+                        <div className="flex items-center gap-2 mb-1 border-b-2 border-black/10 pb-1">
+                          <span className="font-mono text-xs font-bold opacity-70">
+                            {formatTime(log.timestamp)}
+                          </span>
+                          {log.agent && (
+                            <Badge className="text-[10px] bg-white text-black border border-black h-5">
+                              {agentConfig[log.agent as AgentType]?.name}
+                            </Badge>
+                          )}
+                          {log.level === "success" && <CheckCircle className="w-4 h-4" />}
+                          {log.level === "error" && <AlertCircle className="w-4 h-4" />}
                         </div>
-                    </ScrollArea>
-                </TabsContent>
+                        <p className="font-medium">{log.message}</p>
+                      </div>
+                    ))}
+                    {logs.length === 0 && (
+                      <div className="text-center py-12 text-muted-foreground flex flex-col items-center">
+                        <Loader2 className="w-10 h-10 mb-4 animate-spin text-black" />
+                        <p className="font-bold uppercase tracking-widest">Initializing pipeline...</p>
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
 
-                <TabsContent className="h-full p-0 border-0 mt-0">
-                    <ScrollArea className="h-full">
-                        <div className="p-6">
-                        <pre className="font-mono text-sm whitespace-pre-wrap bg-white border-4 border-black p-6 shadow-md">
-                            {analysis || "Waiting for scientist to complete analysis..."}
-                        </pre>
-                        </div>
-                    </ScrollArea>
-                </TabsContent>
+              <TabsContent className="h-full p-0 border-0 mt-0">
+                <ScrollArea className="h-full">
+                  <div className="p-6">
+                    <pre className="font-mono text-sm whitespace-pre-wrap bg-white border-4 border-black p-6 shadow-md">
+                      {analysis || "Waiting for scientist to complete analysis..."}
+                    </pre>
+                  </div>
+                </ScrollArea>
+              </TabsContent>
 
-                <TabsContent className="h-full p-0 border-0 mt-0">
-                    <ScrollArea className="h-full">
-                        <div className="p-6">
-                        <pre className="font-mono text-sm whitespace-pre-wrap bg-white border-4 border-black p-6 shadow-md">
-                            {script || "Waiting for narrative architect to generate script..."}
-                        </pre>
-                        </div>
-                    </ScrollArea>
-                </TabsContent>
+              <TabsContent className="h-full p-0 border-0 mt-0">
+                <ScrollArea className="h-full">
+                  <div className="p-6">
+                    <pre className="font-mono text-sm whitespace-pre-wrap bg-white border-4 border-black p-6 shadow-md">
+                      {script || "Waiting for narrative architect to generate script..."}
+                    </pre>
+                  </div>
+                </ScrollArea>
+              </TabsContent>
             </TabsPanels>
           </Tabs>
         </div>
@@ -267,30 +283,30 @@ export default function Studio() {
             </h2>
           </div>
           <div className="flex-1 flex items-center justify-center p-8">
-             <div className="w-full aspect-video flex items-center justify-center bg-black text-white overflow-hidden relative border-8 border-black shadow-xl">
-                {sceneGraph || true ? (
-                   <Player
-                     component={DynamicScene}
-                     durationInFrames={300}
-                     compositionWidth={1920}
-                     compositionHeight={1080}
-                     fps={30}
-                     inputProps={{ sceneGraph }}
-                     style={{ width: '100%', height: '100%' }}
-                     controls
-                   />
-                ) : (
-                  <div className="text-center p-8">
-                    <div className="w-20 h-20 bg-neo-green border-4 border-white shadow-[8px_8px_0px_white] flex items-center justify-center mx-auto mb-6 animate-pulse">
-                        <Loader2 className="w-10 h-10 animate-spin text-black" />
-                    </div>
-                    <p className="text-2xl font-black uppercase tracking-widest">Generating Canvas</p>
-                    <p className="text-sm text-white/70 mt-2 font-mono">
-                      Designer is working on the SceneGraph...
-                    </p>
+            <div className="w-full aspect-video flex items-center justify-center bg-black text-white overflow-hidden relative border-8 border-black shadow-xl">
+              {sceneGraph || true ? (
+                <Player
+                  component={DynamicScene}
+                  durationInFrames={300}
+                  compositionWidth={1920}
+                  compositionHeight={1080}
+                  fps={30}
+                  inputProps={{ sceneGraph }}
+                  style={{ width: '100%', height: '100%' }}
+                  controls
+                />
+              ) : (
+                <div className="text-center p-8">
+                  <div className="w-20 h-20 bg-neo-green border-4 border-white shadow-[8px_8px_0px_white] flex items-center justify-center mx-auto mb-6 animate-pulse">
+                    <Loader2 className="w-10 h-10 animate-spin text-black" />
                   </div>
-                )}
-             </div>
+                  <p className="text-2xl font-black uppercase tracking-widest">Generating Canvas</p>
+                  <p className="text-sm text-white/70 mt-2 font-mono">
+                    Designer is working on the SceneGraph...
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
